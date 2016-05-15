@@ -1,0 +1,6 @@
+.addBtnLi:before {
+    content: "" !important;
+}
+table td{
+    line-height: 250% !important;
+}

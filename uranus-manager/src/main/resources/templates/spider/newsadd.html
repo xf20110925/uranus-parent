@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="main :: head (title=主页)">
+</head>
+
+<body>
+
+<header th:include="main :: header">
+
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xd-8">
+            <ol class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li><a href="#">规则</a></li>
+                <li class="active">添加规则集</li>
+            </ol>
+        </div>
+    </div>
+
+    <form class="form-horizontal" action="/spider/newsAdd" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <div class="col-sm-2"><label for="newsname" class="control-label">名称</label></div>
+            <div class="col-sm-10">
+                <input id="newsname" name="newsname" type="text" placeholder="请输入网站名称" class="form-control"/>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-sm-2"><label for="newsurl" class="control-label">网址</label></div>
+            <div class="col-sm-10">
+                <input id="newsurl" name="newsurl" type="text" placeholder="请输入完整的url地址以" class="form-control"/>
+            </div>
+        </div>
+		<div class="form-group">
+            <div class="col-sm-2"><label for="period" class="control-label">时间/分</label></div>
+            <div class="col-sm-10">
+                <input id="period" name="period" type="text" placeholder="请输入设置时间,只能是数字" class="form-control"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-1">
+                <div class="form-group">
+                  <a href="javascript:;" onclick="onsumbit()" class="btn btn-primary btn-lg btn-block">添加</a>
+                </div>
+            </div>
+            <div class="col-sm-4 col-sm-offset-1">
+                <div class="form-group">
+                    <button type="reset" id="btnReset" class="btn btn-primary btn-lg btn-block">重置</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<footer th:include="main :: footer">
+
+</footer>
+<script type="text/javascript">
+	function onsumbit() {
+	    if ($("#newsname").val() == ""){
+	    	 alert("名称不能为空！！");
+	    	 return false;
+	    }else if ($("#newsurl").val() == ""){
+	    	 alert("地址不能为空！！");
+	    	 return false;
+	    }else{
+	    	var newsurl=$("#newsurl").val();
+			var re = /^http:[\/\/]/;//最简单的正则表达式,将匹配he这个单词  
+			if(re.test(newsurl)){
+				
+			}else{
+				alert("url格式不对请重新输入！！");
+				return false;
+			}
+			var period = $("#period").val();
+			var re2 =/[0-9]/;
+			if(period==""){
+				alert("时间不能为空！！！")
+			}else{
+				if(re2.test(period)){
+				}else{
+					alert("时间只能输入数字!!");
+					return false;
+				}
+			}
+	    	var data = $("form").serialize();
+			$.ajax({
+				url:'/spider/newsAdd',
+				data:data,
+				dataType:'json',
+				type:'post',
+				success:function(data){
+					if(data){
+						alert("添加成功！！");
+						window.location.href = "/spider/news"
+					}else{
+						alert("添加失败！！");
+					}
+					
+				}
+			});	    
+			
+	    } 
+	   
+	}
+</script>
+</body>
+</html>

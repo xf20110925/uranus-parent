@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="main :: head (title=主页)">
+</head>
+
+<body>
+<link href="/css/list.css" rel="stylesheet"/>
+
+<header th:include="main :: header">
+
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xd-8">
+            <ol class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li><a href="#">spider</a></li>
+                <li class="active">详情</li>
+            </ol>
+        </div>
+    </div>
+
+    <!--/*@thymesVar id="actionSet" type="com.ptb.uranus.manager.bean.ActionSet"*/-->
+    <form class="form-horizontal" action="/spider/add" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <div class="col-sm-1"><label for="name" class="control-label">规则ID</label></div>
+            <div class="col-sm-11">
+                <input id="id" name="id" type="text" th:value="${actionSet.getId()}" readonly="readonly"
+                       placeholder="请输入规则的名称"
+                       class="form-control"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-1"><label for="name" class="control-label">规则名称</label></div>
+            <div class="col-sm-11">
+                <input id="name" name="name" type="text" th:value="${actionSet.getName()}" placeholder="请输入规则的名称"
+                       class="form-control"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-1"><label for="crawleType" class="control-label">规则类型</label>
+            </div>
+            <div class="col-sm-2">
+                <select id="crawleType" name="crawleType" class="form-control">
+                    <option th:selected="${actionSet.getCrawleType() eq 'article'}">
+                        article
+                    </option>
+                    <option th:selected="${actionSet.getCrawleType() eq 'articleList'}">
+                        articleList
+                    </option>
+                    <option th:selected="${actionSet.getCrawleType() eq 'articleDynamicData'}">
+                        articleDynamicData
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-1"><label for="urlRegex" class="control-label">匹配正则</label></div>
+            <div class="col-sm-11">
+
+
+                <input id="urlRegex" name="urlRegex" type="text" th:value="${actionSet.getUrlRegex()}"
+                       placeholder="能够匹配URL的正则表达式" class="form-control"/>
+            </div>
+        </div>
+        <fieldset>
+            <legend>
+                <div class="row">
+                    <div class="col-xs-6">Action配置</div>
+                    <div class="col-xs-6">
+                        <div class="btn-group btn-group-md pull-right" role="group" aria-label="...">
+                            <button id="btnOpenModal" type="button" class="btn btn-success"
+                                    data-toggle="modal" data-target="#myModal">
+                                添加Action
+                            </button>
+                            <button id="btnSave" type="button" class="btn btn-success">
+                                保存
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </legend>
+            <div class="panel-group">
+                <div class="panel panel-default" th:each="actions,actionstat : ${actionSet.getActions()}">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <a data-toggle="collapse" data-parent="#accordion"
+                                       th:href="'#'+${actionstat.index}" th:text="${actions.get('className').replaceAll('.*\.','')} + ' Order:' + ${actions.get('order')} ">
+                                    </a>
+                                </div>
+                                <div class="pull-right col-xs-6 text-right">
+                                    <button class="btn btn-primary btnDelAction btn-xs">删除action</button>
+                                </div>
+                            </div>
+                        </h4>
+
+                    </div>
+                    <div th:id="${actionstat.index}" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div th:each="action: ${actions.entrySet()}">
+                                <div class="form-group">
+                                    <div class="col-sm-1"><label th:for="${action.getKey()}" class="control-label"
+                                                                 th:text="${action.getKey()}">匹配正则</label>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input th:id="${action.getKey()}" th:name="${action.getKey()}"
+                                               th:value="${action.getValue()}"
+                                               type="text"
+                                               placeholder="能够匹配URL的正则表达式" class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+    </form>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">添加ACTION</h4>
+                </div>
+                <div class="modal-body">
+                    <fieldset>
+                        <select class="form-control" id="actionClass">
+                            <option th:each="className : ${classNames}" th:text="${className}">
+
+                            </option>
+                        </select>
+                        <form id="addActionFields" class="form-horizontal" style="margin: 10px">
+                        </form>
+                    </fieldset>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnAddAction">确定添加</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="demo" type="text/html">
+    <!--  {{# for(var i = 0, len = d.list.length; i < len; i++){ }}
+       <div class="row form-group">
+       <div class="col-sm-3"><label for="key" class="control-label">{{d.list[i]}}</label></div>
+              <div class="col-sm-8">
+                  <input id="{{d.list[i]}}" name="{{d.list[i]}}" type="text"
+                         placeholder="请输入规则的名称"
+                         class="form-control"/>
+              </div>
+       </div>
+       </div>
+      {{# } }} -->
+
+</script>
+
+<script src="/js/spiderDetail.js">
+
+</script>
+<footer th:include="main :: footer">
+
+</footer>
+
+</body>
+</html>

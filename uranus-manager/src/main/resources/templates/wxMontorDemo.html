@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="main :: head (title=阅读数点赞数9)">
+
+</head>
+<body>
+<header th:include="main :: header">
+
+</header>
+
+<div class="container main">
+    <form th:action="@{/wx/article/dynamic}" method="post">
+        <div class="row" style="margin: 100px auto 20px auto">
+            <div class="col-lg-12">
+                <h4>微信阅读数点赞数查询</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input th:inline="text" class="form-control" type="text" name="articleUrl" th:maxlength="500"/>
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">Go!</button>
+              </span>
+                    </div><!-- /input-group -->
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-sm-2 col-md-2 col-xs-4">
+                <input class="form-control input-sm" type="text" name="validateCode" placeholder="验证码" maxlength="4"/>
+            </div>
+            <div class="col-lg-1 col-sm-1 col-md-1 col-xs-4">
+                <img id="validateCode" src="/wx/article/validateCode"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-md-12">
+                <div class="text-success" th:if="${readLikeNum} != null" th:text="${readLikeNum}">
+                </div>
+                <div class="text-danger" th:if="${error} != null" th:text="${error}">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<footer th:include="main :: footer">
+
+</footer>
+<script>
+    //<![CDATA[
+    $(function () {
+        $('input[name=articleUrl]').attr("placeholder", "例:http://mp.weixin.qq.com/s?__biz=MjM5NjI2MjEwMQ==&mid=404409923&idx=3&sn=26b3616e4313ef40baaccc3471f95ac7&3rd=MzA3MDU4NTYzMw==&scene=6#rd")
+        $('#validateCode').on("click", function () {
+            $('#validateCode').attr("src", "/wx/article/validateCode?date=" + new Date().getTime());
+        })
+    })
+    //]]>
+</script>
+</body>
+</html>

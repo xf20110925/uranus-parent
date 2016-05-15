@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="main :: head (title=主页)">
+</head>
+
+<body>
+<link href="/css/list.css" rel="stylesheet"/>
+
+<header th:include="main :: header">
+
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Library</a></li>
+                <li class="active">规则列表</li>
+                <li class="pull-right addBtnLi"><a class="btn btn-success btn-xs addbtn" href="/spider/newsadd">添加规则</a>
+                </li>
+            </ol>
+        </div>
+
+    </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    名称
+                </th>
+                                <th>
+                    网址
+                </th>
+                                       <th>
+                    时间/分
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="action,actionstat : ${newsList}">
+                <td th:text="${actionstat.index+1}"></td>
+                <!--/*@thymesVar id="action" type="com.ptb.uranus.manager.bean.ActionSet"*/-->
+                <td th:text="${action.newsname}"></td>
+                <td th:text="${action.newsurl}"></td>
+                <td th:text="${action.period}"></td>
+                <td>
+                     <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            操作<span class="caret"></span>
+                        </button>
+                       <ul class="dropdown-menu">
+                            <li><a th:href="@{/spider/delnews(_id=${action.id})}">删除</a></li>
+                            <li><a th:href="@{/spider/updatenews(_id=${action.id})}">修改</a></li>
+                                                   <li role="separator" class="divider"></li>
+                        </ul>
+                    </div> 
+                </td>
+            </tr>
+            </tbody>
+        </table>
+</div>
+
+<footer th:include="main :: footer">
+
+</footer>
+
+</body>
+</html>

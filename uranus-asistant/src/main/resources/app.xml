@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--自动扫描包-->
+    <context:component-scan base-package="com.ptb.uranus.asistant.web"></context:component-scan>
+
+
+    <bean id="propertyConfigured" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:app.properties</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="bus" name="bus" class="com.ptb.gaia.bus.kafka.KafkaBus"/>
+    <bean id="busDao" name="busDao" class="com.ptb.uranus.asistant.web.dao.BusDao">
+        <property name="bus" ref="bus"/>
+    </bean>
+    <bean id="monitorAdvice" class="com.ptb.uranus.asistant.web.advice.MonitorAdvice">
+        <property name="busDao" ref="busDao"/>
+    </bean>
+
+
+    <aop:config>
+        <aop:aspect ref="monitorAdvice">
+            <aop:after-returning returning="response" method="monitorPhone"
+                                 pointcut="execution(* com.ptb.uranus.asistant.web.controller.WxController.getNewUrl(..))"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

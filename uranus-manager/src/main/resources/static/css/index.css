@@ -1,0 +1,25 @@
+.panel-heading {
+    color: #fff;
+    background-color: #101010;
+    border-color: #101010;
+    background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c', endColorstr='#ff222222', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    background-repeat: repeat-x;
+}
+
+.panel {
+    border-color: #101010;
+}
+
+.hot-article-tb {
+    table-layout: fixed;
+}
+.hot-article-tb .title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.hot-article-tb .readnum {
+    text-align: right;
+}
+
