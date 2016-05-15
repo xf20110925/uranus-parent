@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
+OUTPUT_DIR=`pwd`
+OUTPUT_DIR=$OUTPUT_DIR/dist
+mkdir $OUTPUT_DIR
 HOME=$(cd "$(dirname "$0")/../"; pwd)
 cd $HOME
 publishTime=`date "+%Y%m%d%H%M%S"`
-PNAME=`ls ./target|grep '.*\.jar$'`
+PNAME=`ls ${HOME}/target|grep '.*\.jar$'`
 PNAME=${PNAME%.*}-${publishTime}
 echo "发布包名为：${PNAME}"
-DistDir=dist/${PNAME}
+DistDir=$HOME/target/dist/${PNAME}
 mkdir -p $DistDir
 cp target/*.jar ${DistDir}
-cp -rf ./bin ${DistDir}
-cp -rf ./config ${DistDir}
-cp -rf ./README.md ${DistDir}
-cp -rf ./target/libs ${DistDir}
+cp -rf ${HOME}/bin ${DistDir}
+cp -rf ${HOME}/config ${DistDir}
+cp -rf ${HOME}/README.md ${DistDir}
+cp -rf ${HOME}/target/libs ${DistDir}
 mkdir ${DistDir}/logs
-cd dist/
+cd $HOME/target/dist/
 chmod -R 755   ${PNAME}/
 tar czvf ${PNAME}.tar.gz ${PNAME}
+cp ${PNAME}.tar.gz  $OUTPUT_DIR
 rm  -rf ${PNAME}/
 echo "打包成功"

@@ -5,17 +5,16 @@ mkdir $OUTPUT_DIR
 HOME=$(cd "$(dirname "$0")/../"; pwd)
 cd $HOME
 publishTime=`date "+%Y%m%d%H%M%S"`
-PNAME=`ls ${HOME}/target|grep '.*\.jar$'`
+PNAME=`ls ${HOME}/target|grep '.*\.war$'`
 PNAME=${PNAME%.*}-${publishTime}
 echo "发布包名为：${PNAME}"
 DistDir=$HOME/target/dist/${PNAME}
 mkdir -p $DistDir
-cp target/*.jar ${DistDir}
+cp target/*.*ar ${DistDir}
 cp -rf ${HOME}/bin ${DistDir}
 cp -rf ${HOME}/config ${DistDir}
 cp -rf ${HOME}/README.md ${DistDir}
 cp -rf ${HOME}/target/libs ${DistDir}
-mkdir ${DistDir}/logs
 cd $HOME/target/dist/
 chmod -R 755   ${PNAME}/
 tar czvf ${PNAME}.tar.gz ${PNAME}

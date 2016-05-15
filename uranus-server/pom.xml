@@ -4,7 +4,6 @@
 
     <groupId>com.ptb.uranus</groupId>
     <artifactId>uranus-server</artifactId>
-    <version>2.1.0</version>
     <packaging>jar</packaging>
 
     <name>uranus-server</name>
