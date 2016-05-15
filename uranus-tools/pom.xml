@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.ptb.uranus</groupId>
             <artifactId>uranus-sdk</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ptb.gaia</groupId>

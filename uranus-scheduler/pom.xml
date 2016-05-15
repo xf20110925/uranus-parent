@@ -25,12 +25,12 @@
         <dependency>
             <groupId>com.ptb.uranus</groupId>
             <artifactId>uranus-schedule-service</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ptb.uranus</groupId>
             <artifactId>uranus-cli</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 
