@@ -5,7 +5,7 @@
     <parent>
         <artifactId>uranus-parent</artifactId>
         <groupId>com.ptb.uranus</groupId>
-        <version>3.0.0-SNATSHOT</version>
+        <version>2.2.0-SNATSHOT</version>
     </parent>
     <groupId>com.ptb.uranus</groupId>
     <artifactId>uranus-cli</artifactId>
