@@ -94,7 +94,7 @@ public class WeiboScheduleService {
                             )
                     )
             );
-            cacheDao.setValue(getCacheBizKeyByTemplate(containerId), "1");
+            cacheDao.setValue(getCacheBizKeyByTemplate(weiboID), "1");
         }
     }
 

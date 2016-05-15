@@ -184,6 +184,7 @@ public class SendObjectConvertUtil {
         basicArticleStatic.setPostTime(article.getPostTime());
         basicArticleStatic.setLinks(textAnalyzeResult.getHyperLink());
         basicArticleStatic.setKeywords(textAnalyzeResult.getAbstracts());
+        basicArticleStatic.setSplitwords(textAnalyzeResult.getSplitword());
         return basicArticleStatic;
     }
 

@@ -96,6 +96,7 @@ public class MongoSchedulerDao implements SchedulerDao {
     @Override
     public List<ScheduleObject> getNeedScheduleObjects(int count) {
         Bson and = Filters.and(Filters.eq("done", false), Filters.lt("nTime", System.currentTimeMillis()));
+
         FindIterable<Document> docs = coll().find(and);
         if (count > 0) {
             docs = docs.limit(count);

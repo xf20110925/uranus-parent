@@ -68,7 +68,7 @@ public class CrawleTask extends TimerTask {
             }
             sendNumsMap.put(collectType, sendNum);
         } catch (Exception e) {
-            logger.warn(e);
+            logger.warn(e.getMessage(),e);
         }
 
         int schedNum = sendNumsMap.get(collectType);
