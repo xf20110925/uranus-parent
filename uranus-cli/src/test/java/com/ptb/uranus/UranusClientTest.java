@@ -33,7 +33,7 @@ public class UranusClientTest {
                 return true;
             }
         });*/
-        uranusClient.sendCrawleCommand(new CollectCondition(CollectType.C_WX_A_S, "http://mp.weixin.qq.com/s?src=3&timestamp=1463042174&ver=1&signature=2KUrn0dASv4XgLkPvMd7ACdu0uXQstnpzO8*MgLWnmQNxbkoxGfc92Soru39tqA7llwN8*2P1CAAZ-BNQiqLrtx0-3t2ZivOaBxmijcub2jz4KpWoPPcx2XfMBSaIl*-PGa2rfhjxnXC3NCvLkTcoT-lye*MKk6muO3*Z-tPz2Y="));
+        uranusClient.sendCrawleCommand(new CollectCondition(CollectType.C_WX_A_D, "http://mp.weixin.qq.com/s?src=3&timestamp=1463042174&ver=1&signature=2KUrn0dASv4XgLkPvMd7ACdu0uXQstnpzO8*MgLWnmQNxbkoxGfc92Soru39tqA7llwN8*2P1CAAZ-BNQiqLrtx0-3t2ZivOaBxmijcub2jz4KpWoPPcx2XfMBSaIl*-PGa2rfhjxnXC3NCvLkTcoT-lye*MKk6muO3*Z-tPz2Y="));
         int i = 0;
         while (i++ < 10 && isOk[0] == false) {
             Thread.sleep(1000);
