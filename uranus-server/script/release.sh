@@ -4,14 +4,14 @@ OUTPUT_DIR=$OUTPUT_DIR/dist
 mkdir $OUTPUT_DIR
 HOME=$(cd "$(dirname "$0")/../"; pwd)
 cd $HOME
-echo $HOME
 publishTime=`date "+%Y%m%d%H%M%S"`
-PNAME=`ls ${HOME}/target|grep '.*\.jar$'`
-PNAME=${PNAME%.*}-${publishTime}
+JARNAME=`ls ${HOME}/target|grep -v 'sources\..*ar'|grep '.*\..*ar$'`
+echo "输出包为"$JARNAME
+PNAME=${JARNAME%.*}-${publishTime}
 echo "发布包名为：${PNAME}"
 DistDir=$HOME/target/dist/${PNAME}
 mkdir -p $DistDir
-cp target/*.jar ${DistDir}
+cp target/${JARNAME} ${DistDir}
 cp -rf ${HOME}/bin ${DistDir}
 cp -rf ${HOME}/config ${DistDir}
 cp -rf ${HOME}/README.md ${DistDir}
