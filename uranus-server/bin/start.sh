@@ -22,7 +22,7 @@ fi
 nohup java -cp $config_dir:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
 --listenTopics=${TOPIC} \
 --spider.worker.num=1 \
---kafka.consumer.num=1 >> logs/${TOPIC}/${TOPIC}_output.log 2>&1 &
+--kafka.consumer.num=1 >> logs/${TOPIC}/run.log 2>&1 &
 
 TOPIC=uranus-server_v2_wx_d
 if [ ! -d logs/${TOPIC} ]; then
@@ -31,7 +31,7 @@ fi
 nohup java -cp $config_dir:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
 --listenTopics=${TOPIC} \
 --spider.worker.num=1 \
---kafka.consumer.num=1 >> logs/${TOPIC}/${TOPIC}_output.log 2>&1 &
+--kafka.consumer.num=1 >> logs/${TOPIC}/run.log 2>&1 &
 
 TOPIC=uranus-server_v2_wb
 if [ ! -d logs/${TOPIC} ]; then
@@ -40,7 +40,7 @@ fi
 nohup java -cp $config_dir:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
 --listenTopics=${TOPIC} \
 --spider.worker.num=1 \
---kafka.consumer.num=1 >> logs/${TOPIC}/${TOPIC}_output.log 2>&1 &
+--kafka.consumer.num=1 >> logs/${TOPIC}/run.log  2>&1 &
 
 TOPIC=uranus-server_v2
 if [ ! -d logs/${TOPIC} ]; then
@@ -49,5 +49,5 @@ fi
 nohup java -cp $config_dir:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
 --listenTopics=${TOPIC} \
 --spider.worker.num=1 \
---kafka.consumer.num=1 >> logs/${TOPIC}/${TOPIC}_output.log 2>&1 &
+--kafka.consumer.num=1 >> logs/${TOPIC}/run.log  2>&1 &
 
