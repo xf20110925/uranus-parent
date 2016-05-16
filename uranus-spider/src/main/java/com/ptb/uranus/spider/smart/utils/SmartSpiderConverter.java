@@ -2,12 +2,11 @@ package com.ptb.uranus.spider.smart.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoIterable;
 import com.ptb.uranus.spider.smart.Context;
 import com.ptb.uranus.spider.smart.SpiderResult;
-import com.ptb.uranus.spider.smart.entity.Article;
-import com.ptb.uranus.spider.smart.entity.DynamicData;
-import com.ptb.uranus.spider.smart.entity.NewScheduleUrls;
-import com.ptb.uranus.spider.smart.entity.SpiderConstant;
+import com.ptb.uranus.spider.smart.entity.*;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 
@@ -20,11 +19,19 @@ import java.util.*;
 public class SmartSpiderConverter {
     static Logger logger = Logger.getLogger(SmartSpiderConverter.class);
     //加载mongodb平台、id对应表数据
-    static JSONObject platforms = null;
+//    static JSONObject platforms = null;
+    static Map<String, Plat> platformMap = new HashMap<>();
+
 
     public static void initPlatform() {
-        Document document = MongoDBUtil.instance.getDefaultDB().getCollection(MongoDBUtil.CollPlatform).find().first();
-        platforms = JSON.parseObject(document.toJson());
+        if (platformMap.size() > 0) {
+            return;
+        }
+        FindIterable<Document> documents = MongoDBUtil.instance.getDefaultDB().getCollection(MongoDBUtil.CollPlatform).find();
+        MongoIterable<Plat> platList = documents.map(doc -> JSON.parseObject(doc.toJson(), Plat.class));
+        for (Plat plat : platList) {
+            platformMap.put(plat.getPlatName(), plat);
+        }
     }
 
     public static String getContextString(Context context, String key) {
@@ -82,7 +89,7 @@ public class SmartSpiderConverter {
             initPlatform();
             //平台名称
             String platformName = getContextString(context, SpiderConstant.PLATFORM);
-            article.setPlat(Integer.parseInt(platforms.getString(platformName)));
+            article.setPlat(Integer.parseInt(platformMap.get(platformName).getPlatCode()));
         } catch (Exception e) {
             logger.warn(String.format("平台值不合法 spider[%s]", article.getUrl()));
         }
@@ -156,7 +163,7 @@ public class SmartSpiderConverter {
             initPlatform();
             //平台名称
             String platformName = getContextString(context, SpiderConstant.PLATFORM);
-            dynamicData.setPlat(Integer.parseInt(platforms.getString(platformName)));
+            dynamicData.setPlat(Integer.parseInt(platformMap.get(platformName).getPlatCode()));
         } catch (Exception e) {
             logger.warn(String.format("平台值不合法 spider[%s]", getContextString(context, SpiderConstant.PLATFORM)));
         }
