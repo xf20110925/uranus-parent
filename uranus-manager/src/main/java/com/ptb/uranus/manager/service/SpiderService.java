@@ -2,6 +2,7 @@ package com.ptb.uranus.manager.service;
 
 import com.ptb.uranus.manager.bean.ActionSet;
 import com.ptb.uranus.manager.bean.News;
+import com.ptb.uranus.manager.bean.Plat;
 import com.ptb.uranus.manager.dao.SpiderDao;
 import com.ptb.uranus.spider.smart.action.Action;
 import com.ptb.uranus.spider.smart.utils.StringUtil;
@@ -90,5 +91,25 @@ public class SpiderService {
 
     public boolean updateNews(News news) {
         return spiderDao.updateNews(news);
+    }
+
+     public List<Plat> getPlatList(){
+        return spiderDao.getPlatList();
+    }
+
+    public  Plat getPlatDetail(String id) {
+        return spiderDao.getPlatDetail(id);
+    }
+
+    public boolean updatePlat(Plat plat) {
+        return spiderDao.updatePlat(plat);
+    }
+
+    public void delPlat(String oid) {
+        spiderDao.delPlat(oid);
+    }
+
+    public boolean addPlat(Plat plat) {
+        return spiderDao.addPlat(plat);
     }
 }

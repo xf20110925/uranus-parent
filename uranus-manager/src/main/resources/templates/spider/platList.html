@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="main :: head (title=主页)">
+</head>
+
+<body>
+<link href="/css/list.css" rel="stylesheet"/>
+
+<header th:include="main :: header">
+
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Library</a></li>
+                <li class="active">规则列表</li>
+                <li class="pull-right addBtnLi"><a class="btn btn-success btn-xs addbtn" href="/spider/platAdd">添加平台</a>
+                </li>
+            </ol>
+        </div>
+
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th style="width: 100px">
+                id
+            </th>
+            <th style="width: 100px">
+                平台名称
+            </th>
+            <th style="width: 100px">
+                平台代码
+            </th>
+            <th style="width: 100px">
+                操作
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="action,actionstat : ${platList}">
+            <td th:text="${actionstat.index+1}"></td>
+            <td th:text="${action.platName}"></td>
+            <td th:text="${action.platCode}"></td>
+            <td><a th:href="@{/spider/platDetail(id=${action.getId()})}" >修改</a>&nbsp;|&nbsp;
+                <a th:href="@{/spider/platDel(oid=${action.getId()})}">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<footer th:include="main :: footer">
+
+</footer>
+<script type="text/javascript">
+	function platDel(){
+
+		var id = $("#id").val();
+		$.ajax({
+			url:'/spider/platDel',
+			data:id,
+			dataType:'json',
+			type:'post',
+			success:function(data){
+				if(data){
+					alert("修改成功！！");
+					window.location.href = "/spider/platList"
+				}
+
+			},
+            error: function (data) {
+               alert("失败！" + data);
+            }
+		});
+	}
+
+</script>
+</body>
+</html>
