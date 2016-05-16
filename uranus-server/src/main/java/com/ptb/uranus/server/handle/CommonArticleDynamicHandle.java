@@ -37,7 +37,7 @@ public class CommonArticleDynamicHandle implements CollectHandler {
             Optional<SpiderResult> spiderResultOptional = smartSpider.crawl(url, "articleDynamicData");
             if (spiderResultOptional.isPresent()) {
                 DynamicData dynamicData = SmartSpiderConverter.convertToDynamicData(spiderResultOptional.get());
-                sender.sendArticleDynamic(SendObjectConvertUtil.commonArticleDyanmicConvert(dynamicData));
+                sender.sendArticleDynamic(SendObjectConvertUtil.commonArticleDyanmicConvert(dynamicData, url));
                 ParseSuccessLogger.info(JSON.toJSONString(dynamicData));
             }else{
                 ParseErrorLogger.error(message.getRaw());

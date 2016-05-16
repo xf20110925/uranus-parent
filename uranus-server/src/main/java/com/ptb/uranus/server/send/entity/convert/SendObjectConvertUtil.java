@@ -116,7 +116,7 @@ public class SendObjectConvertUtil {
         return wbArticleDynamic;
     }
 
-    public static BasicArticleDynamic commonArticleDyanmicConvert(DynamicData dynamicData) {
+    public static BasicArticleDynamic commonArticleDyanmicConvert(DynamicData dynamicData, String url) {
         BasicArticleDynamic basicArticleDynamic = new BasicArticleDynamic();
         basicArticleDynamic.setForwards(dynamicData.getShareNum());
         basicArticleDynamic.setComments(dynamicData.getCommentNum());
@@ -125,6 +125,7 @@ public class SendObjectConvertUtil {
         basicArticleDynamic.setNolikes(dynamicData.getBoringNum());
         basicArticleDynamic.setReads(dynamicData.getReadNum());
         basicArticleDynamic.setPlat(dynamicData.getPlat());
+        basicArticleDynamic.setUrl(url);
         return basicArticleDynamic;
     }
 
