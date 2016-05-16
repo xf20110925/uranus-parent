@@ -6,14 +6,16 @@ package com.ptb.uranus.schedule.trigger;
 public class JustOneTrigger extends Trigger {
     long s;
 
+    Boolean isFirstSchedule = false;
     public JustOneTrigger() {
         this.c = this.getC();
         this.s = System.currentTimeMillis();
     }
 
     public JustOneTrigger(Long startTime) {
-        long curTime = System.currentTimeMillis() + 2000;
+        long curTime = System.currentTimeMillis() + 10000;
         this.s = startTime > System.currentTimeMillis() ? startTime : curTime;
+        this.isFirstSchedule = true;
     }
 
     public Long getS() {
@@ -26,6 +28,9 @@ public class JustOneTrigger extends Trigger {
 
     @Override
     public long nextTriggeTime() {
+        if(isFirstSchedule) {
+            return System.currentTimeMillis();
+        }
         return System.currentTimeMillis() - 100  > s ? Long.MAX_VALUE : s;
     }
 
