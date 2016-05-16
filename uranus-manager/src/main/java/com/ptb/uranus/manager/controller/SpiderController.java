@@ -3,6 +3,7 @@ package com.ptb.uranus.manager.controller;
 import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.manager.bean.ActionSet;
 import com.ptb.uranus.manager.bean.News;
+import com.ptb.uranus.manager.bean.Plat;
 import com.ptb.uranus.manager.result.JSONResult;
 import com.ptb.uranus.manager.service.SpiderService;
 import com.ptb.uranus.manager.utils.JsonFormatter;
@@ -23,6 +24,8 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
+import static org.bouncycastle.asn1.x509.X509ObjectIdentifiers.id;
 
 /**
  * Created by eric on 16/3/28.
@@ -265,5 +268,57 @@ public class SpiderController {
         }
         return null;
     }
+ @RequestMapping(value = "/spider/platList")
+    public String platList(Model model) {
+        List<Plat> platList = spiderService.getPlatList();
+        model.addAttribute("platList", platList);
+        return "spider/platList";
+    }
 
+   @RequestMapping(value = "/spider/platDetail", method = RequestMethod.GET)
+    public String platDetail(@RequestParam(defaultValue = "") String id, Model model) {
+       Plat platDetail = spiderService.getPlatDetail(id);
+       model.addAttribute("platDetail", platDetail);
+        return "spider/platDetail";
+    }
+
+    @RequestMapping(value = "/spider/platUpdate", method = RequestMethod.POST)
+    @ResponseBody
+    public Object platUpdate(HttpServletRequest request, Model model) {
+        String id = request.getParameter("id");
+        String platName = request.getParameter("platName");
+        String platCode = request.getParameter("platCode");
+        Plat plat = new Plat();
+        plat.setId(id);
+        plat.setPlatCode(platCode);
+        plat.setPlatName(platName);
+        boolean isSuccess = spiderService.updatePlat(plat);
+        if (isSuccess) {
+            return new JSONResult<>(isSuccess);
+        } else {
+            return JSONResult.newErrorResult(-1, "更新失败!");
+        }
+    }
+
+    @RequestMapping(value = "/spider/platDel", method = RequestMethod.GET)
+    public Object platDel(@RequestParam(defaultValue = "") String oid) {
+        if (oid.length() > 0) {
+            spiderService.delPlat(oid);
+        }
+        return "redirect:/spider/platList";
+    }
+    @RequestMapping(value = "/spider/platAdd", method = RequestMethod.GET)
+    public String platAdd(Model model) {
+        return "spider/platAdd";
+    }
+    @RequestMapping(value = "/spider/platSave", method = RequestMethod.POST)
+    @ResponseBody
+    public Object platSave(Plat plat, Model model) {
+        boolean isSuccess = spiderService.addPlat(plat);
+        if (isSuccess) {
+            return new JSONResult<>(isSuccess);
+        } else {
+            return JSONResult.newErrorResult(-1, "添加失败!");
+        }
+    }
 }

@@ -10,6 +10,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.ptb.uranus.manager.bean.ActionSet;
 import com.ptb.uranus.manager.bean.News;
+import com.ptb.uranus.manager.bean.Plat;
 import com.ptb.uranus.spider.smart.utils.MongoDBUtil;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -25,10 +26,12 @@ public class SpiderDao {
 
     MongoCollection<Document> collection;
     MongoCollection<Document> newsCollection;
+    MongoCollection<Document> platCollection;
 
     public SpiderDao() {
         collection = MongoDBUtil.instance.getCollection(MongoDBUtil.uranusDB, MongoDBUtil.CollActionSet);
         newsCollection = MongoDBUtil.instance.getCollection(MongoDBUtil.uranusDB, "articlesEntry");
+        platCollection = MongoDBUtil.instance.getCollection(MongoDBUtil.uranusDB, MongoDBUtil.CollPlatform);
     }
 
     public List<ActionSet> getSpiderList() {
@@ -171,5 +174,47 @@ public class SpiderDao {
         }
     }
 
+    public List<Plat> getPlatList() {
+        FindIterable<Document> documents = platCollection.find();
+        MongoIterable<Plat> map = documents.map(document -> {
+            String s = document.toJson();
+            Plat plat = JSON.parseObject(s, Plat.class);
+            plat.setId(document.getObjectId("_id").toHexString());
+            return plat;
+        });
+        List<Plat> resultList = new ArrayList<>();
+        map.into(resultList);
+        return resultList;
+    }
 
+    public Plat getPlatDetail(String id) {
+        Document doc = platCollection.find(Filters.eq("_id", new ObjectId(id))).first();
+        Plat plat = JSON.parseObject(doc.toJson(), Plat.class);
+        plat.setId(doc.getObjectId("_id").toHexString());
+        return plat;
+    }
+
+    public boolean updatePlat(Plat plat) {
+        Document parse = new Document().append("$set", Document.parse(JSON.toJSONString(plat)));
+        UpdateOptions updateOptions = new UpdateOptions();
+        updateOptions.upsert(true);
+        UpdateResult result = platCollection.updateOne(Filters.eq("_id", new ObjectId(plat.getId())), parse);
+        return result.getModifiedCount() > 0 ? true : false;
+    }
+
+    public void delPlat(String _id) {
+        platCollection.deleteOne(Filters.eq("_id", new ObjectId(_id)));
+    }
+
+    public boolean addPlat(Plat plat) {
+        final String s = JSON.toJSONString(plat);
+        Document result = platCollection.find(Filters.eq("platName", plat.getPlatName())).first();
+        if (result == null || result.equals("")) {
+            Document document = Document.parse(s);
+            platCollection.insertOne(document);
+            return true;
+        }
+        return false;
+
+    }
 }
