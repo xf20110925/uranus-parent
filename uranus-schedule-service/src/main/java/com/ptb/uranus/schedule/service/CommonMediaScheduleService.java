@@ -64,7 +64,7 @@ public class CommonMediaScheduleService {
 
             //将任务加入数据库中
             List<ScheduleObject> collect = articleEntrys.parallelStream().map(articlesEntry -> {
-                return new ScheduleObject<>(new PeriodicTrigger(articlesEntry.getPeriod(), TimeUnit.SECONDS),
+                return new ScheduleObject<>(new PeriodicTrigger(articlesEntry.getPeriod(), TimeUnit.MINUTES),
                         Priority.L3, new SchedulableCollectCondition(CollectType.C_A_A_N, articlesEntry.getNewsurl()));
             }).collect(Collectors.toList());
             schedulerDao.addCollSchedulers(collect);
