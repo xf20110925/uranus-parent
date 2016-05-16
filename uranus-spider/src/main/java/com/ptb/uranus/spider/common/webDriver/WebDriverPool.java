@@ -12,6 +12,12 @@ public class WebDriverPool extends SoftReferenceObjectPool<PhantomJSDriver> {
     }
 
     @Override
+    public synchronized void returnObject(PhantomJSDriver obj) throws Exception {
+        obj.close();
+        super.returnObject(obj);
+    }
+
+    @Override
     protected void finalize() throws Throwable {
         super.finalize();
         this.close();

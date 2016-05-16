@@ -50,6 +50,7 @@ public class WebDriverFactory extends BasePooledObjectFactory<PhantomJSDriver> {
         }
     }
 
+
     @Override
     public void passivateObject(PooledObject<PhantomJSDriver> p) throws Exception {
         super.passivateObject(p);
