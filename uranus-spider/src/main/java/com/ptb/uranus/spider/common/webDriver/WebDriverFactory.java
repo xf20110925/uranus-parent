@@ -43,7 +43,7 @@ public class WebDriverFactory extends BasePooledObjectFactory<PhantomJSDriver> {
     @Override
     public boolean validateObject(PooledObject<PhantomJSDriver> p) {
         long createTime = p.getCreateTime();
-        if (System.currentTimeMillis() - createTime > 300000) {
+        if (System.currentTimeMillis() - createTime > 60000) {
             return false;
         } else {
             return super.validateObject(p);
