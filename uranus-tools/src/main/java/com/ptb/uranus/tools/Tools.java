@@ -81,7 +81,7 @@ public class Tools {
         	System.out.println(listurl);
         	}else{
                 String name= UranusSdk.i().collect(sdk_url,  CollectType.valueOf(sdk_type), time, Priority.valueOf(sdk_priority));
-     	       System.out.println(name);
+     	        System.out.println(name);
         	}
         }else {
             formatter.printHelp("usage:", options);

@@ -15,9 +15,11 @@ public class PeriodicTrigger extends Trigger {
     TimeUnit u;
     long st;
     long et;
+    boolean isFirstSchedule;
 
 
     public PeriodicTrigger() {
+        isFirstSchedule=false;
     }
 
     public long getEt() {
@@ -67,6 +69,7 @@ public class PeriodicTrigger extends Trigger {
         this.st = start.getTime();
         this.et = stopDate.getTime();
         this.st = this.st > curTime ? this.st : curTime;
+        this.isFirstSchedule = true;
     }
 
     public PeriodicTrigger(long v, TimeUnit timeUnit, Date start, int MonitorDays) {
@@ -76,6 +79,7 @@ public class PeriodicTrigger extends Trigger {
         this.st = start.getTime();
         this.et = calDate(MonitorDays).getTime();
         this.st = this.st > curTime ? this.st : curTime;
+        this.isFirstSchedule = true;
     }
 
     /*
@@ -90,6 +94,7 @@ public class PeriodicTrigger extends Trigger {
         this.u = timeUnit;
         this.st = System.currentTimeMillis();
         this.et = calDate(3).getTime();
+        this.isFirstSchedule = true;
     }
 
     @Override
