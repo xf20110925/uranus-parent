@@ -6,10 +6,11 @@ package com.ptb.uranus.schedule.trigger;
 public class JustOneTrigger extends Trigger {
     long s;
 
-    Boolean isFirstSchedule = false;
+    Boolean isFirstSchedule;
     public JustOneTrigger() {
         this.c = this.getC();
         this.s = System.currentTimeMillis();
+        this.isFirstSchedule = false;
     }
 
     public JustOneTrigger(Long startTime) {
