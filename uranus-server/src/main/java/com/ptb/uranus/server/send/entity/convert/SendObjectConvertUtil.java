@@ -27,7 +27,6 @@ import java.util.Optional;
  * Created by watson zhang on 16/4/26.
  */
 public class SendObjectConvertUtil {
-
     private static TextAnalyzer textAnalyzer;
 
     static {
@@ -143,7 +142,7 @@ public class SendObjectConvertUtil {
         }
         weiboArticleStatic.setArticleType((weiboArticle.getObjectType() == null)?"":weiboArticle.getObjectType());
         weiboArticleStatic.setKeywords(textAnalyzeResult.getAbstracts());
-        weiboArticleStatic.setTitle(weiboArticle.getBrief());
+        weiboArticleStatic.setTitle("");
         weiboArticleStatic.setAuthor(weiboArticle.getMediaName());
         weiboArticleStatic.setClassify(weiboArticle.getObjectType());
         weiboArticleStatic.setContent(weiboArticle.getContent());
