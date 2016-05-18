@@ -20,6 +20,8 @@ import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
 import com.ptb.uranus.spider.weixin.bean.WxAccount;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
 import org.apache.commons.configuration.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -27,6 +29,7 @@ import java.util.Optional;
  * Created by watson zhang on 16/4/26.
  */
 public class SendObjectConvertUtil {
+    private static Logger logger = LoggerFactory.getLogger(SendObjectConvertUtil.class);
     private static TextAnalyzer textAnalyzer;
 
     static {
@@ -60,8 +63,11 @@ public class SendObjectConvertUtil {
 
     public static WeixinArticleStatic weixinArticleStaticConvert(WxArticle wxArticle) {
         TextAnalyzeResult textAnalyzeResult;
+        logger.error("weixin article static!1");
         textAnalyzeResult = textAnalyzer.ArticleAnalyze(wxArticle.getContent());
+        logger.error("weixin article static!2");
         WeixinArticleStatic weixinArticleStatic = new WeixinArticleStatic();
+        logger.error("weixin article static!3");
         weixinArticleStatic.setUrl(wxArticle.getArticleUrl());
         weixinArticleStatic.setSurface(wxArticle.getCoverImgUrl());
         weixinArticleStatic.setAuthor(wxArticle.getAuthor());

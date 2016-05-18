@@ -9,7 +9,8 @@ import com.ptb.uranus.spider.weibo.parse.WeiboSearchAccountParser;
 import com.ptb.utils.string.RegexUtils;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class WeiboSpider {
     /**
      * The Logger.
      */
-    static Logger logger = Logger.getLogger(WeiboSpider.class);
+    static Logger logger = LoggerFactory.getLogger(WeiboSpider.class);
     /**
      * The Weibo account parser.
      */
@@ -52,7 +53,7 @@ public class WeiboSpider {
                 }
             }
         } catch (Exception e) {
-            logger.info(String.format("get weibo article by url [%s]", url), e);
+            logger.info("get weibo article by url [{}]", url, e);
         }
         return Optional.empty();
     }
@@ -68,7 +69,7 @@ public class WeiboSpider {
     	try {
 			return weiboSa.getWeiboSerachAccountByName(accouontName);
 		} catch (Exception e) {
-			 logger.error(String.format("get weibo serach accountByName", accouontName), e);
+			 logger.error("get weibo serach accountByName = [{}]", accouontName, e);
 		}
     	return Optional.empty();
     	
@@ -86,7 +87,7 @@ public class WeiboSpider {
             String weiboHomeUrl = String.format("http://m.weibo.cn/u/%s/", weiboID);
             return Optional.of(weiboAccountParser.getWeiboAccount(weiboHomeUrl));
         } catch (Exception e) {
-            logger.error(String.format("get weibo article by url [%s]", weiboID), e);
+            logger.error("get weibo article by url [{}]", weiboID, e);
         }
         return Optional.empty();
     }
@@ -109,7 +110,7 @@ public class WeiboSpider {
                 }
             }
         } catch (Exception e) {
-            logger.error(String.format("get weibo article by url [%s]", homeUrl), e);
+            logger.error("get weibo article by url []", homeUrl, e);
         }
         return Optional.empty();
     }
@@ -128,7 +129,7 @@ public class WeiboSpider {
             WeiboAccount weiboAccount = weiboAccountParser.getWeiboAccount(String.format(String.format("http://m.weibo.cn/u/%s", mediaID)));
             return this.getRecentArticlesByContainerID(weiboAccount.getContainerID(), lastestTime);
         } catch (Exception e) {
-            logger.error(String.format("get weibo recent article by mediaid [%s]", mediaID), e);
+            logger.error("get weibo recent article by mediaid [{}]", mediaID, e);
         }
         return Optional.empty();
 
@@ -148,7 +149,7 @@ public class WeiboSpider {
                 return Optional.of(articleList);
             }
         } catch (Exception e) {
-            logger.error(String.format("get weibo recent article by containerID [%s]", containerID), e);
+            logger.error("get weibo recent article by containerID [{}]", containerID, e);
         }
         return Optional.empty();
 

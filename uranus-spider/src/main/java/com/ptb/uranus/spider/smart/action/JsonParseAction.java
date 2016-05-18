@@ -6,8 +6,9 @@ import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.smart.Context;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import com.ptb.utils.string.RegexUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.json.JSONException;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  * Created by xuefeng on 2016/3/23.
  */
 public class JsonParseAction extends Action {
-    static Logger logger = Logger.getLogger(JsonParseAction.class);
+    static Logger logger = LoggerFactory.getLogger(JsonParseAction.class);
 
     String isJsonP;
     String formula;

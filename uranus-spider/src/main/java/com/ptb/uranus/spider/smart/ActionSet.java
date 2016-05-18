@@ -1,7 +1,8 @@
 package com.ptb.uranus.spider.smart;
 
 import com.ptb.uranus.spider.smart.action.Action;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public class ActionSet {
 
-    static Logger logger = Logger.getLogger(ActionSet.class);
+    static Logger logger = LoggerFactory.getLogger(ActionSet.class);
     List<Action> actions;
     String urlRegex;
     String crawleType;

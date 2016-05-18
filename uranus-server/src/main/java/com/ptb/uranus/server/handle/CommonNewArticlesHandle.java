@@ -11,7 +11,8 @@ import com.ptb.uranus.spider.smart.SpiderResult;
 import com.ptb.uranus.spider.smart.entity.NewScheduleUrls;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -19,8 +20,8 @@ import java.util.Optional;
  * Created by eric on 16/4/25.
  */
 public class CommonNewArticlesHandle implements CollectHandler {
-    private static Logger ParseErrorLogger = Logger.getLogger("smartspider.error");
-    private static Logger ParseSuccessLogger = Logger.getLogger("smartspider.success");
+    private static Logger ParseErrorLogger = LoggerFactory.getLogger("smartspider.error");
+    private static Logger ParseSuccessLogger = LoggerFactory.getLogger("smartspider.success");
     private final Sender sender;
 
 
@@ -41,13 +42,15 @@ public class CommonNewArticlesHandle implements CollectHandler {
                 SpiderResult spiderResult = spiderResultOptional.get();
                 NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(System.currentTimeMillis(), spiderResult);
                 schedulerNewsArticlesService.addArticleStaticSchedulers(newScheduleUrls.getUrls());
-                ParseSuccessLogger.info(JSON.toJSONString(newScheduleUrls));
+                if(ParseSuccessLogger.isInfoEnabled()){
+                    ParseSuccessLogger.info(JSON.toJSONString(newScheduleUrls));
+                }
             }else{
-                ParseErrorLogger.error(message.getRaw());
+                ParseErrorLogger.error(String.valueOf(message.getRaw()));
             }
 
         } catch (Exception e) {
-            ParseErrorLogger.error(message.getRaw(), e);
+            ParseErrorLogger.error(String.valueOf(message.getRaw()), e);
             return;
         }
 

@@ -3,8 +3,9 @@ package com.ptb.uranus.spider.wechat;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
  * Created by eric on 16/1/22.
  */
 public class ReadLikeNumTest {
-    static Logger logger = Logger.getLogger(MediaStaticTest.class);
+    static Logger logger = LoggerFactory.getLogger(MediaStaticTest.class);
     WeixinSpider weixinSpider = new WeixinSpider();
 
 

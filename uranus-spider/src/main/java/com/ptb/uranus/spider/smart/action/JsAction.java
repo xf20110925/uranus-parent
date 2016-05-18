@@ -2,20 +2,20 @@ package com.ptb.uranus.spider.smart.action;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ptb.uranus.spider.smart.Context;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.json.JSONException;
+import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
-import java.util.Arrays;
 
 /**
  * Created by xuefeng on 2016/3/23.
  */
 public class JsAction extends Action {
-    static Logger logger = Logger.getLogger(JsAction.class);
+    static Logger logger = LoggerFactory.getLogger(JsAction.class);
     ScriptEngineManager manager = new ScriptEngineManager();
     ScriptEngine engine = manager.getEngineByName("js");
 

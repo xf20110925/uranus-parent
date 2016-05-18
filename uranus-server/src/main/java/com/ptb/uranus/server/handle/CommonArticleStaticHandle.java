@@ -12,7 +12,8 @@ import com.ptb.uranus.spider.smart.SpiderResult;
 import com.ptb.uranus.spider.smart.entity.Article;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -20,8 +21,8 @@ import java.util.Optional;
  * Created by eric on 16/4/23.
  */
 public class CommonArticleStaticHandle implements CollectHandler {
-    private static Logger ParseErrorLogger = Logger.getLogger("smartspider.error");
-    private static Logger ParseSuccessLogger = Logger.getLogger("smartspider.success");
+    private static Logger ParseErrorLogger = LoggerFactory.getLogger("smartspider.error");
+    private static Logger ParseSuccessLogger = LoggerFactory.getLogger("smartspider.success");
     private final Sender sender;
 
     SmartSpider smartSpider;
@@ -42,9 +43,11 @@ public class CommonArticleStaticHandle implements CollectHandler {
                 if (article.isValidArticle() == true) {
                     commonMediaScheduleService.addArticleDynamicScheduler(article.getUrl(), article.getPostTime());
                     sender.sendArticleStatic(SendObjectConvertUtil.commonMediaArticleStaticConvert(article));
-                    ParseSuccessLogger.info(JSON.toJSONString(article));
+                    if(ParseSuccessLogger.isInfoEnabled()){
+                        ParseSuccessLogger.info(JSON.toJSONString(article));
+                    }
                 } else {
-                    ParseErrorLogger.error(message.getRaw());
+                    ParseErrorLogger.error(String.valueOf(message.getRaw()));
                 }
             }
         } catch (Exception e) {

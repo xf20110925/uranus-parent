@@ -7,9 +7,10 @@ import com.ptb.uranus.spider.common.webDriver.WebDriverPool;
 import com.ptb.uranus.spider.common.webDriver.WebDriverPoolUtils;
 import com.ptb.uranus.spider.smart.Context;
 import org.apache.http.client.fluent.Response;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.json.JSONException;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 import java.util.Optional;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Created by xuefeng on 2016/3/23.
  */
 public class DownloadAction extends Action {
-    static Logger logger = Logger.getLogger(DownloadAction.class);
+    static Logger logger = LoggerFactory.getLogger(DownloadAction.class);
 
     String charset;
     String teminal;
@@ -101,7 +102,7 @@ public class DownloadAction extends Action {
             context.set(Context.PAGESOURCE, html);
             return true;
         } catch (Exception e) {
-            logger.error(String.format("download article by url [%s] error", crawlerUrl), e);
+            logger.error("download article by url [{}] error", crawlerUrl, e);
         }
         return false;
     }

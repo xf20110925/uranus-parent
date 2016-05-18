@@ -7,7 +7,8 @@ import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.WeixinUtil;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
  * Created by xuefeng on 2016/5/5.
  */
 public class WeixinLinkMap implements PageProcessor {
-    static Logger logger = Logger.getLogger(WeixinLinkMap.class);
+    static Logger logger = LoggerFactory.getLogger(WeixinLinkMap.class);
 
     public static final String USER_HOME_PAGE = "http://mp\\.weixin\\.qq\\.com/profile\\?.*";
     public static final String ARTICLE_PAGE = "http[s]?://mp\\.weixin\\.qq\\.com/s\\?src.*";
@@ -67,7 +68,7 @@ public class WeixinLinkMap implements PageProcessor {
                     try {
                         realUrl = spider.convertSogouWeixinUrlToRealUrl(url);
                     } catch (Exception e) {
-                        logger.warn(String.format("convert url[%s] to sogou url error", realUrl), e);
+                        logger.warn("convert url[{}] to sogou url error", realUrl, e);
                     }
                     if (StringUtils.isNotBlank(realUrl)) {
                         try {
@@ -76,14 +77,14 @@ public class WeixinLinkMap implements PageProcessor {
                             userHomePageCounter.addAndGet(1);
 //                            System.out.println(userHomePageCounter.get() + ":::::" + realUrl + ":::::" + url);
                         } catch (Exception e) {
-                            logger.error(String.format("add mapLink[%s] error", realUrl), e);
+                            logger.error("add mapLink[{}] error", realUrl, e);
 
                         }
                     }
                 });
 
             } catch (Exception e) {
-                logger.error(String.format("handle the userPageUrl[%s] error", page.getUrl().get()), e);
+                logger.error(String.format("handle the userPageUrl[{}] error", page.getUrl().get()), e);
             }
             //获取用户主页下的文章链接
         } else if (page.getUrl().regex(ARTICLE_PAGE).match()) {
@@ -95,7 +96,7 @@ public class WeixinLinkMap implements PageProcessor {
                 articlePageCounter.addAndGet(1);
 //                System.out.println(articlePageCounter.get() + "--->" + realUrl + "--->" + url);
             } catch (Exception e) {
-                logger.error(String.format("handle the articlePageUrl[%s] error", page.getUrl().get()), e);
+                logger.error(String.format("handle the articlePageUrl[{}] error", page.getUrl().get()), e);
             }
             page.addTargetRequests(page.getHtml().links().regex(ARTICLE_PAGE).all());
         } else if (page.getUrl().regex(INDEX_PAGE).match()) {
@@ -152,7 +153,7 @@ public class WeixinLinkMap implements PageProcessor {
             }
             if (endTime - startTime > RUNTIME) {
                 spider.stop();
-                logger.info(String.format("crawler numbers of weixin url is %d + %d", userHomePageCounter.get(), articlePageCounter.get()));
+                logger.info("crawler numbers of weixin url is {} + {}", userHomePageCounter.get(), articlePageCounter.get());
                 return;
             }
         }

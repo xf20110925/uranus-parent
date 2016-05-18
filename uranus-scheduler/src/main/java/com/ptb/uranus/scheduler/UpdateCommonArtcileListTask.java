@@ -2,7 +2,8 @@ package com.ptb.uranus.scheduler;
 
 import com.ptb.uranus.schedule.service.CommonMediaScheduleService;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.TimerTask;
 
@@ -10,7 +11,7 @@ import java.util.TimerTask;
  * Created by eric on 16/5/9.
  */
 public class UpdateCommonArtcileListTask extends TimerTask {
-    static Logger logger = Logger.getLogger(UpdateCommonArtcileListTask.class);
+    static Logger logger = LoggerFactory.getLogger(UpdateCommonArtcileListTask.class);
     CommonMediaScheduleService commonMediaScheduleService;
 
 

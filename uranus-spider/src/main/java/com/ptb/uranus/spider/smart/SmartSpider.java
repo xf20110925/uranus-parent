@@ -2,11 +2,10 @@ package com.ptb.uranus.spider.smart;
 
 import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.spider.common.webDriver.WebDriverPoolUtils;
-import com.ptb.uranus.spider.smart.action.DownloadAction;
 import com.ptb.uranus.spider.smart.entity.DynamicData;
-import com.ptb.uranus.spider.smart.entity.NewScheduleUrls;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -14,7 +13,7 @@ import java.util.*;
  * Created by eric on 16/3/23.
  */
 public class SmartSpider {
-    private static Logger logger = Logger.getLogger(SmartSpider.class);
+    private static Logger logger = LoggerFactory.getLogger(SmartSpider.class);
     List<ActionSet> actionSetList = new ArrayList<ActionSet>();
 
     Map<String, List<ActionSet>> listMap = new HashMap<>();
@@ -33,14 +32,14 @@ public class SmartSpider {
                 list.add(actionSet);
             });
         } catch (Exception e) {
-            logger.error("init actions from mongodb error:" + e.getMessage(), e);
+            logger.error("init actions from mongodb error: {}", e.getMessage(), e);
         }
     }
 
     public Optional<SpiderResult> crawl(String url, String claweType) {
         List<ActionSet> actionSetList = listMap.get(claweType);
         if (actionSetList == null) {
-            logger.warn(String.format("没有匹配爬去类型 [%s]", claweType));
+            logger.warn("没有匹配爬取类型 [{}]", claweType);
             return Optional.empty();
         }
 
@@ -54,8 +53,7 @@ public class SmartSpider {
                     actionSet.execute(context, url, claweType);
                 }
             } catch (Exception e) {
-                logger.error(String.format("url [%s] claweType[%s] actionType [%s]", url, claweType, actionSet),
-                        e);
+                logger.error("url [{}] claweType[%s] actionType [{}]", url, claweType, actionSet, e);
             }
         }
 

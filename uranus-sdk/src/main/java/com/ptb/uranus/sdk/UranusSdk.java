@@ -15,7 +15,8 @@ import com.ptb.uranus.sdk.exception.ConfigureFileException;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.utils.web.UrlFormatUtil;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
  * Created by eric on 16/4/21.
  */
 public class UranusSdk implements Collector {
-    static Logger logger = Logger.getLogger(UranusSdk.class);
+    static Logger logger = LoggerFactory.getLogger(UranusSdk.class);
     static private UranusSdk instance;
     CacheDao cacheDao;
     WeixinSpider weixinSpider = new WeixinSpider();
@@ -92,7 +93,7 @@ public class UranusSdk implements Collector {
                 return finalCondition;
             }
         } catch (Exception e) {
-            logger.error(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcCond, collectType, trigger, priority), e);
+            logger.error("cond [{}] type [{}] trgger[{}] priority[{}]", srcCond, collectType, trigger, priority, e);
         }
 
         return null;
@@ -111,7 +112,7 @@ public class UranusSdk implements Collector {
                 return finalConditions;
             }
         } catch (Exception e) {
-            logger.error(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcConds, collectType, trigger, priority), e);
+            logger.error("cond [{}] type [{}] trgger[{}] trigger[{}]", srcConds, collectType, trigger, priority, e);
         }
 
         return null;

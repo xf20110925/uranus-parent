@@ -9,7 +9,9 @@ import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import org.ansj.util.MyStaticValue;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +25,7 @@ import javax.annotation.PreDestroy;
 
 @Component
 public class BusService {
-    static Logger logger = Logger.getLogger(BusService.class);
+    static Logger logger = LoggerFactory.getLogger(BusService.class);
 
     @Autowired
     Bus bus;
@@ -36,6 +38,7 @@ public class BusService {
 
     @PostConstruct
     public void begin() throws ConfigurationException {
+        logger.debug("begin ...");
         Sender sender = new BusSender(bus);
         bus.addRecvMessageListener(new CollectCommandListenter(sender));
         String[] topics = busConfig.getListenTopic().split(",");

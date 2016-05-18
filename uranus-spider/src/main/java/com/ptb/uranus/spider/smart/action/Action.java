@@ -3,8 +3,9 @@ package com.ptb.uranus.spider.smart.action;
 import com.alibaba.fastjson.JSONObject;
 import com.ptb.uranus.spider.smart.Context;
 import com.ptb.uranus.spider.smart.utils.StringUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.json.JSONException;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import javax.script.ScriptException;
@@ -15,7 +16,7 @@ import java.lang.reflect.Method;
  * Created by xuefeng on 2016/3/22.
  */
 public abstract class Action implements Comparable<Action> {
-    static Logger logger = Logger.getLogger(Action.class);
+    static Logger logger = LoggerFactory.getLogger(Action.class);
     String order;
 
     private String className;
@@ -44,7 +45,7 @@ public abstract class Action implements Comparable<Action> {
                 }
             } catch (Exception e) {
 
-                logger.error(String.format("%s : %s", k, v), e);
+                logger.error("[{}] : [{}]", k, v, e);
             }
 
         });

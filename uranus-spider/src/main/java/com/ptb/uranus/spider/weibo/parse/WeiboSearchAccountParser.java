@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -16,6 +16,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.common.utils.WeiboUtil;
 import com.ptb.uranus.spider.weibo.bean.WeiboSearchAccount;
+import org.slf4j.LoggerFactory;
 
 /**
  * 微博搜索
@@ -24,7 +25,7 @@ import com.ptb.uranus.spider.weibo.bean.WeiboSearchAccount;
  */
 public class WeiboSearchAccountParser {
 	
-	static Logger logger = Logger.getLogger(WeiboSearchAccountParser.class);
+	static Logger logger = LoggerFactory.getLogger(WeiboSearchAccountParser.class);
 	
 	/**
 	 * 微博搜索抓取
@@ -72,7 +73,7 @@ public class WeiboSearchAccountParser {
 			}).collect(Collectors.toList());
 			return Optional.of(result);
 		} catch (Exception e) {
-			logger.error("Class WeiboSearchAccountParser error is serachName="+name, e);
+			logger.error("Class WeiboSearchAccountParser error is serachName= {}" ,name, e);
 		}
 		return Optional.empty();
 	}

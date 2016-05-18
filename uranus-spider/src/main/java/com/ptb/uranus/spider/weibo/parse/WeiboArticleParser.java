@@ -11,12 +11,13 @@ import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
 import com.ptb.utils.exception.PTBException;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
  * 解析weibo文章主要工作类
  */
 public class WeiboArticleParser {
-    static Logger logger = Logger.getLogger(WeiboArticleParser.class);
+    static Logger logger = LoggerFactory.getLogger(WeiboArticleParser.class);
 
     public WeiboArticle parseFromMobilePage(String articleUrl) throws IOException {
         WeiboArticle weiboArticle = new WeiboArticle();
@@ -156,7 +157,7 @@ public class WeiboArticleParser {
             return weiboArticle;
 
         } catch (Exception e) {
-            logger.error(String.format("get page [%s] by webdriver error", aritcleUrl), e);
+            logger.error("get page [{}] by webdriver error", aritcleUrl, e);
             return null;
         }
     }

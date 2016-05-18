@@ -8,7 +8,8 @@ import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Created by eric on 16/4/25.
  */
 public class WeixinNewArticlesHandle implements CollectHandler {
-    private static Logger ParseErroeLogger = Logger.getLogger("msg.fail");
+    private static Logger ParseErroeLogger = LoggerFactory.getLogger("msg.fail");
 
     WeixinSpider weixinSpider = new WeixinSpider();
     WeixinScheduleService wxSchedule;
@@ -36,10 +37,10 @@ public class WeixinNewArticlesHandle implements CollectHandler {
                 wxSchedule.addArticleStaticSchedulers(recentArticles.get().getRight());
                 wxSchedule.updateWeixinMediaCondition(message.getBody(), biz, recentArticles.get().getLeft());
             }else {
-                ParseErroeLogger.error(message.getRaw());
+                ParseErroeLogger.error(String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
-            ParseErroeLogger.error(message.getRaw(), e);
+            ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
         }
     }
 }

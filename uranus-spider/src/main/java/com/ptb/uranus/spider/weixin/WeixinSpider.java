@@ -17,10 +17,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +37,7 @@ public class WeixinSpider {
     /**
      * The Logger.
      */
-    static Logger logger = Logger.getLogger(WeixinSpider.class);
+    static Logger logger = LoggerFactory.getLogger(WeixinSpider.class);
 
     /**
      * The Wx push message parser.
@@ -67,7 +68,7 @@ public class WeixinSpider {
         try {
             return gbDataWeixinParser.getWeixinAccountByIdOrName(condition, maxPageSouces);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(String.valueOf(e));
         }
         return Optional.empty();
     }
@@ -90,7 +91,7 @@ public class WeixinSpider {
                 }
             }
         } catch (Exception e) {
-            logger.error("erro is Class getWeixinArticleByName" + wechatid);
+            logger.error("erro is Class getWeixinArticleByName {}", wechatid);
         }
         return null;
     }
@@ -117,7 +118,7 @@ public class WeixinSpider {
             }
             return Optional.of(resultList);
         } catch (Exception e) {
-            logger.error("error is Class getWinxinMatchingByName " + codition);
+            logger.error("error is Class getWinxinMatchingByName {}", codition);
         }
         return Optional.empty();
 
@@ -146,7 +147,7 @@ public class WeixinSpider {
                 }
             }
         } catch (Exception e) {
-            logger.error(e.getCause(), e);
+            logger.error(String.valueOf(e.getCause()), e);
         }
         try {
             articleUrl = WeixinUtil.instance().convertArticleUrlToBrief(articleUrl);
@@ -162,7 +163,7 @@ public class WeixinSpider {
                 return Optional.of(readLikeNum);
             }
         } catch (Exception e) {
-            logger.error(e.getCause(), e);
+            logger.error(String.valueOf(e.getCause()), e);
         }
         return Optional.empty();
     }
@@ -225,7 +226,7 @@ public class WeixinSpider {
 
             return Optional.of(readLikeNum);
         } catch (Exception e) {
-            logger.error(String.format("get readLikeNum with weixin key fail url [%s]", url), e);
+            logger.error("get readLikeNum with weixin key fail url [{}]", url, e);
         }
         return Optional.empty();
     }
@@ -242,7 +243,7 @@ public class WeixinSpider {
             WxArticle article = wxArticleParser.getArticleNoRdNumByArticleUrl(rightAritcleUrl);
             return Optional.of(article);
         } catch (Exception e) {
-            logger.error(String.format("get weixin article by url [%s] error", articleUrl), e);
+            logger.error("get weixin article by url [{}] error", articleUrl, e);
             return Optional.empty();
         }
     }
@@ -298,7 +299,7 @@ public class WeixinSpider {
                         )));
             }
         } catch (Exception e) {
-            logger.error(String.format("biz [%s]", biz), e);
+            logger.error("biz [{}]", biz, e);
             return Optional.empty();
         }
     }
@@ -337,7 +338,7 @@ public class WeixinSpider {
             String lastArticleUrl = wxAccountParser.getLastArticleByWeixinID(weixinID);
             return getWeixinAccountByArticleUrl(lastArticleUrl);
         } catch (Exception e) {
-            logger.error(String.format("weixinID [%s]", weixinID), e);
+            logger.error("weixinID [{}]", weixinID, e);
             return Optional.empty();
         }
 
@@ -410,7 +411,7 @@ public class WeixinSpider {
                 }
             }
         } catch (Exception e) {
-            logger.warn(String.format("get identification of media exception when get ReadLikeNum:[%s] ", articleUrl) + e.getMessage());
+            logger.warn("get identification of media exception when get ReadLikeNum:[{} {}] ", articleUrl, e.getMessage());
         }
         return Optional.empty();
     }

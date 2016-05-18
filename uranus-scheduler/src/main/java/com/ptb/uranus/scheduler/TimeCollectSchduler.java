@@ -3,7 +3,8 @@ package com.ptb.uranus.scheduler;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
 
 import java.util.Timer;
@@ -13,7 +14,7 @@ import java.util.TimerTask;
  * Created by eric on 16/4/22.
  */
 public class TimeCollectSchduler {
-    static Logger logger = Logger.getLogger(TimeCollectSchduler.class);
+    static Logger logger = LoggerFactory.getLogger(TimeCollectSchduler.class);
 
     Timer timer = null;
     boolean isDone = false;
