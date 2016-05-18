@@ -34,7 +34,6 @@ public class WeixinMediaStaticHandle implements CollectHandler {
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
-
             Optional<String> identify;
             try {
                 identify = weixinSpider.getMediaIdentifyByArticleUrl(message.getBody().getConditon());
