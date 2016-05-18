@@ -5,14 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.ptb.uranus.spider.common.utils.ParseUtils;
 import com.ptb.uranus.spider.smart.Context;
 import org.json.JSONException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**

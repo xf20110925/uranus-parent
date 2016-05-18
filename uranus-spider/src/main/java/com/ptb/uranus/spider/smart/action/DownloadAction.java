@@ -6,12 +6,10 @@ import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.common.webDriver.WebDriverPool;
 import com.ptb.uranus.spider.common.webDriver.WebDriverPoolUtils;
 import com.ptb.uranus.spider.smart.Context;
-import org.apache.http.client.fluent.Response;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 
-import java.nio.charset.Charset;
 import java.util.Optional;
 
 /**

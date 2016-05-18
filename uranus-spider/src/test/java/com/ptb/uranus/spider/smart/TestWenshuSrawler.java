@@ -1,7 +1,6 @@
 package com.ptb.uranus.spider.smart;
 
 import com.ptb.uranus.spider.smart.entity.Article;
-import com.ptb.uranus.spider.smart.entity.NewScheduleUrls;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import org.junit.After;
 import org.junit.Before;

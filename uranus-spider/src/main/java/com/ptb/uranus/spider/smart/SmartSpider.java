@@ -2,9 +2,7 @@ package com.ptb.uranus.spider.smart;
 
 import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.spider.common.webDriver.WebDriverPoolUtils;
-import com.ptb.uranus.spider.smart.action.DownloadAction;
 import com.ptb.uranus.spider.smart.entity.DynamicData;
-import com.ptb.uranus.spider.smart.entity.NewScheduleUrls;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import org.apache.log4j.Logger;
 

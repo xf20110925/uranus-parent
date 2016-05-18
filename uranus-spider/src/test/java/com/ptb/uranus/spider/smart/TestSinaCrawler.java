@@ -50,14 +50,12 @@ public class TestSinaCrawler extends EasyMockSupport {
     /**
      * Test sina artilce 类型1.
      */
-    @Test
     public void testArtilceType1() {
         String url = "http://news.sina.com.cn/o/2016-04-07/doc-ifxrcizu3727647.shtml";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType2() {
         String url = "http://sports.sina.com.cn/basketball/nba/2016-04-07/doc-ifxrcizs6961157.shtml";
         testArticleRight(url);
@@ -65,35 +63,30 @@ public class TestSinaCrawler extends EasyMockSupport {
     }
 
 
-    @Test
     public void testArticleType3() {
         String url = "http://mil.news.sina.com.cn/world/2016-04-07/doc-ifxrcizu3732650.shtml";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType4() {
         String url = "http://tech.sina.com.cn/i/2016-04-07/doc-ifxrcizs6957330.shtml";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType5() {
         String url = "http://finance.sina.com.cn/stock/usstock/c/2016-04-22/doc-ifxrpvea1081061.shtml";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType6() {
         String url = "http://finance.sina.com.cn/china/gncj/2016-04-07/doc-ifxrckae7592947.shtml";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testSinaArticleList() {
         Optional<SpiderResult> articleList = smartSpider.crawl("http://roll.news.sina.com.cn/s/channel.php", "articleList");
         NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(-1L, articleList.get());

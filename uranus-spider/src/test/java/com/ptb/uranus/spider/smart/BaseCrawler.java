@@ -6,7 +6,6 @@ import com.ptb.uranus.spider.smart.entity.NewScheduleUrls;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import org.easymock.EasyMockSupport;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,14 +27,12 @@ public class BaseCrawler extends EasyMockSupport {
     }
 
 
-    @Test()
     public void testArticleUrlEmpty() {
 //        EasyMock.expect(smartSpider.crawl(null, "")).andReturn(Optional.empty()).times(1);
 //        EasyMock.replay(smartSpider);
         assertFalse(smartSpider.crawl(null, "").isPresent());
     }
 
-    @Test
     public void testArticleUrlNoMatchFound() {
 //        EasyMock.expect(smartSpider.crawl("http://www.baidu.com/", "article")).
 //                andReturn(Optional.empty()).times(1);
@@ -43,14 +40,12 @@ public class BaseCrawler extends EasyMockSupport {
         assertFalse(smartSpider.crawl("http://www.baidu.com/", "article").isPresent());
     }
 
-    @Test
     public void testArticleUrlForamtError() {
 //        EasyMock.expect(smartSpider.crawl("1111", "dddd")).andReturn(Optional.empty()).times(1);
 //        EasyMock.replay(smartSpider);
         assertFalse(smartSpider.crawl("www.baidu.com", "article").isPresent());
     }
 
-    @Test
     public void testXinHuaArticleList() {
 
        /* SpiderResult spiderResult = new SpiderResult();
@@ -94,7 +89,6 @@ public class BaseCrawler extends EasyMockSupport {
 
     }
 
-    @Test
     public void testXinHuaAritlce() {
        /* SpiderResult spiderResult = new SpiderResult();
 
@@ -133,7 +127,6 @@ public class BaseCrawler extends EasyMockSupport {
     }
 
 
-    @Test
     public void testXinhua() {
         String[] list = {
                 "http://203.192.8.57/was5/web/search?channelid=240083&prepage=100",  //时政

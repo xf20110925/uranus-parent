@@ -22,7 +22,7 @@ public class JsonPathUtil {
      *
      * @param dcxt         the dcxt //jsonpath上下文信息
      * @param jsonPathLamada       the patter //抽取字段的JSONPATH表达式
-     * @param defaultValue the smart value //没有取到时,使用的默认值
+     * @param defaultValue the com.ptb.uranus.spider.smart value //没有取到时,使用的默认值
      * @return the string
      */
     static public String parse(DocumentContext dcxt, String jsonPathLamada, String defaultValue) {

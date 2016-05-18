@@ -1,7 +1,5 @@
 package com.ptb.uranus.spider.smart;
 
-import com.ptb.uranus.spider.smart.Context;
-
 /**
  * Created by eric on 16/3/23.
  */

@@ -65,11 +65,12 @@ public class UranusSdkTest {
                 new JustOneTrigger(new Date().getTime()), Priority.L1) != null);
     }
 
+    @Test
     public void collectWeixinMedia() {
         assertTrue(UranusSdk.i().collect(
-                "https://mp.weixin.qq.com/s?__biz=MTE3MzE4MTAyMQ==&mid=403427490&idx=1&sn=b5a21e4ea3f6843f4662ef4fcb83af54&uin=MjM3NjU0OTcy&key=b28b03434249256b1b7c7d7cbb74156cad263f21fc44b4c6a69c7e492e70dfe70e00e4c6f7315c67dfae473ff365c165&devicetype=android-17&version=26030b31&lang=zh_CN&nettype=WIFI&pass_ticket=twpYesgT%2BUmkO2z5rTpcl6f%2BN1inoi3hKSvnvc7wWgM%3D"
-                , CollectType.C_WX_A_S,
-                new PeriodicTrigger(10, TimeUnit.SECONDS, new Date(), 10), Priority.L1) != null);
+                "rmrbwx"
+                , CollectType.C_WX_M_S,
+                new JustOneTrigger(new Date().getTime()), Priority.L1) != null);
     }
 
     @Test

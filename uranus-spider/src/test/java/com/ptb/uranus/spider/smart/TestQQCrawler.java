@@ -45,119 +45,102 @@ public class TestQQCrawler {
         assertTrue(dynamicData.getCommentNum() != -1);
     }
 
-    @Test
     public void testArtilceType1() {
         String url = "http://news.qq.com/a/20160407/025294.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType2() {
         String url = "http://finance.qq.com/a/20160407/009688.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType3() {
         String url = "http://stock.qq.com/a/20160407/041632.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType4() {
         String url = "http://finance.qq.com/a/20160407/034048.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType5() {
         String url = "http://sports.qq.com/a/20160407/033674.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType6() {
         String url = "http://ent.qq.com/a/20160407/010494.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType7() {
         String url = "http://fashion.qq.com/a/20160407/007515.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType8() {
         String url = "http://baby.qq.com/a/20160407/019932.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType9() {
         String url = "http://health.qq.com/a/20160405/019726.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType10() {
         String url = "http://auto.qq.com/a/20160407/007827.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType11() {
         String url = "http://house.qq.com/a/20160406/043301.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType12() {
         String url = "http://tech.qq.com/a/20160407/033111.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType14() {
         String url = "http://games.qq.com/a/20160407/003330.htm#p=1";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType15() {
         String url = "http://edu.qq.com/a/20160408/010963.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType16() {
         String url = "http://cul.qq.com/a/20160407/051306.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArtilceType17() {
         String url = "http://foxue.qq.com/a/20160406/044545.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testThepaperList1() {
         Optional<SpiderResult> articleList = smartSpider.crawl("http://roll.news.qq.com/", "articleList");
         NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(-1L, articleList.get());
@@ -165,7 +148,6 @@ public class TestQQCrawler {
         assertTrue(newScheduleUrls.getLastPostTime() > 0);
     }
 
-    @Test
     public void testThepaperList2() {
         Optional<SpiderResult> articleList = smartSpider.crawl("http://v.qq.com/", "articleList");
         NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(-1L, articleList.get());
@@ -173,7 +155,6 @@ public class TestQQCrawler {
         assertTrue(newScheduleUrls.getLastPostTime() > 0);
     }
 
-    @Test
     public void testThepaperList3() {
         Optional<SpiderResult> articleList = smartSpider.crawl("http://sports.qq.com/nbavideo/", "articleList");
         NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(-1L, articleList.get());

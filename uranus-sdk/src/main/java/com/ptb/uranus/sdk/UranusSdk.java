@@ -54,7 +54,7 @@ public class UranusSdk implements Collector {
     }
 
 
-    private String getCorrectCondition(String srcCond, CollectType collectType) {
+    public String getCorrectCondition(String srcCond, CollectType collectType) {
         String cond = null;
         String finalCondition = null;
         if ((collectType.getCode() == CollectType.C_WX_M_S.getCode()) || (collectType.getCode() == CollectType.C_WX_M_D.getCode())) {

@@ -48,14 +48,12 @@ public class TestXinhuaCrawler extends EasyMockSupport {
     /**
      * Test xinhua artilce 类型1.
      */
-    @Test
     public void testArtilceType1() {
         String url = "http://news.xinhuanet.com/world/2016-04/05/c_128862086.htm";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType2() {
         String url = "http://news.xinhuanet.com/politics/2009-12/11/content_12633066.htm";
         testArticleRight(url);
@@ -63,21 +61,18 @@ public class TestXinhuaCrawler extends EasyMockSupport {
     }
 
 
-    @Test
     public void testArticleType3() {
        String url = "http://news.xinhuanet.com/photo/2016-04/06/c_128868445.htm";
         testArticleRight(url);
 //        testDynamicDataRight(url);
     }
 
-    @Test
     public void testXinhuaListOne() {
         Optional<SpiderResult> articleList = smartSpider.crawl("http://search.news.cn/mb/xinhuanet/search/?nodetype=3&nodeid=1166741", "articleList");
         System.out.println(articleList);
     }
 
 
-    @Test
     public void testXinhuaList() {
         String[] list = {
               /*  "http://203.192.8.57/was5/web/search?channelid=240083&prepage=100",  //时政
