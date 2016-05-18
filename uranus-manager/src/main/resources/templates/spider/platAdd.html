@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="main :: head (title=主页)">
+</head>
+
+<body>
+<header th:include="main :: header">
+
+</header>
+
+<div class="container">
+
+    <form class="form-horizontal" action="/spider/platUpdate" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <div class="col-sm-2"><label for="plat_name" class="control-label">平台名称</label></div>
+            <div class="col-sm-10">
+                <input id="plat_name" name="platName" type="text"  class="form-control"/>
+               <!--  <input type="hidden" id="id" name="id"  th:value="${id}" class="form-control">  -->
+            </div>
+        </div>
+         <div class="form-group">
+            <div class="col-sm-2"><label for="plat_code" class="control-label">平台代码</label></div>
+            <div class="col-sm-10">
+                <input id="plat_code" name="platCode" type="text"   class="form-control"/>
+            </div>
+        </div>
+
+        <div class="form-group" > 
+            <div class="col-sm-4 col-sm-offset-1">
+                <div class="form-group" style="text-align: center;">
+                  <a href="javascript:;" onclick="platAdd()"  class="btn btn-primary btn-lg btn-block ">保存</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<footer th:include="main :: footer">
+</footer>
+<script type="text/javascript">
+	function platAdd(){
+
+        var data = $("form").serialize();
+		$.ajax({
+			url:'/spider/platSave',
+			data:data,
+			dataType:'json',
+			type:'post',
+			success:function(data){
+				if(data.success == true){
+					alert("添加成功");
+					window.location.href = "/spider/platList"
+				}else{
+                    alert("已存在");
+                }
+				
+			},
+            error: function (data) {
+               alert("添加失败！" + data.toString());
+            }
+		});
+	}
+
+</script>
+</body>
+</html>

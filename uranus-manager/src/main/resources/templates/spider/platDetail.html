@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="main :: head (title=主页)">
+</head>
+
+<body>
+<header th:include="main :: header">
+
+</header>
+
+<div class="container">
+
+    <form class="form-horizontal" action="/spider/platUpdate" method="post" enctype="multipart/form-data">
+    	 <div class="form-group">
+            <div class="col-sm-10">
+                <input id="id" name="id" type="hidden" th:value="${platDetail.getId()}" class="form-control"/>
+               <!--  <input type="hidden" id="id" name="id"  th:value="${id}" class="form-control">  -->
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"><label for="plat_name" class="control-label">平台名称</label></div>
+            <div class="col-sm-10">
+                <input id="plat_name" name="platName" type="text" th:value="${platDetail.getPlatName()}" class="form-control"/>
+               <!--  <input type="hidden" id="id" name="id"  th:value="${id}" class="form-control">  -->
+            </div>
+        </div>
+         <div class="form-group">
+            <div class="col-sm-2"><label for="plat_code" class="control-label">平台代码</label></div>
+            <div class="col-sm-10">
+                <input id="plat_code" name="platCode" type="text" th:value="${platDetail.getPlatCode()}"  class="form-control"/>
+            </div>
+        </div>
+
+        <div class="form-group" > 
+            <div class="col-sm-4 col-sm-offset-1">
+                <div class="form-group" style="text-align: center;">
+                  <a href="javascript:;" onclick="platUpdate()"  class="btn btn-primary btn-lg btn-block ">保存</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<footer th:include="main :: footer">
+</footer>
+<script type="text/javascript">
+	function platUpdate(){
+
+		var id = $("#id").val();
+        var platName = $("#plat_name").val();
+        var platCode = $("#plat_code").val();
+		$.ajax({
+			url:'/spider/platUpdate',
+			data:{
+                id:id,
+                platName:platName,
+                platCode:platCode
+            },
+			dataType:'json',
+			type:'post',
+			success:function(data){
+				if(data){
+					alert("修改成功！！");
+					window.location.href = "/spider/platList"
+				}
+				
+			},
+            error: function (data) {
+               alert("失败！" + data);
+            }
+		});
+	}
+
+</script>
+</body>
+</html>
