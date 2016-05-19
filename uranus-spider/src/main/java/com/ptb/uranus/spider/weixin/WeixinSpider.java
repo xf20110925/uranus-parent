@@ -154,6 +154,7 @@ public class WeixinSpider {
             if (readLikeNumOptional.isPresent()) {
                 return readLikeNumOptional;
             }
+
             String data = WeixinUtil.instance().getResultByPhoneSpider(articleUrl, timeout);
             ReadLikeNum readLikeNum = null;
             if ((readLikeNum = JSON.parseObject(data, ReadLikeNum.class)) == null) {

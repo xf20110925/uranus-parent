@@ -30,7 +30,10 @@ public class WeixinArticleDynamicHandle implements CollectHandler {
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
-            Optional<ReadLikeNum> readLikeNum = weixinSpider.getArticleReadLikeNumByUrl(message.getBody().getConditon(), 180);
+            Optional<ReadLikeNum> readLikeNum = weixinSpider.getArticleReadLikeNumByUrl(message.getBody().getConditon(), 60);
+            if(!readLikeNum.isPresent()) {
+                readLikeNum = weixinSpider.getArticleReadLikeNumByUrl(message.getBody().getConditon(), 60);
+            }
 
             if (readLikeNum.isPresent()) {
                 BasicArticleDynamic wxArticleDynamic = SendObjectConvertUtil.wxArticleDynamicConvert(readLikeNum.get());
