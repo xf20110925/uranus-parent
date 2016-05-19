@@ -43,7 +43,7 @@ public class WxArticleParser {
         wxUtils = WeixinUtil.instance();
     }
 
-    private WxArticle parseArticlByPageSource(String pageSource) {
+    public WxArticle parseArticlByPageSource(String pageSource) {
 
 
 
