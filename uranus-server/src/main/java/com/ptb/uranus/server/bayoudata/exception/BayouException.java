@@ -5,8 +5,8 @@ import com.ptb.utils.exception.PTBException;
 /**
  * Created by xuefeng on 2016/5/23.
  */
-public class BayouExceptin extends PTBException {
-    public BayouExceptin(String message) {
+public class BayouException extends PTBException {
+    public BayouException(String message) {
         super(message);
     }
 }
