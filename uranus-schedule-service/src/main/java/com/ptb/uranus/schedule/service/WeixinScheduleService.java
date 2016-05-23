@@ -1,5 +1,6 @@
 package com.ptb.uranus.schedule.service;
 
+import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.common.entity.CollectCondition;
 import com.ptb.uranus.common.entity.CollectType;
 import com.ptb.uranus.schedule.dao.CacheDao;
@@ -125,5 +126,25 @@ public class WeixinScheduleService {
     public void addWeixinDetectNewArticlesScheduleByArticleUrl(String url) {
         String biz = RegexUtils.sub(".*__biz=([^#&]*).*", url, 0);
         addWeixinDetectNewArticlesSchedule(url);
+    }
+
+    public void updateWeixinMediaCondition(String biz, Long lastPushMessagePostTime) {
+//        schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s.*", biz))).
+        Optional<ScheduleObject> schedulerByField = schedulerDao.getSchedulerByField(ConditonField, Pattern.compile(String.format("^%s.*", biz)));
+        schedulerByField.ifPresent(scheduleObject -> {
+            CollectCondition collCondition = (CollectCondition) scheduleObject.getObj();
+            long postTime = Long.parseLong(collCondition.getConditon().split(":::")[1]);
+            if (postTime < lastPushMessagePostTime){
+                String condition =  getConditionByTemplate(biz, lastPushMessagePostTime);
+                collCondition.setConditon(condition);
+                try {
+                    scheduleObject.setObj(JSON.toJSONString(collCondition));
+                    scheduleObject.setnTime(lastPushMessagePostTime);
+                    schedulerDao.updateScheduler(scheduleObject);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
