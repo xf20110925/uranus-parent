@@ -3,6 +3,7 @@ package com.ptb.uranus.server.bayoudata;
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleDynamic;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleStatic;
 import com.ptb.uranus.server.bayoudata.entity.IdRecord;
@@ -14,9 +15,12 @@ import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeixinArticleStatic;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,9 +38,26 @@ public class BayouWeixinSync {
     private static final String DYNAMICARTICLEFEILD = "click";
 
     Sender sender = null;
+    //存放媒体biz和postTime键值对
+    Map<String, Long> mediaMap = null;
+    WeixinScheduleService wxSceduleService = null;
 
-    public BayouWeixinSync(Sender sender) {
+
+
+    public BayouWeixinSync(Sender sender) throws ConfigurationException {
         this.sender = sender;
+        mediaMap = new HashMap<>();
+        wxSceduleService = new WeixinScheduleService();
+    }
+    public void addMedia(String mediaBiz, long nextPostTime){
+        if(mediaMap.containsKey(mediaBiz)){
+            Long lastPostTime = mediaMap.get(mediaBiz);
+            if(nextPostTime > lastPostTime){
+                mediaMap.put(mediaBiz, nextPostTime);
+            }
+        }else{
+            mediaMap.put(mediaBiz, nextPostTime);
+        }
     }
 
     class RangeId {
@@ -99,7 +120,6 @@ public class BayouWeixinSync {
             mediaDataUrl = String.format(DATAURL, MEDIAFEILD, minId);
             String pageSource = HttpUtil.getPageSourceByClient(mediaDataUrl);
             List<BayouWXMedia> wxMedias = JSON.parseArray(JsonPath.parse(pageSource).read("$.bizs").toString(), BayouWXMedia.class);
-//            List<WeixinMediaStatic> wxMediaStatics = wxMedias.stream().map(wxMedia -> ConvertUtils.convertWXMedia(wxMedia)).collect(Collectors.toList());
             return Optional.of(wxMedias);
         } catch (Exception e) {
             logger.error(String.format("get media info from url[%s] fail exception[%s]", mediaDataUrl, e));
@@ -114,7 +134,6 @@ public class BayouWeixinSync {
             articleStaticUrl = String.format(DATAURL, STATICARTICLFEILD, minId);
             String pageSource = HttpUtil.getPageSourceByClient(articleStaticUrl);
             List<BayouWXArticleStatic> wxArticleStatics = JSON.parseArray(JsonPath.parse(pageSource).read("$.pages").toString(), BayouWXArticleStatic.class);
-//            List<WeixinArticleStatic> wxArticleStatics = wxArcStatics.stream().map(wxArcStatic -> ConvertUtils.convertWXArticleStatic(wxArcStatic)).collect(Collectors.toList());
             return Optional.of(wxArticleStatics);
         } catch (Exception e) {
             logger.error(String.format("get articleStatic info from url[%s] fail exception[%s]", articleStaticUrl, e));
@@ -129,7 +148,6 @@ public class BayouWeixinSync {
             articleDynamicUrl = String.format(DATAURL,DYNAMICARTICLEFEILD , minId);
             String pageSource = HttpUtil.getPageSourceByClient(articleDynamicUrl);
             List<BayouWXArticleDynamic> wxArticleDynamics = JSON.parseArray(JsonPath.parse(pageSource).read("$.clicks").toString(), BayouWXArticleDynamic.class);
-//            List<BasicArticleDynamic> wxArticleDynamics = wxArcDynamics.stream().map(wxArcDynamic -> ConvertUtils.convertWXArticleDynamic(wxArcDynamic)).collect(Collectors.toList());
             return Optional.of(wxArticleDynamics);
         } catch (Exception e) {
             logger.error(String.format("get articleDynamic info from url[%s] fail exception[%s]", articleDynamicUrl, e));
@@ -147,16 +165,12 @@ public class BayouWeixinSync {
             wxMediasOpt.ifPresent(wxMedias -> {
                 wxMedias.forEach(wxMedia -> {
                     WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
-                    //发送到kafka，更新媒体发现新文章中的媒体最新文章发文时间
+                    //发送到kafka
                     sender.sendMediaStatic(weixinMediaStatic);
-
                 });
             });
         }
         IdRecordUtil.syncMediaId(maxId);
-
-
-        return;
     }
 
     public void syncArticleStatics() {
@@ -168,14 +182,15 @@ public class BayouWeixinSync {
             wxArticlesOpt.ifPresent(wxArticles -> {
                 wxArticles.forEach(wxArticle -> {
                     //发送到kafka，更新媒体发现新文章中的媒体最新文章发文时间
+                    WeixinArticleStatic wxArticleStatic = ConvertUtils.convertWXArticleStatic(wxArticle);
+                    sender.sendArticleStatic(wxArticleStatic);
+                    addMedia(wxArticleStatic.getBiz(), wxArticleStatic.getPostTime());
                 });
             });
-            return;
         }
         IdRecordUtil.syncStaticArticleId(maxId);
-
-
-        return;
+        //更新媒体最新发文时间
+        mediaMap.forEach((k, v) -> wxSceduleService.updateWeixinMediaCondition(k, v));
     }
 
     public void syncArticleDynamics() {
@@ -186,21 +201,13 @@ public class BayouWeixinSync {
             Optional<List<BayouWXArticleDynamic>> articleDynamicsOpt = getRangeArticleDynamic(i);
             articleDynamicsOpt.ifPresent(articleDynamics -> {
                 articleDynamics.forEach(articleDynamic -> {
-
-                     //发送到kafka，更新媒体发现新文章中的媒体最新文章发文时间
+                    BasicArticleDynamic basicArticleDynamic = ConvertUtils.convertWXArticleDynamic(articleDynamic);
+                    //发送到kafka
+                    sender.sendArticleDynamic(basicArticleDynamic);
                 });
             });
-            return;
         }
         IdRecordUtil.syncDynamicArticleId(maxId);
-
-
-        return;
     }
 
-
-
-    public static void main(String[] args) {
-        new BayouWeixinSync(null).syncArticleDynamics();
-    }
 }
