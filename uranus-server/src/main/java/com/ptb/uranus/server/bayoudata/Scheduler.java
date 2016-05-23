@@ -3,6 +3,7 @@ package com.ptb.uranus.server.bayoudata;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.server.send.BusSender;
 import org.apache.commons.configuration.ConfigurationException;
+import scala.util.Try;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,9 +22,27 @@ public class Scheduler {
     }
 
     public void schedule() {
-        scheduledExecutor.scheduleAtFixedRate(() -> wxSync.syncArticleDynamics(), 0, 5, TimeUnit.HOURS);
-        scheduledExecutor.scheduleAtFixedRate(() -> wxSync.syncArticleStatics(), 0, 5, TimeUnit.HOURS);
-        scheduledExecutor.scheduleAtFixedRate(() -> wxSync.syncMedias(), 0, 5, TimeUnit.HOURS);
+        scheduledExecutor.scheduleAtFixedRate(() -> {
+            try {
+                wxSync.syncArticleDynamics();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.HOURS);
+        scheduledExecutor.scheduleAtFixedRate(() -> {
+            try {
+                wxSync.syncArticleStatics();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.HOURS);
+        scheduledExecutor.scheduleAtFixedRate(() -> {
+            try {
+                wxSync.syncMedias();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.HOURS);
     }
 
     public static void main(String[] args) throws ConfigurationException {
