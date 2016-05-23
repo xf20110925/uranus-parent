@@ -3,7 +3,6 @@ package com.ptb.uranus.server.bayoudata;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.server.send.BusSender;
 import org.apache.commons.configuration.ConfigurationException;
-import scala.util.Try;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
