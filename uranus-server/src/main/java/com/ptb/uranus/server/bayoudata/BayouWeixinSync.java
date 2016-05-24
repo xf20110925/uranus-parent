@@ -8,7 +8,7 @@ import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleDynamic;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleStatic;
 import com.ptb.uranus.server.bayoudata.entity.IdRecord;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXMedia;
-import com.ptb.uranus.server.bayoudata.exception.BayouExceptin;
+import com.ptb.uranus.server.bayoudata.exception.BayouException;
 import com.ptb.uranus.server.bayoudata.util.ConvertUtils;
 import com.ptb.uranus.server.bayoudata.util.IdRecordUtil;
 import com.ptb.uranus.server.send.Sender;
@@ -120,7 +120,7 @@ public class BayouWeixinSync {
                 }
             }
         }
-        throw new BayouExceptin(String.format("get rangeId from url[%s] error ", rangeUrl));
+        throw new BayouException(String.format("get rangeId from url[%s] error ", rangeUrl));
     }
 
     private RangeId getRangeId(String url, String identify) {
