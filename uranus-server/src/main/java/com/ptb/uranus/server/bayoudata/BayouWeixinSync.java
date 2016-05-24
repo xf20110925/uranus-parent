@@ -50,14 +50,18 @@ public class BayouWeixinSync {
         DATAURL = conf.getString("uranus.bayou.data.url", "http://weixindata.pullword.com:58600/%s/%d?auth_usr=vip_yahoo");
     }
 
-    public BayouWeixinSync(Sender sender) throws ConfigurationException {
-        loadConfig();
+    public BayouWeixinSync(Sender sender) {
+        try {
+            loadConfig();
+            wxSceduleService = new WeixinScheduleService();
+        } catch (ConfigurationException e) {
+
+        }
         this.sender = sender;
         mediaMap = new HashMap<>();
-        wxSceduleService = new WeixinScheduleService();
     }
 
-    public void addMedia(String mediaBiz, long nextPostTime) {
+    private void addMedia(String mediaBiz, long nextPostTime) {
         if (mediaMap.containsKey(mediaBiz)) {
             Long lastPostTime = mediaMap.get(mediaBiz);
             if (nextPostTime > lastPostTime) {
@@ -104,7 +108,7 @@ public class BayouWeixinSync {
      * @param rangeUrl
      * @return
      */
-    public RangeId getRangeId(String rangeUrl) {
+    private RangeId getRangeId(String rangeUrl) {
         while (tryNum-- > 0) {
             try {
                 String pageSource = HttpUtil.getPageSourceByClient(rangeUrl);
@@ -178,7 +182,7 @@ public class BayouWeixinSync {
         return Optional.empty();
     }
 
-    public void sendMedias(Optional<List<BayouWXMedia>> wxMediasOpt) {
+    private void sendMedias(Optional<List<BayouWXMedia>> wxMediasOpt) {
         wxMediasOpt.ifPresent(wxMedias -> {
             wxMedias.forEach(wxMedia -> {
                 WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
@@ -217,7 +221,7 @@ public class BayouWeixinSync {
         }
     }
 
-    public void sendArticleStatics(Optional<List<BayouWXArticleStatic>> wxArticlesOpt) {
+    private void sendArticleStatics(Optional<List<BayouWXArticleStatic>> wxArticlesOpt) {
         wxArticlesOpt.ifPresent(wxArticles -> {
             wxArticles.forEach(wxArticle -> {
                 //发送到kafka，更新媒体发现新文章中的媒体最新文章发文时间
@@ -254,7 +258,7 @@ public class BayouWeixinSync {
         mediaMap.forEach((k, v) -> wxSceduleService.updateWeixinMediaCondition(k, v));
     }
 
-    public void sendArticleDynamics(Optional<List<BayouWXArticleDynamic>> articleDynamicsOpt) {
+    private void sendArticleDynamics(Optional<List<BayouWXArticleDynamic>> articleDynamicsOpt) {
         articleDynamicsOpt.ifPresent(articleDynamics -> {
             articleDynamics.forEach(articleDynamic -> {
                 BasicArticleDynamic basicArticleDynamic = ConvertUtils.convertWXArticleDynamic(articleDynamic);
@@ -288,7 +292,7 @@ public class BayouWeixinSync {
         }
     }
 
-    public Map<String, Long> getMediaMap() {
+     private Map<String, Long> getMediaMap() {
         return mediaMap;
     }
 
