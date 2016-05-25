@@ -49,11 +49,11 @@ public class SendObjectConvertUtil {
         weixinMediaStatic.setMediaName(wxAccount.getNickName());
         weixinMediaStatic.setBiz(wxAccount.getBiz());
         if (identify.equals(Optional.empty())) {
-            weixinMediaStatic.setOriginal(false);
+            weixinMediaStatic.setAuthentication("");
         } else {
             weixinMediaStatic.setAuthentication(identify.get());
-            weixinMediaStatic.setOriginal(true);
         }
+        weixinMediaStatic.setOriginal(false);
         weixinMediaStatic.setBrief(wxAccount.getBrief());
         weixinMediaStatic.setHeadImg(wxAccount.getHeadImg());
         weixinMediaStatic.setQrCode(wxAccount.getQcCode());
