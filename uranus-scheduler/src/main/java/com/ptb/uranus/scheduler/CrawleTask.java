@@ -102,14 +102,14 @@ public class CrawleTask extends TimerTask {
                         }
                     } catch (Exception e) {
                         scheduleObject.setfCnt(scheduleObject.getsCnt() + 1);
-                        logger.error(String.format("schedule collectType [%s] Error scheduleObj [%s]", collectType, JSON.toJSONString(
+                        logger.warn(String.format("schedule collectType [%s] Error scheduleObj [%s]", collectType, JSON.toJSONString(
                                 scheduleObject
                         )), e);
                     }
 
                 });
             } catch (Exception e) {
-                logger.error(String.format("schedule collectType [%s] Error", collectType), e);
+                logger.warn(String.format("schedule collectType [%s] Error", collectType), e);
             }
 
         });

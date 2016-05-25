@@ -67,7 +67,7 @@ public class WeixinSpider {
         try {
             return gbDataWeixinParser.getWeixinAccountByIdOrName(condition, maxPageSouces);
         } catch (Exception e) {
-            logger.error(e);
+            logger.warn(e);
         }
         return Optional.empty();
     }
@@ -90,7 +90,7 @@ public class WeixinSpider {
                 }
             }
         } catch (Exception e) {
-            logger.error("erro is Class getWeixinArticleByName" + wechatid);
+            logger.warn("erro is Class getWeixinArticleByName" + wechatid);
         }
         return null;
     }
@@ -117,7 +117,7 @@ public class WeixinSpider {
             }
             return Optional.of(resultList);
         } catch (Exception e) {
-            logger.error("error is Class getWinxinMatchingByName " + codition);
+            logger.warn("error is Class getWinxinMatchingByName " + codition);
         }
         return Optional.empty();
 
@@ -146,7 +146,7 @@ public class WeixinSpider {
                 }
             }
         } catch (Exception e) {
-            logger.error(e.getCause(), e);
+            logger.warn(e.getCause(), e);
         }
         try {
             articleUrl = WeixinUtil.instance().convertArticleUrlToBrief(articleUrl);
@@ -163,7 +163,7 @@ public class WeixinSpider {
                 return Optional.of(readLikeNum);
             }
         } catch (Exception e) {
-            logger.error(e.getCause(), e);
+            logger.warn(e.getCause(), e);
         }
         return Optional.empty();
     }
@@ -226,7 +226,7 @@ public class WeixinSpider {
 
             return Optional.of(readLikeNum);
         } catch (Exception e) {
-            logger.error(String.format("get readLikeNum with weixin key fail url [%s]", url), e);
+            logger.warn(String.format("get readLikeNum with weixin key fail url [%s]", url), e);
         }
         return Optional.empty();
     }
@@ -243,7 +243,7 @@ public class WeixinSpider {
             WxArticle article = wxArticleParser.getArticleNoRdNumByArticleUrl(rightAritcleUrl);
             return Optional.of(article);
         } catch (Exception e) {
-            logger.error(String.format("get weixin article by url [%s] error", articleUrl), e);
+            logger.warn(String.format("get weixin article by url [%s] error", articleUrl), e);
             return Optional.empty();
         }
     }
@@ -299,7 +299,7 @@ public class WeixinSpider {
                         )));
             }
         } catch (Exception e) {
-            logger.error(String.format("biz [%s]", biz), e);
+            logger.warn(String.format("biz [%s]", biz), e);
             return Optional.empty();
         }
     }
@@ -338,7 +338,7 @@ public class WeixinSpider {
             String lastArticleUrl = wxAccountParser.getLastArticleByWeixinID(weixinID);
             return getWeixinAccountByArticleUrl(lastArticleUrl);
         } catch (Exception e) {
-            logger.error(String.format("weixinID [%s]", weixinID), e);
+            logger.warn(String.format("weixinID [%s]", weixinID), e);
             return Optional.empty();
         }
 
@@ -365,7 +365,7 @@ public class WeixinSpider {
                         articles.addAll(urls);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.warn(e);
                 }
             }
         }

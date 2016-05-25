@@ -68,7 +68,7 @@ public class WeiboSpider {
     	try {
 			return weiboSa.getWeiboSerachAccountByName(accouontName);
 		} catch (Exception e) {
-			 logger.error(String.format("get weibo serach accountByName", accouontName), e);
+			 logger.warn(String.format("get weibo serach accountByName", accouontName), e);
 		}
     	return Optional.empty();
     	
@@ -86,7 +86,7 @@ public class WeiboSpider {
             String weiboHomeUrl = String.format("http://m.weibo.cn/u/%s/", weiboID);
             return Optional.of(weiboAccountParser.getWeiboAccount(weiboHomeUrl));
         } catch (Exception e) {
-            logger.error(String.format("get weibo article by url [%s]", weiboID), e);
+            logger.warn(String.format("get weibo article by url [%s]", weiboID), e);
         }
         return Optional.empty();
     }
@@ -109,7 +109,7 @@ public class WeiboSpider {
                 }
             }
         } catch (Exception e) {
-            logger.error(String.format("get weibo article by url [%s]", homeUrl), e);
+            logger.warn(String.format("get weibo article by url [%s]", homeUrl), e);
         }
         return Optional.empty();
     }
@@ -128,7 +128,7 @@ public class WeiboSpider {
             WeiboAccount weiboAccount = weiboAccountParser.getWeiboAccount(String.format(String.format("http://m.weibo.cn/u/%s", mediaID)));
             return this.getRecentArticlesByContainerID(weiboAccount.getContainerID(), lastestTime);
         } catch (Exception e) {
-            logger.error(String.format("get weibo recent article by mediaid [%s]", mediaID), e);
+            logger.warn(String.format("get weibo recent article by mediaid [%s]", mediaID), e);
         }
         return Optional.empty();
 
@@ -148,7 +148,7 @@ public class WeiboSpider {
                 return Optional.of(articleList);
             }
         } catch (Exception e) {
-            logger.error(String.format("get weibo recent article by containerID [%s]", containerID), e);
+            logger.warn(String.format("get weibo recent article by containerID [%s]", containerID), e);
         }
         return Optional.empty();
 
@@ -162,7 +162,7 @@ public class WeiboSpider {
             Optional<WeiboAccount> weiboAccount = getWeiboAccountByHomePage(mediaUrl);
             return weiboAccount;
         } catch (Exception e) {
-            logger.error(articleUrl, e);
+            logger.warn(articleUrl, e);
         }
         return Optional.empty();
     }

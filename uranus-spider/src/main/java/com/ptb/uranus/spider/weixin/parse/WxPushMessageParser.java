@@ -102,7 +102,7 @@ public class WxPushMessageParser {
                     , "f", "json");
             return getPushedList(requrl);
         } catch (Exception e) {
-            log.error(e);
+            log.warn(e);
             throw new SpiderException(String.format("get recent message biz [%s] ", biz));
         }
     }
@@ -122,7 +122,7 @@ public class WxPushMessageParser {
                     , "frommsgid", String.valueOf(beginId)), "count", "10"), "f", "json");
             return getPushedList(reqUrl);
         } catch (Exception e) {
-            log.error(e);
+            log.warn(e);
             throw new SpiderException(String.format("get recent message biz [%s] ", biz));
         }
     }

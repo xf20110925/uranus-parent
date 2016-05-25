@@ -30,7 +30,7 @@ public class WxArticleParser {
     /**
      * The Log.
      */
-    static final Logger log = Logger.getLogger(WxArticleParser.class);
+//    static final Logger log = Logger.getLogger(WxArticleParser.class);
     /**
      * The Wx utils.
      */

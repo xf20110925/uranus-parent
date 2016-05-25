@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class WxController {
-    static Logger logger = Logger.getLogger(WxController.class);
+//    static Logger logger = Logger.getLogger(WxController.class);
 
 
     @Resource
