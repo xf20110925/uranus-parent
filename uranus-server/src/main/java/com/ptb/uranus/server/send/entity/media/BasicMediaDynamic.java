@@ -4,11 +4,20 @@ package com.ptb.uranus.server.send.entity.media;
  * Created by watson zhang on 16/4/29.
  */
 public class BasicMediaDynamic {
+    long time;
     int plat;
     int mediaName;
     int fans;
-    int articles;
-    int followers;
+    int postArticles;
+    int concerns;
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
 
     public int getPlat() {
         return plat;
@@ -16,14 +25,6 @@ public class BasicMediaDynamic {
 
     public void setPlat(int plat) {
         this.plat = plat;
-    }
-
-    public int getMediaName() {
-        return mediaName;
-    }
-
-    public void setMediaName(int mediaName) {
-        this.mediaName = mediaName;
     }
 
     public int getFans() {
@@ -34,19 +35,19 @@ public class BasicMediaDynamic {
         this.fans = fans;
     }
 
-    public int getArticles() {
-        return articles;
+    public int getPostArticles() {
+        return postArticles;
     }
 
-    public void setArticles(int articles) {
-        this.articles = articles;
+    public void setPostArticles(int postArticles) {
+        this.postArticles = postArticles;
     }
 
-    public int getFollowers() {
-        return followers;
+    public int getConcerns() {
+        return concerns;
     }
 
-    public void setFollowers(int followers) {
-        this.followers = followers;
+    public void setConcerns(int concerns) {
+        this.concerns = concerns;
     }
 }

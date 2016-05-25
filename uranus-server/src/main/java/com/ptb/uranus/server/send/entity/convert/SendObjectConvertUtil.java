@@ -196,11 +196,12 @@ public class SendObjectConvertUtil {
 
     public static BasicMediaDynamic weiboMediaDynamicConvert(WeiboAccount weiboAccount){
         WeiboMediaDynamic weiboMediaDynamic = new WeiboMediaDynamic();
+        weiboMediaDynamic.setTime(System.currentTimeMillis()/1000L);
         weiboMediaDynamic.setWeiboId(weiboAccount.getWeiboID());
         weiboMediaDynamic.setPlat(2);
         weiboMediaDynamic.setFans(weiboAccount.getFansNum());
-        weiboMediaDynamic.setArticles(weiboAccount.getMblogNum());
-        weiboMediaDynamic.setFollowers(weiboAccount.getAttNum());
+        weiboMediaDynamic.setPostArticles(weiboAccount.getMblogNum());
+        weiboMediaDynamic.setConcerns(weiboAccount.getAttNum());
         return weiboMediaDynamic;
     }
 }
