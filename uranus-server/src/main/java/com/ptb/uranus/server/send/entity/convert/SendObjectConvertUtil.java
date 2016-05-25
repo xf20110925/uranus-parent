@@ -197,7 +197,6 @@ public class SendObjectConvertUtil {
     public static BasicMediaDynamic weiboMediaDynamicConvert(WeiboAccount weiboAccount){
         WeiboMediaDynamic weiboMediaDynamic = new WeiboMediaDynamic();
         weiboMediaDynamic.setWeiboId(weiboAccount.getWeiboID());
-        weiboMediaDynamic.setUrl("http://m.weibo.cn/u/"+weiboAccount.getWeiboID());
         weiboMediaDynamic.setPlat(2);
         weiboMediaDynamic.setFans(weiboAccount.getFansNum());
         weiboMediaDynamic.setArticles(weiboAccount.getMblogNum());

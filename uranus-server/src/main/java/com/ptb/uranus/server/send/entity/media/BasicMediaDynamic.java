@@ -4,20 +4,11 @@ package com.ptb.uranus.server.send.entity.media;
  * Created by watson zhang on 16/4/29.
  */
 public class BasicMediaDynamic {
-    String url;
     int plat;
     int mediaName;
     int fans;
     int articles;
     int followers;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public int getPlat() {
         return plat;
