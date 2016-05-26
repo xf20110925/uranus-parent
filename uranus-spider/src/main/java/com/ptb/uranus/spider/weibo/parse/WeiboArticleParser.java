@@ -136,9 +136,27 @@ public class WeiboArticleParser {
             weiboArticle.setMediaId(RegexUtils.sub("\\$CONFIG\\[\'oid\'\\]=\'(\\d*)\';", pageSource, 0));
             weiboArticle.setPostTime(Long.valueOf(doc.select("a[node-type=\"feed_list_item_date\"]").attr("date")) / 1000);
 
-            weiboArticle.setCommentCount(Integer.valueOf(doc.select(".pos span[node-type=\"comment_btn_text\"] em:nth-last-child(1)").text()));
-            weiboArticle.setLikeCount(Integer.valueOf(doc.select(".pos span[node-type=\"like_status\"] em:nth-last-child(1)").text()));
-            weiboArticle.setRepostCount(Integer.valueOf(doc.select(".pos span[node-type=\"forward_btn_text\"] em:nth-last-child(1)").text()));
+
+            try {
+                weiboArticle.setCommentCount(Integer.valueOf(doc.select(".pos span[node-type=\"comment_btn_text\"] em:nth-last-child(1)").text()));
+            }catch (Exception e){
+                weiboArticle.setCommentCount(0);
+            }
+
+            try {
+                weiboArticle.setLikeCount(Integer.valueOf(doc.select(".pos span[node-type=\"like_status\"] em:nth-last-child(1)").text()));
+            }catch (Exception e){
+                weiboArticle.setLikeCount(0);
+            }
+
+            try {
+                weiboArticle.setRepostCount(Integer.valueOf(doc.select(".pos span[node-type=\"forward_btn_text\"] em:nth-last-child(1)").text()));
+            }catch (Exception e){
+                weiboArticle.setRepostCount(0);
+            }
+
+
+
             weiboArticle.setContent(doc.select(".WB_text").outerHtml());
             weiboArticle.setHeadImg(doc.select(".face a img").attr("src"));
             weiboArticle.setSource(doc.select(".WB_from a:nth-last-child(1)").text());
