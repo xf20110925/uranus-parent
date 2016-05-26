@@ -4,6 +4,7 @@ package com.ptb.uranus.server.send.entity.media;
  * Created by watson zhang on 16/4/25.
  */
 public class WeiboMediaStatic extends BasicMediaStatic {
+    String weiboId;
     String brief;
     long registerTime;
     String location;
@@ -13,6 +14,14 @@ public class WeiboMediaStatic extends BasicMediaStatic {
     String authDescription;
     String tagList;
     String homePage;
+
+    public String getWeiboId() {
+        return weiboId;
+    }
+
+    public void setWeiboId(String weiboId) {
+        this.weiboId = weiboId;
+    }
 
     public String getBrief() {
         return brief;

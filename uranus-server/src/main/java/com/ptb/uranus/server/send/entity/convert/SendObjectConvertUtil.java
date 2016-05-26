@@ -97,6 +97,7 @@ public class SendObjectConvertUtil {
 
     public static WeiboMediaStatic weiboMediaStaticConvert(WeiboAccount weiboAccount) {
         WeiboMediaStatic weiboMediaStatic = new WeiboMediaStatic();
+        weiboMediaStatic.setWeiboId(weiboAccount.getWeiboID());
         weiboMediaStatic.setPlat(2);
         weiboMediaStatic.setMediaName(weiboAccount.getNickName());
         weiboMediaStatic.setAuthType(weiboAccount.getVerifiedType());
