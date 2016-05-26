@@ -24,7 +24,7 @@ public class WxSogouParser {
     /**
      * The Log.
      */
-    static final Logger log = Logger.getLogger(WxSogouParser.class);
+//    static final Logger log = Logger.getLogger(WxSogouParser.class);
 
     /**
      * Gets last article by weixin id.

@@ -8,7 +8,6 @@ import com.google.gson.JsonParser;
 public class JsonFormatter {
 
     /**
-     * @param args
      */
 
     public static String jsonFormatter(String uglyJSONString) {

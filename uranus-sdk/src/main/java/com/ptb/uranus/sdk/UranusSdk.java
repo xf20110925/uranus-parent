@@ -92,7 +92,7 @@ public class UranusSdk implements Collector {
                 return finalCondition;
             }
         } catch (Exception e) {
-            logger.error(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcCond, collectType, trigger, priority), e);
+            logger.warn(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcCond, collectType, trigger, priority), e);
         }
 
         return null;
@@ -111,7 +111,7 @@ public class UranusSdk implements Collector {
                 return finalConditions;
             }
         } catch (Exception e) {
-            logger.error(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcConds, collectType, trigger, priority), e);
+            logger.warn(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcConds, collectType, trigger, priority), e);
         }
 
         return null;
