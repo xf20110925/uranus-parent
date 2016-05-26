@@ -69,7 +69,7 @@ public class GsDataWeixinParser {
 			return Optional.of(result);
 
 		} catch (Exception e) {
-			logger.error("error is wxid= {} maxPage= {} ", wxId, maxPage, e);
+			logger.warn("error is wxid="+wxId+" maxPage="+maxPage+" ",e);
 		}
 		return Optional.empty();
 	}
@@ -102,7 +102,7 @@ public class GsDataWeixinParser {
 	public static String AuthenticationInfoByUrl(String url){
 		try {
 			if(url.equals(null)||url.equals("")){
-				logger.error("error is url= {}", url);
+				logger.warn("error is url="+url+"");
 				return null;
 			}
 			String gsUrl = "http://www.gsdata.cn";
@@ -127,7 +127,7 @@ public class GsDataWeixinParser {
 //			index.setQrcodeurl(qrcodeurl);
 			return authenticationInfo;
 		} catch (Exception e) {
-			logger.error("error is url= {}", url,e);
+			logger.warn("error is url="+url+"",e);
 		}
 		return null;
 	}

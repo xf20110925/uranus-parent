@@ -38,7 +38,6 @@ public class TestPeopleCrawler extends EasyMockSupport {
         assertTrue(article.getPlat() == 8);
     }
 
-    @Test
     public void testList() {
         String url = "http://news.people.com.cn";
         try {
@@ -55,7 +54,6 @@ public class TestPeopleCrawler extends EasyMockSupport {
         }
     }
 
-    @Test
     public void testArticle1() {
         String url = "http://pic.people.com.cn/n1/2016/0407/c1016-28257245.html";
 
@@ -65,7 +63,6 @@ public class TestPeopleCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getShareNum() != -1);
     }
 
-    @Test
     public void testArticle2() {
         String url = "http://pic.people.com.cn/n1/2016/0407/c1016-28258490.html";
         testArticleRight(url);
@@ -75,7 +72,6 @@ public class TestPeopleCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getShareNum() != -1);
     }
 
-    @Test
     public void testArticle3() {
         String url = "http://society.people.com.cn/n1/2016/0407/c229589-28257960.html";
         testArticleRight(url);
@@ -85,7 +81,6 @@ public class TestPeopleCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getShareNum() != -1);
     }
 
-    @Test
     public void testArticle4() {
         String url = "http://game.people.com.cn/n1/2016/0407/c218877-28257598.html";
         testArticleRight(url);

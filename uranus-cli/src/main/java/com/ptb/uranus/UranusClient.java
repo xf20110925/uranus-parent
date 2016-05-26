@@ -72,7 +72,6 @@ public class UranusClient {
             case C_WB_A_N:
                 return "uranus-server_v2_wb";
             case C_WX_A_S:
-
                 return "uranus-server_v2_wx_s";
             case C_WX_A_D:
             case C_WX_M_D:

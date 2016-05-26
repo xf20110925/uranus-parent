@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static org.bouncycastle.asn1.x509.X509ObjectIdentifiers.id;
-
 /**
  * Created by eric on 16/3/28.
  */

@@ -73,7 +73,7 @@ public class WeiboSearchAccountParser {
 			}).collect(Collectors.toList());
 			return Optional.of(result);
 		} catch (Exception e) {
-			logger.error("Class WeiboSearchAccountParser error is serachName= {}" ,name, e);
+			logger.warn("Class WeiboSearchAccountParser error is serachName="+name, e);
 		}
 		return Optional.empty();
 	}

@@ -84,7 +84,7 @@ public class WeixinLinkMap implements PageProcessor {
                 });
 
             } catch (Exception e) {
-                logger.error(String.format("handle the userPageUrl[{}] error", page.getUrl().get()), e);
+                logger.warn(String.format("handle the userPageUrl[%s] error", page.getUrl().get()), e);
             }
             //获取用户主页下的文章链接
         } else if (page.getUrl().regex(ARTICLE_PAGE).match()) {
@@ -96,7 +96,7 @@ public class WeixinLinkMap implements PageProcessor {
                 articlePageCounter.addAndGet(1);
 //                System.out.println(articlePageCounter.get() + "--->" + realUrl + "--->" + url);
             } catch (Exception e) {
-                logger.error(String.format("handle the articlePageUrl[{}] error", page.getUrl().get()), e);
+                logger.warn(String.format("handle the articlePageUrl[%s] error", page.getUrl().get()), e);
             }
             page.addTargetRequests(page.getHtml().links().regex(ARTICLE_PAGE).all());
         } else if (page.getUrl().regex(INDEX_PAGE).match()) {

@@ -10,7 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
@@ -43,7 +42,6 @@ public class TestSohuCrawler extends EasyMockSupport {
     /**
      * Test sohu artilce 类型1.
      */
-    @Test
     public void testArtilceType1() {
         String url = "http://roll.sohu.com/20160403/n443245269.shtml";
         testArticleRight(url);
@@ -54,7 +52,6 @@ public class TestSohuCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getInvolvementNum() != -1);
     }
 
-    @Test
     public void testArticleType2() {
         String url = "http://yule.sohu.com/20160403/n443234853.shtml";
         testArticleRight(url);
@@ -65,7 +62,6 @@ public class TestSohuCrawler extends EasyMockSupport {
     }
 
 
-    @Test
     public void testArticleType3() {
         String url = "http://it.sohu.com/20160403/n443231695.shtml";
         testArticleRight(url);
@@ -79,7 +75,6 @@ public class TestSohuCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getBoringNum() != -1);
     }
 
-    @Test
     public void testArticleType4() {
         String url =  "http://auto.sohu.com/20160425/n445945404.shtml";
         testArticleRight(url);
@@ -90,7 +85,6 @@ public class TestSohuCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getInvolvementNum() != -1);
     }
 
-    @Test
     public void testArticleType5() {
         String url = "http://fashion.sohu.com/20160403/n443235687.shtml";
         testArticleRight(url);
@@ -104,7 +98,6 @@ public class TestSohuCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getBoringNum() != -1);
     }
 
-    @Test
     public void testArticleType6() {
         String url = "http://learning.sohu.com/20160403/n443237925.shtml";
         testArticleRight(url);
@@ -118,7 +111,6 @@ public class TestSohuCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getBoringNum() != -1);
     }
 
-    @Test
     public void testArticleType7() {
         String url = "http://stock.sohu.com/20160403/n443236757.shtml";
         testArticleRight(url);
@@ -128,7 +120,6 @@ public class TestSohuCrawler extends EasyMockSupport {
         assertTrue(dynamicData.getInvolvementNum() != -1);
     }
 
-    @Test
     public void testSohuListOne() {
         Optional<SpiderResult> articleList = smartSpider.crawl("http://news.sohu.com/scroll/", "articleList");
         NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(0L, articleList.get());

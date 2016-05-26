@@ -48,6 +48,7 @@ public class BusService {
         if (bus instanceof KafkaBus) {
             ((KafkaBus) bus).setConsumerThread(busConfig.getConsumerNum());
         }
+        MyStaticValue.getCRFSplitWord();
         bus.start(false, busConfig.workerNum);
         return;
     }

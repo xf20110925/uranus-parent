@@ -167,7 +167,7 @@ public class WeiboArticleParser {
             return weiboArticle;
 
         } catch (Exception e) {
-            logger.error("get page [{}] by webdriver error", aritcleUrl, e);
+            logger.warn(String.format("get page [%s] by webdriver error", aritcleUrl), e);
             return null;
         }
     }

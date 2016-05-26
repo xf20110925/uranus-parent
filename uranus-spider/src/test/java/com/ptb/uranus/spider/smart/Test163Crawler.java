@@ -8,7 +8,6 @@ import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import org.easymock.EasyMockSupport;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Optional;
 
@@ -49,14 +48,12 @@ public class Test163Crawler extends EasyMockSupport {
     /**
      * Test 163 artilce 类型1.
      */
-    @Test
     public void testArtilceType1() {
         String url = "http://news.163.com/16/0407/13/BK262N0J00014JB6.html";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType2() {
         String url = "http://discovery.163.com/16/0405/04/BJS2LEAI000125LI.html";
         testArticleRight(url);
@@ -64,14 +61,12 @@ public class Test163Crawler extends EasyMockSupport {
     }
 
 
-    @Test
     public void testArticleType3() {
         String url = "http://war.163.com/16/0407/10/BK1U8PBH00014OMD.html";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType4() {
         //source可能娶不到
         String url = "http://war.163.com/photoview/4T8E0001/116517.html#p=BL87UCAC4T8E0001";
@@ -79,21 +74,18 @@ public class Test163Crawler extends EasyMockSupport {
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType5() {
         String url = "http://news.163.com/photoview/00AP0001/115230.html#p=BK1SG5SQ00AP0001";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testArticleType6() {
         String url = "http://view.163.com/16/0407/11/BK1VGQR9000159SL.html";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void test163ArticleList() {
         Optional<SpiderResult> articleList = smartSpider.crawl("http://news.163.com/latest/", "articleList");
         NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(-1L, articleList.get());

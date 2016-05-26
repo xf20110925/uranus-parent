@@ -129,8 +129,9 @@ public class WeixinUtil {
             }
 
         } catch (Exception e) {
-            logger.error("url [{}]", url, e);
+            logger.warn("url {}", url, e);
         }
+        logger.error("通过手机获取不到阅读数 url {}", url);
         return null;
     }
 

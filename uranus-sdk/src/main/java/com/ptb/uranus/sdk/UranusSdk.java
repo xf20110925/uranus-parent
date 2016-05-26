@@ -55,7 +55,7 @@ public class UranusSdk implements Collector {
     }
 
 
-    private String getCorrectCondition(String srcCond, CollectType collectType) {
+    public String getCorrectCondition(String srcCond, CollectType collectType) {
         String cond = null;
         String finalCondition = null;
         if ((collectType.getCode() == CollectType.C_WX_M_S.getCode()) || (collectType.getCode() == CollectType.C_WX_M_D.getCode())) {
@@ -93,7 +93,7 @@ public class UranusSdk implements Collector {
                 return finalCondition;
             }
         } catch (Exception e) {
-            logger.error("cond [{}] type [{}] trgger[{}] priority[{}]", srcCond, collectType, trigger, priority, e);
+            logger.warn(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcCond, collectType, trigger, priority), e);
         }
 
         return null;
@@ -112,7 +112,7 @@ public class UranusSdk implements Collector {
                 return finalConditions;
             }
         } catch (Exception e) {
-            logger.error("cond [{}] type [{}] trgger[{}] trigger[{}]", srcConds, collectType, trigger, priority, e);
+            logger.warn(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcConds, collectType, trigger, priority), e);
         }
 
         return null;

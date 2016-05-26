@@ -46,14 +46,12 @@ public class TestThepaperCrawler {
     }
 
 
-    @Test
     public void testArtilceType1() {
         String url = "http://www.thepaper.cn/newsDetail_forward_1448172";
         testArticleRight(url);
         testDynamicDataRight(url);
     }
 
-    @Test
     public void testThepaperList(){
         Optional<SpiderResult> articleList = smartSpider.crawl("http://www.thepaper.cn/", "articleList");
         NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(-1L, articleList.get());

@@ -5,7 +5,6 @@ import com.ptb.uranus.spider.smart.entity.NewScheduleUrls;
 import com.ptb.uranus.spider.smart.entity.SpiderConstant;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -53,7 +52,6 @@ public class SmartSpiderConverterTest {
      *
      * @throws Exception the exception
      */
-    @Test
     public void testAllArticleRight() throws Exception {
 
 
@@ -70,21 +68,18 @@ public class SmartSpiderConverterTest {
 
     }
 
-    @Test
     public void testConvertToNewSchedulerUrlsRight() throws Exception {
         NewScheduleUrls newScheduleUrls = SmartSpiderConverter.convertToNewSchedulerUrls(0L, spiderResult);
         assertTrue(newScheduleUrls.getUrls().size() > 0);
         assertTrue(newScheduleUrls.getLastPostTime() > 0);
     }
 
-    @Test
     public void testConvertToArticle1() throws Exception {
         spiderResult.getExecuteContext().set(SpiderConstant.PLATFORM, "");
         Article article = SmartSpiderConverter.convertToArticle(spiderResult);
         assertTrue(article.getPlat() == 0);
     }
 
-    @Test
     public void testConvertToNewSchedulerUrls1() throws Exception {
 
     }
