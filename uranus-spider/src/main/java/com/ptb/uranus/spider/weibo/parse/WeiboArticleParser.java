@@ -1,5 +1,7 @@
 package com.ptb.uranus.spider.weibo.parse;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
@@ -21,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,42 +108,46 @@ public class WeiboArticleParser {
     }
 
     private WeiboArticle parseFromPcPage(String aritcleUrl) throws Exception {
-        PhantomJSDriver driver = null;
         WeiboArticle weiboArticle = new WeiboArticle();
         try {
             int i = 3;
-            String pageSource = "";
-            while (i-- > 0) {
-                WebDriverPool webDriverFromPool = i > 0 ? WebDriverPoolUtils.instance().getWebDriverFromPool(false, true) : WebDriverPoolUtils.instance().getWebDriverFromPool(false, false);
-                driver = webDriverFromPool.borrowObject();
-                try {
-                    driver.manage().addCookie(new Cookie("SUB", UUID.randomUUID().toString(), ".weibo.com", "/", null, false));
-                    driver.get(aritcleUrl);
-                    Thread.sleep(2000);
-                    pageSource = driver.getPageSource();
-                    if (pageSource.contains("oid")) {
-                        break;
-                    }
-                } catch (Exception e) {
-
-                } finally {
-                    webDriverFromPool.returnObject(driver);
-                }
-            }
+            String pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null);
             if (i < 0) {
                 throw new PTBException(String.format("article url [%s] error ", aritcleUrl));
             }
 
-            pageSource = driver.getPageSource();
-            Document doc = Jsoup.parse(pageSource);
+            String detail = RegexUtils.sub("<script>FM.view\\((.*\"ns\":\"pl.content.weiboDetail.index\".*)\\)</script>", pageSource, 0);
+            JSONObject det = (JSONObject) JSON.parse(detail);
+            Document doc = Jsoup.parse(det.get("html").toString());
 
             weiboArticle.setMediaName(doc.select(".WB_info").text());
             weiboArticle.setMediaId(RegexUtils.sub("\\$CONFIG\\[\'oid\'\\]=\'(\\d*)\';", pageSource, 0));
             weiboArticle.setPostTime(Long.valueOf(doc.select("a[node-type=\"feed_list_item_date\"]").attr("date")) / 1000);
 
-            weiboArticle.setCommentCount(Integer.valueOf(doc.select(".pos span[node-type=\"comment_btn_text\"] em:nth-last-child(1)").text()));
-            weiboArticle.setLikeCount(Integer.valueOf(doc.select(".pos span[node-type=\"like_status\"] em:nth-last-child(1)").text()));
-            weiboArticle.setRepostCount(Integer.valueOf(doc.select(".pos span[node-type=\"forward_btn_text\"] em:nth-last-child(1)").text()));
+            String dyNum = doc.select(".pos span[node-type=\"comment_btn_text\"] em:nth-last-child(1)").text();
+            String num = RegexUtils.sub("(^[0-9]*$)", dyNum,0);
+            if(num != null){
+                weiboArticle.setCommentCount(Integer.valueOf(num));
+            }else {
+                weiboArticle.setCommentCount(0);
+            }
+
+            dyNum = doc.select(".pos span[node-type=\"like_status\"] em:nth-last-child(1)").text();
+            num = RegexUtils.sub("(^[0-9]*$)", dyNum,0);
+            if(num != null){
+                weiboArticle.setLikeCount(Integer.valueOf(num));
+            }else {
+                weiboArticle.setLikeCount(0);
+            }
+
+            dyNum = doc.select(".pos span[node-type=\"forward_btn_text\"] em:nth-last-child(1)").text();
+            num = RegexUtils.sub("(^[0-9]*$)", dyNum,0);
+            if(num != null){
+                weiboArticle.setRepostCount(Integer.valueOf(num));
+            }else {
+                weiboArticle.setRepostCount(0);
+            }
+
             weiboArticle.setContent(doc.select(".WB_text").outerHtml());
             weiboArticle.setHeadImg(doc.select(".face a img").attr("src"));
             weiboArticle.setSource(doc.select(".WB_from a:nth-last-child(1)").text());
@@ -148,6 +155,9 @@ public class WeiboArticleParser {
             Matcher m = Pattern.compile(".*click_title:[^\"]*-([^\":]*):[^\":]*").matcher(objectType);
             while (m.find()) {
                 weiboArticle.setObjectType(m.group(1));
+            }
+            if(weiboArticle.getObjectType() == null){
+                weiboArticle.setObjectType("common");
             }
             Elements select = doc.select(".media_box img");
             if (select != null) {

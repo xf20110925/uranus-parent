@@ -21,7 +21,7 @@ public class WbMediaTest {
 
     @Test
     public void testGetMediaStaticByMediaID() {
-        Optional<WeiboAccount> weiboAccountOptional = weiboSpider.getWeiboAccountByWeiboID("2964493453");
+        Optional<WeiboAccount> weiboAccountOptional = weiboSpider.getWeiboAccountByWeiboID("2050067882");
         assertTrue(weiboAccountOptional.isPresent());
         WeiboAccount weiboAccount = weiboAccountOptional.get();
         assertTrue(weiboAccount.getContainerID().length() > 0);
