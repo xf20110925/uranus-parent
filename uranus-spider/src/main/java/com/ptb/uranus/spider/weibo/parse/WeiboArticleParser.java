@@ -130,7 +130,6 @@ public class WeiboArticleParser {
                 throw new PTBException(String.format("article url [%s] error ", aritcleUrl));
             }
 
-            pageSource = driver.getPageSource();
             Document doc = Jsoup.parse(pageSource);
 
             weiboArticle.setMediaName(doc.select(".WB_info").text());
@@ -151,6 +150,15 @@ public class WeiboArticleParser {
             Elements select = doc.select(".media_box img");
             if (select != null) {
                 weiboArticle.setImgs(select.stream().map(e -> e.attr("src")).collect(Collectors.toList()));
+            }
+
+            if (select.size() > 0) {
+                weiboArticle.setVideos(select.stream().filter(e -> e.attr("src").contains("miaopai.com")).map(
+                        e -> {
+                            String url = e.attr("src");
+                            return url.replace("wscdn", "qncdn").replaceFirst("\\_tmp\\_.*", "mp4");
+                        }
+                ).collect(Collectors.toList()));
             }
             weiboArticle.setArticleUrl(aritcleUrl);
             return weiboArticle;

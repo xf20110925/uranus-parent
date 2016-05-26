@@ -19,7 +19,7 @@ public class PeriodicTrigger extends Trigger {
 
 
     public PeriodicTrigger() {
-        isFirstSchedule=false;
+        isFirstSchedule = false;
     }
 
     public long getEt() {
@@ -101,7 +101,12 @@ public class PeriodicTrigger extends Trigger {
     public long nextTriggeTime() {
         long l = u.toMillis(v);
         long curTime = System.currentTimeMillis() - 1000;
+
         long nt = curTime + l;
+        if (isFirstSchedule == true) {
+            nt = curTime;
+            return nt;
+        }
         nt = curTime <= st ? st : nt;
         return et < curTime ? Long.MAX_VALUE : nt;
     }

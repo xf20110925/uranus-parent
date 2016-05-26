@@ -130,7 +130,6 @@ public class WeixinUtil {
         } catch (Exception e) {
             logger.error(String.format("url [%s]", url), e);
         }
-        logger.warn(String.format("通过手机获取不到阅读数 url [%s]", url));
         return null;
     }
 
