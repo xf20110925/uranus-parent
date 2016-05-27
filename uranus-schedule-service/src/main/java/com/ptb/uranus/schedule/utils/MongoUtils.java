@@ -23,6 +23,8 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sun.plugin.javascript.navig.JSType.Document;
+
 public enum MongoUtils {
     instance;
 
@@ -32,7 +34,7 @@ public enum MongoUtils {
     }
 
     public MongoDatabase getDatabase(String dbName) {
-        if(dbName != null && !"".equals(dbName)) {
+        if (dbName != null && !"".equals(dbName)) {
             MongoDatabase database = this.mongoClient.getDatabase(dbName);
             return database;
         } else {
@@ -41,12 +43,12 @@ public enum MongoUtils {
     }
 
     public DB getDB(String dbName) {
-        return dbName != null && !"".equals(dbName)?this.mongoClient.getDB(dbName):null;
+        return dbName != null && !"".equals(dbName) ? this.mongoClient.getDB(dbName) : null;
     }
 
     public MongoCollection<Document> getCollection(String dbName, String collName) {
-        if(null != collName && !"".equals(collName)) {
-            if(null != dbName && !"".equals(dbName)) {
+        if (null != collName && !"".equals(collName)) {
+            if (null != dbName && !"".equals(dbName)) {
                 MongoCollection collection = this.mongoClient.getDatabase(dbName).getCollection(collName);
                 return collection;
             } else {
@@ -62,8 +64,8 @@ public enum MongoUtils {
         ArrayList _list = new ArrayList();
         MongoCursor var4 = colls.iterator();
 
-        while(var4.hasNext()) {
-            String s = (String)var4.next();
+        while (var4.hasNext()) {
+            String s = (String) var4.next();
             _list.add(s);
         }
 
@@ -88,12 +90,12 @@ public enum MongoUtils {
             return null;
         }
 
-        Document myDoc = (Document)coll.find(Filters.eq("_id", _idobj)).first();
+        Document myDoc = (Document) coll.find(Filters.eq("_id", _idobj)).first();
         return myDoc;
     }
 
     public int getCount(MongoCollection<Document> coll) {
-        int count = (int)coll.count();
+        int count = (int) coll.count();
         return count;
     }
 
@@ -118,7 +120,7 @@ public enum MongoUtils {
 
         Bson filter = Filters.eq("_id", _id);
         DeleteResult deleteResult = coll.deleteOne(filter);
-        int count1 = (int)deleteResult.getDeletedCount();
+        int count1 = (int) deleteResult.getDeletedCount();
         return count1;
     }
 
@@ -155,7 +157,7 @@ public enum MongoUtils {
     }
 
     public void close() {
-        if(this.mongoClient != null) {
+        if (this.mongoClient != null) {
             this.mongoClient.close();
             this.mongoClient = null;
         }
@@ -172,8 +174,8 @@ public enum MongoUtils {
             var4.printStackTrace();
         }
 
-        String ip = config.getString("uranus.scheduler.mongo.host","127.0.0.1");
-        int port = config.getInt("uranus.scheduler.mongo.port",27017);
+        String ip = config.getString("uranus.scheduler.mongo.host", "127.0.0.1");
+        int port = config.getInt("uranus.scheduler.mongo.port", 27017);
 
         Builder options = new Builder();
         options.connectionsPerHost(300);
