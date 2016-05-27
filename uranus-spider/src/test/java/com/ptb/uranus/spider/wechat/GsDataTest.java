@@ -5,11 +5,12 @@ import java.util.Optional;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.junit.Test;
 
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.GsData;
+import org.slf4j.LoggerFactory;
 
 /**
  * 测试用例
@@ -18,7 +19,7 @@ import com.ptb.uranus.spider.weixin.bean.GsData;
  */
 public class GsDataTest {
 	
-	 static Logger logger = Logger.getLogger(GsDataTest.class);
+	 static Logger logger = LoggerFactory.getLogger(GsDataTest.class);
 	 WeixinSpider weixinSpider = new WeixinSpider();
 	 /**
 	  * 测试用例

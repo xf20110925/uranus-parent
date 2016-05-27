@@ -9,7 +9,8 @@ import com.ptb.uranus.schedule.dao.SchedulerDao;
 import com.ptb.uranus.schedule.model.ScheduleObject;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -17,8 +18,8 @@ import java.util.*;
  * Created by eric on 16/4/22.
  */
 public class CrawleTask extends TimerTask {
-    static Logger scheduleLogger = Logger.getLogger("schedule.message");
-    static Logger logger = Logger.getLogger(CrawleTask.class);
+    static Logger scheduleLogger = LoggerFactory.getLogger("schedule.message");
+    static Logger logger = LoggerFactory.getLogger(CrawleTask.class);
 
     PropertiesConfiguration conf;
     UranusClient uranusClient;
@@ -62,7 +63,7 @@ public class CrawleTask extends TimerTask {
             long blockNUM = uranusClient.getBusBlockNum(collectType);
             if (blockNUM > 0) {
                 sendNum = sendNum < MIN_SEND_NUM ? MIN_SEND_NUM : sendNum * (100 - changeRangeRate) / 100;
-                logger.warn(String.format("collectType [%s] is block ,block num [%d]", collectType, blockNUM));
+                logger.warn("collectType [{}] is block ,block num [{}]", collectType, blockNUM);
             } else {
                 sendNum = sendNum > maxSendNum ? maxSendNum : sendNum * (100 + changeRangeRate) / 100;
             }
@@ -73,7 +74,7 @@ public class CrawleTask extends TimerTask {
 
         int schedNum = sendNumsMap.get(collectType);
 
-        logger.info(String.format("collectType [%s] 's scheduleLogger num [%d]", collectType, schedNum));
+        logger.info("collectType [{}] 's scheduleLogger num [{}]", collectType, schedNum);
 
         return schedNum;
     }
@@ -98,13 +99,13 @@ public class CrawleTask extends TimerTask {
                             scheduleObject.setnTime(scheduleObject.getTrigger().nextTriggeTime());
                             scheduleObject.setsCnt(scheduleObject.getsCnt() + 1);
                             schedulerDao.updateScheduler(scheduleObject);
-                            scheduleLogger.info(scheduleObject.toString());
+                            scheduleLogger.info("schedele log : [{}]",scheduleObject.toString());
                         }
                     } catch (Exception e) {
                         scheduleObject.setfCnt(scheduleObject.getsCnt() + 1);
                         logger.warn(String.format("schedule collectType [%s] Error scheduleObj [%s]", collectType, JSON.toJSONString(
                                 scheduleObject
-                        )), e);
+                        ), e));
                     }
 
                 });

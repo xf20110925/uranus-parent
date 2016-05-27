@@ -6,7 +6,8 @@ import com.ptb.uranus.asistant.core.entity.JSONResult;
 import com.ptb.uranus.asistant.web.model.rep.RequestUrlResponse;
 import com.ptb.uranus.asistant.web.service.WxService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class WxController {
-//    static Logger logger = Logger.getLogger(WxController.class);
+    static Logger logger = LoggerFactory.getLogger(WxController.class);
 
 
     @Resource

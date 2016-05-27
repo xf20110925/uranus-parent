@@ -8,8 +8,9 @@ import com.ptb.uranus.spider.smart.entity.Article;
 import com.ptb.uranus.spider.smart.entity.DynamicData;
 import com.ptb.uranus.spider.smart.entity.NewScheduleUrls;
 import com.ptb.uranus.spider.smart.entity.SpiderConstant;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.bson.Document;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,7 +19,7 @@ import java.util.*;
  * Created by eric on 16/3/25.
  */
 public class SmartSpiderConverter {
-    static Logger logger = Logger.getLogger(SmartSpiderConverter.class);
+    static Logger logger = LoggerFactory.getLogger(SmartSpiderConverter.class);
     //加载mongodb平台、id对应表数据
     static JSONObject platforms = null;
 
@@ -92,7 +93,7 @@ public class SmartSpiderConverter {
             article.setPostTime(dateFormat.parse(getContextString(context, SpiderConstant.POSTTIME)).getTime() / 1000);
         } catch (Exception e) {
             article.setPostTime(new Date().getTime() / 1000);
-            logger.warn(String.format("没有得到发布时间 spiderResult:[%s]", article.getUrl()));
+            logger.warn(String.format("没有得到发布时间 spiderResult:[%s],context:[%s]", article.getUrl(), context.get(SpiderConstant.POSTTIME).toString()));
         }
 
         //设置爬取到的时间

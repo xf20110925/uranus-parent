@@ -10,7 +10,8 @@ import com.ptb.uranus.schedule.service.WeiboScheduleService;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
 import com.ptb.uranus.spider.weibo.bean.WeiboAccount;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Created by eric on 16/4/23.
  */
 public class WeiboMediaStaticHandle implements CollectHandler {
-    private static Logger logger = Logger.getLogger("msg.wb.fail");
+    private static Logger logger = LoggerFactory.getLogger("msg.wb.fail");
     Sender sender;
     WeiboSpider weiboSpider = new WeiboSpider();
     WeiboScheduleService weiboScheduleService;
@@ -43,10 +44,10 @@ public class WeiboMediaStaticHandle implements CollectHandler {
                 weiboScheduleService.addDetectNewArticlesSchedule(wbAccount.get().getContainerID(),wbAccount.get().getWeiboID());
                 weiboScheduleService.addWeiboMediaDynamicSchedule(message.getBody().getConditon());
             } else {
-                logger.error(message.getRaw());
+                logger.error(String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
-            logger.error(message.getRaw(), e);
+            logger.error(String.valueOf(message.getRaw()), e);
         }
     }
 

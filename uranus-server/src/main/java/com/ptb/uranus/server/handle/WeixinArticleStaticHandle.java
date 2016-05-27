@@ -11,7 +11,8 @@ import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ import java.util.Optional;
  * Created by eric on 16/4/23.
  */
 public class WeixinArticleStaticHandle implements CollectHandler {
-    private static Logger logger = Logger.getLogger("msg.fail");
+    private static Logger logger = LoggerFactory.getLogger("msg.fail");
     Sender sender = null;
     WeixinSpider weixinSpider = new WeixinSpider();
     WeixinScheduleService wxSchedule;

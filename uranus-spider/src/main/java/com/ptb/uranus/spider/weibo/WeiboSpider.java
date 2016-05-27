@@ -9,7 +9,8 @@ import com.ptb.uranus.spider.weibo.parse.WeiboSearchAccountParser;
 import com.ptb.utils.string.RegexUtils;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class WeiboSpider {
     /**
      * The Logger.
      */
-    static Logger logger = Logger.getLogger(WeiboSpider.class);
+    static Logger logger = LoggerFactory.getLogger(WeiboSpider.class);
     /**
      * The Weibo account parser.
      */
@@ -52,7 +53,7 @@ public class WeiboSpider {
                 }
             }
         } catch (Exception e) {
-            logger.info(String.format("get weibo article by url [%s]", url), e);
+            logger.info("get weibo article by url [{}]", url, e);
         }
         return Optional.empty();
     }

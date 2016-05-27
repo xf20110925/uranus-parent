@@ -8,7 +8,8 @@ import com.ptb.uranus.schedule.service.WeiboScheduleService;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Created by eric on 16/4/25.
  */
 public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.CollectHandler {
-    private static Logger ParseErroeLogger = Logger.getLogger("msg.fail");
+    private static Logger ParseErroeLogger = LoggerFactory.getLogger("msg.fail");
     WeiboSpider weiboSpider = new WeiboSpider();
     WeiboScheduleService wbScheduleService = new WeiboScheduleService();
 
@@ -36,10 +37,10 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                 wbScheduleService.addArticleStaticSchedulers(recentArticles);
                 wbScheduleService.updateMediaCondition(message.getBody(), containerId, lastestTime);
             } else {
-                ParseErroeLogger.error(message.getRaw());
+                ParseErroeLogger.error(String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
-            ParseErroeLogger.error(message.getRaw(), e);
+            ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
         }
 
 

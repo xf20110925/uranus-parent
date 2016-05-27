@@ -1,22 +1,17 @@
 package com.ptb.uranus.asistant.web.advice;
 
-import com.ptb.gaia.bus.redis.RedisBus;
 import com.ptb.uranus.asistant.web.dao.BusDao;
 import com.ptb.uranus.common.message.command.Command;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by eric on 16/2/22.
  */
 public class MonitorAdvice {
     String monitorTopic = "phone-monitor";
-    static Logger logger = Logger.getLogger(MonitorAdvice.class);
+    static Logger logger = LoggerFactory.getLogger(MonitorAdvice.class);
 
     public BusDao getBusDao() {
         return busDao;
@@ -42,7 +37,7 @@ public class MonitorAdvice {
                 busDao.sendMessage(monitorTopic, Command.PhoneIdleCount, "");
             }
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("monitorPhone", e);
         }
     }
 

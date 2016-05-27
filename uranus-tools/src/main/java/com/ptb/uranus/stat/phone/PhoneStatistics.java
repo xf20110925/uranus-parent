@@ -4,7 +4,8 @@ import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.gaia.bus.message.Message;
 import com.ptb.gaia.bus.message.MessageListener;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Timestamp;
@@ -14,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by eric on 16/2/22.
  */
 public class PhoneStatistics {
-    static Logger logger = Logger.getLogger(PhoneStatistics.class);
+    static Logger logger = LoggerFactory.getLogger(PhoneStatistics.class);
     public static final int PhoneIdleCount = 102000000;
     public static final int PhoneCrawleReadNumCount = 102000001;
     public static final int PhoneCrawleNewArticleCount = 102000002;

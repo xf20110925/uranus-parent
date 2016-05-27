@@ -3,8 +3,9 @@ package com.ptb.uranus.spider.wechat;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.WxAccount;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ import static junit.framework.Assert.assertTrue;
  * Created by eric on 16/1/21.
  */
 public class MediaStaticTest {
-    static Logger logger = Logger.getLogger(MediaStaticTest.class);
+    static Logger logger = LoggerFactory.getLogger(MediaStaticTest.class);
     WeixinSpider weixinSpider = new WeixinSpider();
 
     public void assertAccount(WxAccount wxAccount) {

@@ -15,7 +15,8 @@ import com.ptb.uranus.sdk.exception.ConfigureFileException;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.utils.web.UrlFormatUtil;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
  * Created by eric on 16/4/21.
  */
 public class UranusSdk implements Collector {
-    static Logger logger = Logger.getLogger(UranusSdk.class);
+    static Logger logger = LoggerFactory.getLogger(UranusSdk.class);
     static private UranusSdk instance;
     CacheDao cacheDao;
     WeixinSpider weixinSpider = new WeixinSpider();

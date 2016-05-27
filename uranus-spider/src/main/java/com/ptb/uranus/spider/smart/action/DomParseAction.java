@@ -3,10 +3,11 @@ package com.ptb.uranus.spider.smart.action;
 import com.alibaba.fastjson.JSONObject;
 import com.ptb.uranus.spider.common.utils.ParseUtils;
 import com.ptb.uranus.spider.smart.Context;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.json.JSONException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by xuefeng on 2016/3/23.
  */
 public class DomParseAction extends Action {
-    static Logger logger = Logger.getLogger(DomParseAction.class);
+    static Logger logger = LoggerFactory.getLogger(DomParseAction.class);
 
     String formula;
     String formulaType;

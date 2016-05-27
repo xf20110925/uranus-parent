@@ -12,7 +12,8 @@ import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.WxAccount;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Created by eric on 16/4/23.
  */
 public class WeixinMediaStaticHandle implements CollectHandler {
-    private static Logger ParseErroeLogger = Logger.getLogger("msg.fail");
+    private static Logger ParseErroeLogger = LoggerFactory.getLogger("msg.fail");
     private final Sender sender;
 
     WeixinScheduleService wxSchedule;
@@ -51,7 +52,7 @@ public class WeixinMediaStaticHandle implements CollectHandler {
                 ParseErroeLogger.error(JSON.toJSONString(message));
             }
         } catch (Exception e) {
-            ParseErroeLogger.error(message.getRaw(), e);
+            ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
         }
     }
 

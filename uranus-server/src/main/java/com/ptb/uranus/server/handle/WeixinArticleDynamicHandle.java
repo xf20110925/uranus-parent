@@ -10,7 +10,8 @@ import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Created by eric on 16/4/23.
  */
 public class WeixinArticleDynamicHandle implements CollectHandler {
-    private static Logger ParseErroeLogger = Logger.getLogger("msg.fail");
+    private static Logger ParseErroeLogger = LoggerFactory.getLogger("msg.fail");
     private Sender sender;
     WeixinSpider weixinSpider = new WeixinSpider();
     WeixinScheduleService wxSchedule;

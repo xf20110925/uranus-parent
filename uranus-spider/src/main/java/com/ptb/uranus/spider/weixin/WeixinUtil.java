@@ -7,7 +7,8 @@ import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -24,7 +25,7 @@ public class WeixinUtil {
     /**
      * The Logger.
      */
-    static Logger logger = Logger.getLogger(WeixinUtil.class);
+    static Logger logger = LoggerFactory.getLogger(WeixinUtil.class);
     private final String queryKeyURL;
     private final String addTaskURL;
     private final String updateKeyURL;
@@ -128,9 +129,9 @@ public class WeixinUtil {
             }
 
         } catch (Exception e) {
-            logger.warn(String.format("url [%s]", url), e);
+            logger.warn("url {}", url, e);
         }
-        logger.error(String.format("通过手机获取不到阅读数 url [%s]", url));
+        logger.error("通过手机获取不到阅读数 url {}", url);
         return null;
     }
 

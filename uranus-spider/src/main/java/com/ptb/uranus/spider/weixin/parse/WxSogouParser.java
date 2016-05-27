@@ -5,11 +5,12 @@ import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.common.webDriver.WebDriverProvider;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.slf4j.LoggerFactory;
 
 import java.net.URLEncoder;
 import java.util.List;
@@ -24,7 +25,7 @@ public class WxSogouParser {
     /**
      * The Log.
      */
-//    static final Logger log = Logger.getLogger(WxSogouParser.class);
+    static final Logger logger = LoggerFactory.getLogger(WxSogouParser.class);
 
     /**
      * Gets last article by weixin id.

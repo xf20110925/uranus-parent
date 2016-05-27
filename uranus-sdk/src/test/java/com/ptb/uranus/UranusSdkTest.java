@@ -21,8 +21,8 @@ public class UranusSdkTest {
     @Test
     public void formatWeiboTest() {
         UranusSdk.i().collect(
-                "http://weibo.com/1314608344/DsWKXiOvm?from=page_1002061314608344_profile&wvr=6&mod=weibotime&type=comment",
-                CollectType.C_WB_A_S,
+                "http://mp.weixin.qq.com/s?__biz=MjM5NzI3NDg4MA==&mid=2658464991&idx=1&sn=5af6511291cacfe81e837e60522d7bce&scene=4#wechat_redirect",
+                CollectType.C_WX_A_S,
                 new JustOneTrigger(new Date().getTime()), Priority.L1);
     }
 

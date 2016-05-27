@@ -9,7 +9,8 @@ import com.ptb.uranus.spider.weixin.WeixinUtil;
 import com.ptb.uranus.spider.weixin.bean.PushMessage;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class WxPushMessageParser {
     /**
      * The Log.
      */
-    static final Logger log = Logger.getLogger(WxPushMessageParser.class);
+    static final Logger logger = LoggerFactory.getLogger(WxPushMessageParser.class);
 
     /**
      * The Wx utils.
@@ -102,7 +103,7 @@ public class WxPushMessageParser {
                     , "f", "json");
             return getPushedList(requrl);
         } catch (Exception e) {
-            log.warn(e);
+            logger.warn(e.getLocalizedMessage());
             throw new SpiderException(String.format("get recent message biz [%s] ", biz));
         }
     }
@@ -122,7 +123,7 @@ public class WxPushMessageParser {
                     , "frommsgid", String.valueOf(beginId)), "count", "10"), "f", "json");
             return getPushedList(reqUrl);
         } catch (Exception e) {
-            log.warn(e);
+            logger.warn(e.getLocalizedMessage());
             throw new SpiderException(String.format("get recent message biz [%s] ", biz));
         }
     }

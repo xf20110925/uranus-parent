@@ -36,6 +36,6 @@ public class BusSender implements Sender {
 
     @Override
     public void sendMediaDynamic(BasicMediaDynamic basicMediaDynamic) {
-        bus.send(new Message("uranus-server", "media_basic_info", basicMediaDynamic.getPlat(), "1.0.0", basicMediaDynamic));
+        bus.send(new Message("uranus-server", "media_spread_info", basicMediaDynamic.getPlat(), "1.0.0", basicMediaDynamic));
     }
 }

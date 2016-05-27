@@ -20,6 +20,8 @@ import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
 import com.ptb.uranus.spider.weixin.bean.WxAccount;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
 import org.apache.commons.configuration.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -27,6 +29,7 @@ import java.util.Optional;
  * Created by watson zhang on 16/4/26.
  */
 public class SendObjectConvertUtil {
+    private static Logger logger = LoggerFactory.getLogger(SendObjectConvertUtil.class);
     private static TextAnalyzer textAnalyzer;
 
     static {
@@ -46,11 +49,11 @@ public class SendObjectConvertUtil {
         weixinMediaStatic.setMediaName(wxAccount.getNickName());
         weixinMediaStatic.setBiz(wxAccount.getBiz());
         if (identify.equals(Optional.empty())) {
-            weixinMediaStatic.setOriginal(false);
+            weixinMediaStatic.setAuthentication("");
         } else {
             weixinMediaStatic.setAuthentication(identify.get());
-            weixinMediaStatic.setOriginal(true);
         }
+        weixinMediaStatic.setOriginal(false);
         weixinMediaStatic.setBrief(wxAccount.getBrief());
         weixinMediaStatic.setHeadImg(wxAccount.getHeadImg());
         weixinMediaStatic.setQrCode(wxAccount.getQcCode());
@@ -60,8 +63,11 @@ public class SendObjectConvertUtil {
 
     public static WeixinArticleStatic weixinArticleStaticConvert(WxArticle wxArticle) {
         TextAnalyzeResult textAnalyzeResult;
+        logger.error("weixin article static!1");
         textAnalyzeResult = textAnalyzer.ArticleAnalyze(wxArticle.getContent());
+        logger.error("weixin article static!2");
         WeixinArticleStatic weixinArticleStatic = new WeixinArticleStatic();
+        logger.error("weixin article static!3");
         weixinArticleStatic.setUrl(wxArticle.getArticleUrl());
         weixinArticleStatic.setSurface(wxArticle.getCoverImgUrl());
         weixinArticleStatic.setAuthor(wxArticle.getAuthor());
@@ -91,6 +97,7 @@ public class SendObjectConvertUtil {
 
     public static WeiboMediaStatic weiboMediaStaticConvert(WeiboAccount weiboAccount) {
         WeiboMediaStatic weiboMediaStatic = new WeiboMediaStatic();
+        weiboMediaStatic.setWeiboId(weiboAccount.getWeiboID());
         weiboMediaStatic.setPlat(2);
         weiboMediaStatic.setMediaName(weiboAccount.getNickName());
         weiboMediaStatic.setAuthType(weiboAccount.getVerifiedType());
@@ -190,11 +197,12 @@ public class SendObjectConvertUtil {
 
     public static BasicMediaDynamic weiboMediaDynamicConvert(WeiboAccount weiboAccount){
         WeiboMediaDynamic weiboMediaDynamic = new WeiboMediaDynamic();
-        weiboMediaDynamic.setUrl("http://m.weibo.cn/u/"+weiboAccount.getWeiboID());
+        weiboMediaDynamic.setTime(System.currentTimeMillis()/1000L);
+        weiboMediaDynamic.setWeiboId(weiboAccount.getWeiboID());
         weiboMediaDynamic.setPlat(2);
         weiboMediaDynamic.setFans(weiboAccount.getFansNum());
-        weiboMediaDynamic.setArticles(weiboAccount.getMblogNum());
-        weiboMediaDynamic.setFollowers(weiboAccount.getAttNum());
+        weiboMediaDynamic.setPostArticles(weiboAccount.getMblogNum());
+        weiboMediaDynamic.setConcerns(weiboAccount.getAttNum());
         return weiboMediaDynamic;
     }
 }

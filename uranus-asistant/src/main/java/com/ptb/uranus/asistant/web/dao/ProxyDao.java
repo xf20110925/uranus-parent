@@ -1,7 +1,8 @@
 package com.ptb.uranus.asistant.web.dao;
 
 import com.ptb.uranus.asistant.core.util.RedisUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import java.util.HashSet;
@@ -12,7 +13,7 @@ import java.util.Set;
  * Created by eric on 16/1/26.
  */
 public class ProxyDao {
-    static Logger logger = Logger.getLogger(ProxyDao.class);
+    static Logger logger = LoggerFactory.getLogger(ProxyDao.class);
     static String ProxySetKey = "proxy";
 
     public String getRandomProxy() {

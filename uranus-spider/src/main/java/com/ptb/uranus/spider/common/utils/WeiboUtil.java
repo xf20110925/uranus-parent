@@ -3,7 +3,8 @@ package com.ptb.uranus.spider.common.utils;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie2;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ public class WeiboUtil {
     /**
      * The Logger.
      */
-    static Logger logger = Logger.getLogger(WeiboUtil.class);
+    static Logger logger = LoggerFactory.getLogger(WeiboUtil.class);
 
     /**
      * Gets vaild weibo cookie store.
