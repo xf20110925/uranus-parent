@@ -31,6 +31,7 @@ import static org.bouncycastle.asn1.x500.style.RFC4519Style.st;
  */
 public class BayouWeixinSync {
     private static Logger logger = Logger.getLogger(BayouWeixinSync.class);
+    private static Logger requestLogger = Logger.getLogger("request.log");
 
     private static String RANGEURL = null;
     private static String DATAURL = null;
@@ -110,13 +111,15 @@ public class BayouWeixinSync {
      */
     private RangeId getRangeId(String rangeUrl) {
         while (tryNum-- > 0) {
+            String pageSource = null;
             try {
-                String pageSource = HttpUtil.getPageSourceByClient(rangeUrl);
+                pageSource = HttpUtil.getPageSourceByClient(rangeUrl);
                 DocumentContext parse = JsonPath.parse(pageSource);
                 int minId = Integer.parseInt(parse.read("$.minid").toString());
                 int maxId = Integer.parseInt(parse.read("$.maxid").toString());
                 return new RangeId(minId, maxId);
             } catch (Exception e) {
+                requestLogger.error(String.format("request url[%s] error response data[%s] exception[%s] ", rangeUrl, pageSource, e));
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) {
@@ -124,7 +127,7 @@ public class BayouWeixinSync {
                 }
             }
         }
-        throw new BayouException(String.format("get rangeId from url[%s] error ", rangeUrl));
+        throw new BayouException(String.format("get rangeId from url[%s] error"));
     }
 
     private RangeId getRangeId(String url, String identify) {
@@ -149,34 +152,37 @@ public class BayouWeixinSync {
     }
 
     private Optional<List<BayouWXMedia>> getRangeMedia(String mediaDataUrl) {
+        String pageSource = null;
         try {
-            String pageSource = HttpUtil.getPageSourceByClient(mediaDataUrl);
+            pageSource = HttpUtil.getPageSourceByClient(mediaDataUrl);
             List<BayouWXMedia> wxMedias = JSON.parseArray(JsonPath.parse(pageSource).read("$.bizs").toString(), BayouWXMedia.class);
             return Optional.of(wxMedias);
         } catch (Exception e) {
-            logger.error(String.format("get media info from url[%s] fail exception[%s]", mediaDataUrl, e));
+            requestLogger.error(String.format("get media info from url[%s] error response data[%s] exception[%s]", mediaDataUrl, pageSource, e));
         }
         return Optional.empty();
     }
 
     private Optional<List<BayouWXArticleStatic>> getRangeArticleStatic(String articleStaticUrl) {
+        String pageSource = null;
         try {
-            String pageSource = HttpUtil.getPageSourceByClient(articleStaticUrl);
+            pageSource = HttpUtil.getPageSourceByClient(articleStaticUrl);
             List<BayouWXArticleStatic> wxArticleStatics = JSON.parseArray(JsonPath.parse(pageSource).read("$.pages").toString(), BayouWXArticleStatic.class);
             return Optional.of(wxArticleStatics);
         } catch (Exception e) {
-            logger.error(String.format("get articleStatic info from url[%s] error exception[%s]", articleStaticUrl, e));
+            requestLogger.error(String.format("get article static from url[%s] error response data[%s] exception[%s]", articleStaticUrl, pageSource, e));
         }
         return Optional.empty();
     }
 
     private Optional<List<BayouWXArticleDynamic>> getRangeArticleDynamic(String articleDynamicUrl) {
+        String pageSource = null;
         try {
-            String pageSource = HttpUtil.getPageSourceByClient(articleDynamicUrl);
+            pageSource = HttpUtil.getPageSourceByClient(articleDynamicUrl);
             List<BayouWXArticleDynamic> wxArticleDynamics = JSON.parseArray(JsonPath.parse(pageSource).read("$.clicks").toString(), BayouWXArticleDynamic.class);
             return Optional.of(wxArticleDynamics);
         } catch (Exception e) {
-            logger.error(String.format("get articleDynamic info from url[%s] error exception[%s]", articleDynamicUrl, e));
+            requestLogger.error(String.format("get article dynamic from url[%s] error response data[%s] exception[%s]", articleDynamicUrl, pageSource, e));
             e.printStackTrace();
         }
         return Optional.empty();

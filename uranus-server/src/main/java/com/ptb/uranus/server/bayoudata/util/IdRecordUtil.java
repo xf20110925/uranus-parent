@@ -31,13 +31,13 @@ public class IdRecordUtil {
         } catch (FileNotFoundException e) {
             idRecord = new IdRecord(0, 0, 0);
             serialize(idRecord);
-            e.printStackTrace();
+            return idRecord;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return idRecord;
     }
     public synchronized static Optional<IdRecord> getIdRecord(){
         try {
