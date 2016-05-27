@@ -7,4 +7,4 @@
  echo $jars
 
  echo $HOME/config:$jars:$libjar
- nohup java -cp $HOME/config:$libjar:$jars  com.ptb.uranus.scheduler.TimeCollectSchduler $* >>$HOME/logs/run.log & 2>&1
+ nohup java -cp $HOME/config:$libjar:$jars  com.ptb.uranus.scheduler.TimeCollectSchduler $* >>$HOME/logs/run.log 2>&1 &

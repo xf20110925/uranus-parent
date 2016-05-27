@@ -68,7 +68,7 @@ public class WbArticleTest {
      */
     @Test
     public void testGetArticleStaticByUrlError() {
-        Optional<WeiboArticle> weiboArticleOptional = weiboSpider.getWeiboArticleByArticleUrl("http://www.weibo.com/2913327245/DxkaNBPjN");
+        Optional<WeiboArticle> weiboArticleOptional = weiboSpider.getWeiboArticleByArticleUrl("http://www.weibo.com/2913327245/DxkaNB");
         assertEquals(weiboArticleOptional.isPresent(), false);
     }
     @After

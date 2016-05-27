@@ -155,8 +155,6 @@ public class WeiboArticleParser {
                 weiboArticle.setRepostCount(0);
             }
 
-
-
             weiboArticle.setContent(doc.select(".WB_text").outerHtml());
             weiboArticle.setHeadImg(doc.select(".face a img").attr("src"));
             weiboArticle.setSource(doc.select(".WB_from a:nth-last-child(1)").text());

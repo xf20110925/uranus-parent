@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #/bin/bash
 
 source /etc/profile
@@ -42,12 +43,12 @@ nohup java -cp $config_dir:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
 --spider.worker.num=4 \
 --kafka.consumer.num=1 >> logs/${TOPIC}/run.log  2>&1 &
 
-TOPIC=uranus-server_v2
-if [ ! -d logs/${TOPIC} ]; then
-    mkdir logs/${TOPIC}
-fi
-nohup java -cp $config_dir:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
---listenTopics=${TOPIC} \
---spider.worker.num=4 \
---kafka.consumer.num=1 >> logs/${TOPIC}/run.log  2>&1 &
+#TOPIC=uranus-server_v2
+#if [ ! -d logs/${TOPIC} ]; then
+#    mkdir logs/${TOPIC}
+#fi
+#nohup java -cp $config_dir:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
+#--listenTopics=${TOPIC} \
+#--spider.worker.num=4 \
+#--kafka.consumer.num=1 >> logs/${TOPIC}/run.log  2>&1 &
 

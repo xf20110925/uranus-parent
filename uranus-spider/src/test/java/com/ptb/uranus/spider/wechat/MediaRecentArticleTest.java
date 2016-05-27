@@ -23,7 +23,7 @@ public class MediaRecentArticleTest {
     @Test
     public void testRecentArticlesByBiz() {
 
-        Optional<ImmutablePair<Long, List<String>>> recentArticlesByBiz = weixinSpider.getRecentArticlesByBiz("MzA5MTI2MDU3Nw==", 1455372759L);
+        Optional<ImmutablePair<Long, List<String>>> recentArticlesByBiz = weixinSpider.getRecentArticlesByBiz("MzA3OTM5NTkxNA==", 1455372759L);
         assertTrue(recentArticlesByBiz.isPresent() && recentArticlesByBiz.get().getRight().size() > 0 && recentArticlesByBiz.get().getLeft() > 0);
     }
 

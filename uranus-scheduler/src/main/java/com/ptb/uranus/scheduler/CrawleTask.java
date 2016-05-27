@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.ptb.uranus.common.entity.CollectType.values;
 
 /**
  * Created by eric on 16/4/22.
@@ -33,7 +36,15 @@ public class CrawleTask extends TimerTask {
         schedulerDao = new MongoSchedulerDao();
         uranusClient = new UranusClient("uranus-scheduleLogger", 0);
         sendNumsMap = new HashMap<>();
-        collectTypes = Arrays.asList(CollectType.values());
+        collectTypes = Arrays.asList(values()).stream().filter(c -> {
+            switch (c) {
+                case C_A_A_N:
+                case C_A_A_D:
+                case C_A_A_S:
+                    return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
         loadConf();
     }
 
@@ -69,7 +80,7 @@ public class CrawleTask extends TimerTask {
             }
             sendNumsMap.put(collectType, sendNum);
         } catch (Exception e) {
-            logger.warn(e.getMessage(),e);
+            logger.warn(e.getMessage(), e);
         }
 
         int schedNum = sendNumsMap.get(collectType);
@@ -99,7 +110,7 @@ public class CrawleTask extends TimerTask {
                             scheduleObject.setnTime(scheduleObject.getTrigger().nextTriggeTime());
                             scheduleObject.setsCnt(scheduleObject.getsCnt() + 1);
                             schedulerDao.updateScheduler(scheduleObject);
-                            scheduleLogger.info("schedele log : [{}]",scheduleObject.toString());
+                            scheduleLogger.info("schedele log : [{}]", scheduleObject.toString());
                         }
                     } catch (Exception e) {
                         scheduleObject.setfCnt(scheduleObject.getsCnt() + 1);

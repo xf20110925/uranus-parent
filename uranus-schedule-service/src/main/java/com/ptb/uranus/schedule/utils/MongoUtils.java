@@ -23,8 +23,6 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sun.plugin.javascript.navig.JSType.Document;
-
 public enum MongoUtils {
     instance;
 
@@ -179,11 +177,11 @@ public enum MongoUtils {
 
         Builder options = new Builder();
         options.connectionsPerHost(300);
-        options.connectTimeout(15000);
+        options.connectTimeout(30000);
         options.maxWaitTime(5000);
         options.socketTimeout(0);
         options.threadsAllowedToBlockForConnectionMultiplier(5000);
         options.writeConcern(WriteConcern.SAFE);
-        instance.mongoClient = new MongoClient(new ServerAddress(ip, port));
+        instance.mongoClient = new MongoClient(new ServerAddress(ip, port), options.build());
     }
 }
