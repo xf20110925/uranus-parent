@@ -107,7 +107,7 @@ public class WeiboArticleParser {
         PhantomJSDriver driver = null;
         WeiboArticle weiboArticle = new WeiboArticle();
         try {
-            int i = 3;
+            int i = 5;
             String pageSource = "";
             while (i-- > 0) {
                 WebDriverPool webDriverFromPool = i > 0 ? WebDriverPoolUtils.instance().getWebDriverFromPool(false, true) : WebDriverPoolUtils.instance().getWebDriverFromPool(false, false);
@@ -115,7 +115,7 @@ public class WeiboArticleParser {
                 try {
                     driver.manage().addCookie(new Cookie("SUB", UUID.randomUUID().toString(), ".weibo.com", "/", null, false));
                     driver.get(aritcleUrl);
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                     pageSource = driver.getPageSource();
                     if (pageSource.contains("oid")) {
                         break;

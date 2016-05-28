@@ -7,7 +7,6 @@ import com.ptb.uranus.spider.weibo.parse.WeiboAccountParser;
 import com.ptb.uranus.spider.weibo.parse.WeiboArticleParser;
 import com.ptb.uranus.spider.weibo.parse.WeiboSearchAccountParser;
 import com.ptb.utils.string.RegexUtils;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +45,15 @@ public class WeiboSpider {
      */
     public Optional<WeiboArticle> getWeiboArticleByArticleUrl(String url) {
         try {
+
             if (url.contains("weibo")) {
-                WeiboArticle wbArticle = weiboArticleParse.getWeiboArticleByArticleUrl(url);
-                if (wbArticle != null) {
-                    return Optional.of(wbArticle);
+                int i = 0;
+                while (i++ < 3) {
+                    WeiboArticle wbArticle = weiboArticleParse.getWeiboArticleByArticleUrl(url);
+                    if (wbArticle != null) {
+                        return Optional.of(wbArticle);
+                    }
+
                 }
             }
         } catch (Exception e) {
@@ -57,22 +61,22 @@ public class WeiboSpider {
         }
         return Optional.empty();
     }
-    
-    
-    
+
+
     /**
      * 微博人物搜索
+     *
      * @param accouontName
      * @return
      */
-    public Optional<List<WeiboSearchAccount>> getWeiboSerachAccountByName(String accouontName){
-    	try {
-			return weiboSa.getWeiboSerachAccountByName(accouontName);
-		} catch (Exception e) {
-			 logger.warn(String.format("get weibo serach accountByName", accouontName), e);
-		}
-    	return Optional.empty();
-    	
+    public Optional<List<WeiboSearchAccount>> getWeiboSerachAccountByName(String accouontName) {
+        try {
+            return weiboSa.getWeiboSerachAccountByName(accouontName);
+        } catch (Exception e) {
+            logger.warn(String.format("get weibo serach accountByName", accouontName), e);
+        }
+        return Optional.empty();
+
     }
 
     /**

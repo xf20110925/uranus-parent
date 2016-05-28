@@ -30,8 +30,8 @@ public class UranusSdkTest {
     @Test
     public void getweixinArticleUrlByIdTest() {
         assertTrue(UranusSdk.i().collect(
-                "zhanhao668",
-                CollectType.C_WX_M_S,
+                "3897978039",
+                CollectType.C_WB_M_S,
                 new JustOneTrigger(new Date().getTime()), Priority.L1) != null);
     }
 
