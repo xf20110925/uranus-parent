@@ -1,5 +1,7 @@
 package com.ptb.uranus.schedule.trigger;
 
+import org.bson.Document;
+
 /**
  * 定时一次爬取触发器
  */

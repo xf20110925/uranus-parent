@@ -50,7 +50,13 @@ public class GsDataWeixinParser {
 					GsData qb = new GsData();
 					String wechatname = ele.select(".number-title a").text();
 					String weixinId = ele.select(".wx-sp span.gray").text();//微信号
-					String functionintroduce = ele.select(".wx-sp span.sp-txt").get(0).text();//功能介绍
+					String functionintroduce = "";
+					try {
+						functionintroduce = ele.select(".wx-sp span.sp-txt").get(0).text();//功能介绍
+					}catch (Exception e) {
+
+					}
+
 //					String included=ele.select(".wx-sp span.sp-txt a").text();//最近收录
 					String included=ele.select(".wx-sp span.sp-txt a").attr("href");//文章链接
 					String qrcodeurl=ele.select(".number-codes img").attr("src");//二维码

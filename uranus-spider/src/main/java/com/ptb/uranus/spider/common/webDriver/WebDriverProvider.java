@@ -90,6 +90,7 @@ public class WebDriverProvider {
         if (isNeedCache) {
             cliarg.add("--disk-cache=true");
             cliarg.add("--max-disk-cache-size=1000000");
+            cliarg.add("--disk-cache-path=/tmp/");
         } else {
             cliarg.add("--disk-cache=false");
         }

@@ -14,7 +14,6 @@ public class WebDriverPool extends SoftReferenceObjectPool<PhantomJSDriver> {
     @Override
     public synchronized void returnObject(PhantomJSDriver obj) throws Exception {
         try {
-            obj.navigate().to("http://www.sogou.com/docs/about.htm?v=1");
             super.returnObject(obj);
         } catch (Exception e) {
             obj.quit();

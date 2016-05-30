@@ -40,7 +40,7 @@ public enum MongoDBUtil {
 
         MongoClientOptions.Builder options = new MongoClientOptions.Builder();
         options.connectionsPerHost(300);
-        options.connectTimeout(15000);
+        options.connectTimeout(30000);
         options.maxWaitTime(5000);
         options.socketTimeout(0);
         options.writeConcern(WriteConcern.SAFE);

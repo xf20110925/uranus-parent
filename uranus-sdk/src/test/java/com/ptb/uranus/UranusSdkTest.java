@@ -30,8 +30,8 @@ public class UranusSdkTest {
     @Test
     public void getweixinArticleUrlByIdTest() {
         assertTrue(UranusSdk.i().collect(
-                "zhanhao668",
-                CollectType.C_WX_M_S,
+                "3897978039",
+                CollectType.C_WB_M_S,
                 new JustOneTrigger(new Date().getTime()), Priority.L1) != null);
     }
 
@@ -59,9 +59,10 @@ public class UranusSdkTest {
                 new PeriodicTrigger(10, TimeUnit.DAYS, new Date(), 3), Priority.L1) != null);
     }
 
+    @Test
     public void testJuesONE() {
-        assertTrue(UranusSdk.i().collect("http://weibo.cn/3974469906/D8pNEnAWG",
-                CollectType.C_WB_M_S,
+        assertTrue(UranusSdk.i().collect("1005052913327245:::-1",
+                CollectType.C_WB_A_N,
                 new JustOneTrigger(new Date().getTime()), Priority.L1) != null);
     }
 

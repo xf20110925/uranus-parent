@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+mvn clean package -DskipTests
 rm ./dist/
 HOME=$(cd "$(dirname "$0")/"; pwd)
 cd $HOME
@@ -9,4 +10,5 @@ sh uranus-scheduler/script/release.sh
 sh uranus-tools/script/release.sh
 sh uranus-asistant/script/release.sh
 cp -rf doc ./dist/
+mvn clean
 

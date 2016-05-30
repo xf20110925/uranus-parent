@@ -17,10 +17,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
-import org.slf4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class WeixinSpider {
                 }
             }
         } catch (Exception e) {
-            logger.warn("erro is Class getWeixinArticleByName {}" , wechatid);
+            logger.warn("erro is Class getWeixinArticleByName {}", wechatid);
         }
         return null;
     }
@@ -118,7 +118,7 @@ public class WeixinSpider {
             }
             return Optional.of(resultList);
         } catch (Exception e) {
-            logger.warn("error is Class getWinxinMatchingByName {}" , codition);
+            logger.warn("error is Class getWinxinMatchingByName {}", codition);
         }
         return Optional.empty();
 
@@ -296,7 +296,17 @@ public class WeixinSpider {
                 return Optional.of(ImmutablePair.of(postTime, new ArrayList<>()));
             } else {
                 return Optional.of(ImmutablePair.of(postTime,
-                        articles.stream().map(UrlFormatUtil::format).filter(url -> url.contains(biz)).collect(Collectors.toList()
+                        articles.stream().map(url -> {
+                                    try {
+
+
+                                        return UrlFormatUtil.format(url);
+                                    } catch (Exception e) {
+                                        return "";
+
+                                    }
+                                }
+                        ).filter(url -> url.contains(biz)).collect(Collectors.toList()
                         )));
             }
         } catch (Exception e) {
@@ -401,7 +411,7 @@ public class WeixinSpider {
 
             }
 
-            WeixinUtil.instance().getResultByPhoneSpider(articleUrl,60);
+            WeixinUtil.instance().getResultByPhoneSpider(articleUrl, 60);
             urlWithKey = WeixinUtil.instance().getPhoneResultByKey(redisBizkey);
 
 
