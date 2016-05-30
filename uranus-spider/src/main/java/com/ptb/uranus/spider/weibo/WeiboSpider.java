@@ -162,7 +162,12 @@ public class WeiboSpider {
 
     public Optional<WeiboAccount> getWeiboAccountByArticleUrl(String articleUrl) {
         try {
-            String mediaId = RegexUtils.sub(".*(?:weibo\\.com|m.weibo\\.cn)/([^/]*)/.*", articleUrl, 0);
+            String mediaId = null;
+            if(articleUrl.contains("weibo.com")){
+                mediaId = RegexUtils.sub(".*(?:weibo\\.com|m.weibo\\.cn)/([^/]*)/(.*)", articleUrl, 0);
+            }else if(articleUrl.contains("weibo.cn")){
+                mediaId = RegexUtils.sub(".*(?:weibo\\.com|m.weibo\\.cn)/([^/]*)/(.*)", articleUrl, 1);
+            }
             String mediaUrl = "http://m.weibo.cn/u/" + mediaId;
             Optional<WeiboAccount> weiboAccount = getWeiboAccountByHomePage(mediaUrl);
             return weiboAccount;
