@@ -147,7 +147,7 @@ public class SendObjectConvertUtil {
         } else {
             weiboArticleStatic.setPicture("");
         }
-        weiboArticleStatic.setArticleType((weiboArticle.getObjectType() == null)?"":weiboArticle.getObjectType());
+        weiboArticleStatic.setType((weiboArticle.getObjectType() == null)?"":weiboArticle.getObjectType());
         weiboArticleStatic.setKeywords(textAnalyzeResult.getAbstracts());
         weiboArticleStatic.setTitle("");
         weiboArticleStatic.setAuthor(weiboArticle.getMediaName());

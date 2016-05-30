@@ -5,7 +5,7 @@ package com.ptb.uranus.server.send.entity.article;
  */
 public class WeiboArticleStatic extends BasicArticleStatic{
     private String weiboId;
-    private String articleType;
+    private String type;
     private String picture;
 
     public String getWeiboId() {
@@ -16,12 +16,12 @@ public class WeiboArticleStatic extends BasicArticleStatic{
         this.weiboId = weiboId;
     }
 
-    public String getArticleType() {
-        return articleType;
+    public String getType() {
+        return type;
     }
 
-    public void setArticleType(String articleType) {
-        this.articleType = articleType;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getPicture() {
