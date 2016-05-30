@@ -59,7 +59,7 @@ public class WeiboScheduleService {
 
 
     public void checkAndAddToMediaStaticSchedule(String weiboID) {
-        if(!isScheduleMedia(weiboID)) {
+        if (!isScheduleMedia(weiboID)) {
             addMediaStaticSchedule(weiboID);
         }
     }
@@ -116,6 +116,7 @@ public class WeiboScheduleService {
         if (!schedulerByField.isPresent()) {
             SchedulableCollectCondition schedulableCollectCondition = (SchedulableCollectCondition) schedulerByField.get().getObj();
             schedulableCollectCondition.setConditon(getConditionByTemplate(containerID, lastPushMessagePostTime));
+            schedulerByField.get().setObjByT(schedulableCollectCondition);
             schedulerDao.updateScheduler(schedulerByField.get());
         }
     }
@@ -129,7 +130,7 @@ public class WeiboScheduleService {
     }
 
     public void addArticleDynamicScheduler(long postTime, String url) {
-        schedulerDao.addCollScheduler(new ScheduleObject<>(new JustOneTrigger(postTime * 1000 + dynamicDelayMill),
+        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(24, TimeUnit.HOURS, new Date(postTime + dynamicDelayMill), 7),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WB_A_D, url)));
     }
 

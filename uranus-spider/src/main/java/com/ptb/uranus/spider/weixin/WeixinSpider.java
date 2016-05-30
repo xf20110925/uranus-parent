@@ -103,7 +103,7 @@ public class WeixinSpider {
      * @param maxPageSouces
      * @return
      */
-    private Optional<List<GsData>> getWinxinMatchingByName(String codition, int maxPageSouces) {
+    public Optional<List<GsData>> getWinxinMatchingByName(String codition, int maxPageSouces) {
         try {
             Optional<List<GsData>> OptionList = gbDataWeixinParser.getWeixinAccountByIdOrName(codition, maxPageSouces);
             List<GsData> result = OptionList.get();

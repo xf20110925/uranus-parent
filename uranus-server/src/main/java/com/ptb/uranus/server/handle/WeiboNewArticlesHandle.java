@@ -28,14 +28,22 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
             String[] conditon = message.getBody().getConditon().split(":::");
-            String containerId = conditon[0];
+            Optional<ImmutablePair<Long, List<String>>> recentArticlesPair;
+
+            String id = conditon[0];
             long lastTime = Long.parseLong(conditon[1]);
-            Optional<ImmutablePair<Long, List<String>>> recentArticlesPair = weiboSpider.getRecentArticlesByContainerID(containerId, lastTime);
+            if(id.length()>10) {
+                recentArticlesPair = weiboSpider.getRecentArticlesByContainerID(id, lastTime);
+            }else{
+                recentArticlesPair = weiboSpider.getRecentArticlesByWeiboID(id, lastTime);
+            }
+
+
             if (recentArticlesPair.isPresent()) {
                 List<String> recentArticles = recentArticlesPair.get().getRight();
                 long lastestTime = recentArticlesPair.get().getLeft().longValue();
                 wbScheduleService.addArticleStaticSchedulers(recentArticles);
-                wbScheduleService.updateMediaCondition(message.getBody(), containerId, lastestTime);
+                wbScheduleService.updateMediaCondition(message.getBody(), id, lastestTime);
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
             }
