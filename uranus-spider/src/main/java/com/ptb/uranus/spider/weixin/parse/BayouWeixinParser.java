@@ -68,8 +68,8 @@ public class BayouWeixinParser {
             result = post(RECENT_ARTILES_URL, biz);
             DocumentContext parse = JsonPath.parse(result);
             String errorCode = parse.read("$.error").toString();
-            List reads = parse.read("$.msg");
             if ("0".equals(errorCode)) {
+                List reads = parse.read("$.msg");
                 requestNum.addAndGet(1);
                 List<String> urls = new ArrayList<>();
                 List<Long> cts = new ArrayList<>();
