@@ -1,10 +1,11 @@
 package com.ptb.uranus.server.handle;
 
+import com.alibaba.fastjson.JSON;
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.message.Message;
 import com.ptb.uranus.common.entity.CollectCondition;
-import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.schedule.service.WeixinScheduleService;
+import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -19,9 +20,11 @@ import java.util.Optional;
  */
 public class WeixinNewArticlesHandle implements CollectHandler {
     private static Logger ParseErroeLogger = LoggerFactory.getLogger("msg.fail");
+    private static Logger logger = LoggerFactory.getLogger(WeixinNewArticlesHandle.class);
 
     WeixinSpider weixinSpider = new WeixinSpider();
     WeixinScheduleService wxSchedule;
+
     public WeixinNewArticlesHandle(Sender sender) throws ConfigurationException {
         wxSchedule = new WeixinScheduleService();
     }
@@ -34,9 +37,10 @@ public class WeixinNewArticlesHandle implements CollectHandler {
             long lastTime = Long.parseLong(conditon[1]);
             Optional<ImmutablePair<Long, List<String>>> recentArticles = weixinSpider.getRecentArticlesByBiz(biz, lastTime);
             if (recentArticles.isPresent()) {
+                logger.info("wx new article: [%s]", JSON.toJSONString(recentArticles));
                 wxSchedule.addArticleStaticSchedulers(recentArticles.get().getRight());
                 wxSchedule.updateWeixinMediaCondition(message.getBody(), biz, recentArticles.get().getLeft());
-            }else {
+            } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {

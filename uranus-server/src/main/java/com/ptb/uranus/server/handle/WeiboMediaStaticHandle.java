@@ -41,6 +41,7 @@ public class WeiboMediaStaticHandle implements CollectHandler {
             if (wbAccount.isPresent()) {
                 WeiboMediaStatic weiboMediaStatic = SendObjectConvertUtil.weiboMediaStaticConvert(wbAccount.get());
                 sender.sendMediaStatic(weiboMediaStatic);
+
                 weiboScheduleService.addDetectNewArticlesSchedule(wbAccount.get().getContainerID(),wbAccount.get().getWeiboID());
                 weiboScheduleService.addWeiboMediaDynamicSchedule(message.getBody().getConditon());
             } else {

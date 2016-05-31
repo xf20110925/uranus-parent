@@ -63,11 +63,8 @@ public class SendObjectConvertUtil {
 
     public static WeixinArticleStatic weixinArticleStaticConvert(WxArticle wxArticle) {
         TextAnalyzeResult textAnalyzeResult;
-        logger.error("weixin article static!1");
         textAnalyzeResult = textAnalyzer.ArticleAnalyze(wxArticle.getContent());
-        logger.error("weixin article static!2");
         WeixinArticleStatic weixinArticleStatic = new WeixinArticleStatic();
-        logger.error("weixin article static!3");
         weixinArticleStatic.setUrl(wxArticle.getArticleUrl());
         weixinArticleStatic.setSurface(wxArticle.getCoverImgUrl());
         weixinArticleStatic.setAuthor(wxArticle.getAuthor());
