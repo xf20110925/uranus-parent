@@ -22,7 +22,6 @@ public class BayouWeixinParser {
     static Logger logger = Logger.getLogger(BayouWeixinParser.class);
     private String RECENT_ARTILES_URL = null;
     private String READ_LIKE_URL = null;
-    private String PROXY = null;
     static AtomicLong requestNum = new AtomicLong(0);
     static AtomicLong requestErrorNum = new AtomicLong(0);
 
@@ -32,7 +31,6 @@ public class BayouWeixinParser {
             conf.load("uranus.properties");
         } catch (ConfigurationException e) {
         }
-        PROXY = conf.getString("uranus.spider.wx.bayou.proxy", "114.113.237.136");
         READ_LIKE_URL = conf.getString("uranus.spider.wx.bayou.recentarticles.url", "http://43.241.211.196:23333/history");
         RECENT_ARTILES_URL = conf.getString("uranus.spider.wx.bayou.recentarticles.url", "http://43.241.211.196:23333/readlike");
     }
@@ -43,7 +41,7 @@ public class BayouWeixinParser {
 
     public Optional<ReadLikeNum> getReadLikeNumByArticleUrl(String wxArticleUrl) {
         try {
-            String result = post(READ_LIKE_URL, true, wxArticleUrl);
+            String result = post(READ_LIKE_URL, wxArticleUrl);
             DocumentContext parse = JsonPath.parse(result);
             String errorCode = parse.read("$.error").toString();
             if ("0".equals(errorCode)) {
@@ -67,7 +65,7 @@ public class BayouWeixinParser {
     public Optional<ImmutablePair<Long, List<String>>> getRecentArticlesByBiz(String biz, long lastArticlePostTime) {
         String result = null;
         try {
-            result = post(RECENT_ARTILES_URL, true, biz);
+            result = post(RECENT_ARTILES_URL, biz);
             DocumentContext parse = JsonPath.parse(result);
             String errorCode = parse.read("$.error").toString();
             List reads = parse.read("$.msg");
@@ -99,13 +97,8 @@ public class BayouWeixinParser {
         return Optional.empty();
     }
 
-     private String post(String url, boolean isUseProxy, String param) throws IOException {
-        Request request = null;
-        if (isUseProxy) {
-            request = Request.Post(url).viaProxy(PROXY).bodyString(param, null);
-        } else {
-            request = Request.Post(url).bodyString(param, null);
-        }
+    private String post(String url, String param) throws IOException {
+        Request request = Request.Post(url).bodyString(param, null);
         String result = request.execute().returnContent().asString();
         return result;
     }
