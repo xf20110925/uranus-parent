@@ -9,7 +9,6 @@ import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import org.ansj.util.MyStaticValue;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,6 @@ public class BusService {
         if (bus instanceof KafkaBus) {
             ((KafkaBus) bus).setConsumerThread(busConfig.getConsumerNum());
         }
-        MyStaticValue.getCRFSplitWord();
         bus.start(false, busConfig.workerNum);
         return;
     }
