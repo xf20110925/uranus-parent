@@ -41,7 +41,6 @@ public class WeixinScheduleService {
         return String.format("s::wx::biz::%s", biz);
     }
 
-
     public String getConditionByTemplate(String biz, long times) {
         return String.format(ConditonTemplate, biz, times);
     }
