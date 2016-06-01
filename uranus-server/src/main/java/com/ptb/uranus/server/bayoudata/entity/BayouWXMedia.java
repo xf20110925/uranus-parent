@@ -1,6 +1,8 @@
 package com.ptb.uranus.server.bayoudata.entity;
 
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Created by xuefeng on 2016/5/17.
  */
@@ -11,6 +13,7 @@ public class BayouWXMedia {
     private String id;
     private String bid;
     private String info;
+    private String headImage;
 
     public BayouWXMedia() {
     }
@@ -30,6 +33,9 @@ public class BayouWXMedia {
 
     public void setCode(String code) {
         this.code = code;
+        if(StringUtils.isNotBlank(code)){
+            headImage = "http://open.weixin.qq.com/qr/code/?username=" + code;
+        }
     }
 
     public String getQrcode() {
@@ -70,6 +76,14 @@ public class BayouWXMedia {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getHeadImage() {
+        return headImage;
+    }
+
+    public void setHeadImage(String headImage) {
+        this.headImage = headImage;
     }
 
     @Override
