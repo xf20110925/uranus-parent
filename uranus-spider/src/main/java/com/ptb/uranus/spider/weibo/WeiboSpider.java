@@ -91,7 +91,7 @@ public class WeiboSpider {
             String weiboHomeUrl = String.format("http://m.weibo.cn/u/%s/", weiboID);
             return Optional.of(weiboAccountParser.getWeiboAccount(weiboHomeUrl));
         } catch (Exception e) {
-            logger.warn(String.format("get weibo article by url [%s]", weiboID), e);
+            logger.warn(String.format("get weibo account by weibo id [%s]", weiboID), e);
         }
         return Optional.empty();
     }

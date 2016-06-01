@@ -27,7 +27,7 @@ public class WbArticleTest {
     @Test
     public void testGetArticleImgByUrlSuccess() {
 
-        Optional<WeiboArticle> weiboArticleOptional = weiboSpider.getWeiboArticleByArticleUrl("http://weibo.com/1401527553/DwFsxssYO");
+        Optional<WeiboArticle> weiboArticleOptional = weiboSpider.getWeiboArticleByArticleUrl("http://www.weibo.com/3269260640/DxPUa5Al1");
 
         assertEquals(weiboArticleOptional.isPresent(), true);
         WeiboArticle weiboArticle = weiboArticleOptional.get();
