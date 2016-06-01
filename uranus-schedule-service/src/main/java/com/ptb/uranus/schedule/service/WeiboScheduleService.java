@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
 public class WeiboScheduleService {
     private final long dynamicDelayMill;
     private final long detectArticleDelayMin;
-    private final long detectMediaMonthMin;
+    private final int dynamicFetchCount;
+    private final long dynamicFetchInterval;
     private SchedulerDao schedulerDao;
     private CacheDao cacheDao;
     String conditonField = "obj.conditon";
@@ -54,7 +55,8 @@ public class WeiboScheduleService {
         PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
         dynamicDelayMill = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weibo.article.dynamic.delay.minute", 60 * 24));
         detectArticleDelayMin = conf.getLong("uranus.scheduler.weibo.article.detect.delay.minute", 60 * 24);
-        detectMediaMonthMin = conf.getLong("uranus.scheduler.weibo.article.detect.delay.minute", 60 * 24 * 30);
+        dynamicFetchCount = conf.getInt("uranus.scheduler.weibo.article.dynamic.fetch.num", 7);
+        dynamicFetchInterval = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weibo.article.dynamic.interval.minute", 60*24));
     }
 
 
@@ -136,7 +138,7 @@ public class WeiboScheduleService {
     }
 
     public void addArticleDynamicScheduler(long postTime, String url) {
-        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(24, TimeUnit.HOURS, new Date(postTime + dynamicDelayMill), 7),
+        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(dynamicFetchInterval, TimeUnit.MINUTES, new Date(postTime + dynamicDelayMill), dynamicFetchCount),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WB_A_D, url)));
     }
 
