@@ -31,8 +31,8 @@ public class BayouWeixinParser {
             conf.load("uranus.properties");
         } catch (ConfigurationException e) {
         }
-        READ_LIKE_URL = conf.getString("uranus.spider.wx.bayou.recentarticles.url", "http://43.241.211.196:23333/history");
-        RECENT_ARTILES_URL = conf.getString("uranus.spider.wx.bayou.recentarticles.url", "http://43.241.211.196:23333/readlike");
+        RECENT_ARTILES_URL = conf.getString("uranus.spider.wx.bayou.recentarticles.url", "http://43.241.211.196:23333/history");
+        READ_LIKE_URL = conf.getString("uranus.spider.wx.bayou.readlike.url", "http://43.241.211.196:23333/readlike");
     }
 
     public BayouWeixinParser() {
@@ -123,6 +123,10 @@ public class BayouWeixinParser {
         urls.forEach(System.out::println);
         Collections.sort(postTimes, Collections.reverseOrder());
         System.out.println(postTimes);*/
+
+        BayouWeixinParser bayouWeixinParser = new BayouWeixinParser();
+        Optional<ReadLikeNum> readLikeNumByArticleUrl = bayouWeixinParser.getReadLikeNumByArticleUrl("http://mp.weixin.qq.com/s?__biz=MzA3OTgzMzUzOA==&mid=2651224266&idx=1&sn=e6ee94cc0e9a42643d5606eb9a1f11b0#rd");
+        System.out.println(readLikeNumByArticleUrl.get());
 
     }
 
