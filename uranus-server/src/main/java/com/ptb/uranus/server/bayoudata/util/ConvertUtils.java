@@ -10,6 +10,8 @@ import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
 import com.ptb.uranus.spider.weixin.parse.WxArticleParser;
 
+import java.util.Map;
+
 /**
  * Created by xuefeng on 2016/5/17.
  */
@@ -31,18 +33,20 @@ public class ConvertUtils {
         return weixinMediaStatic;
     }
 
-    public static WeixinArticleStatic convertWXArticleStatic(BayouWXArticleStatic wxArticleStatic) {
-        String pageSource = wxArticleStatic.getContent();
+    public static WeixinArticleStatic convertWXArticleStatic(Map<String, String> articleMap) {
+        String pageSource = articleMap.get("content");
         WxArticle wxArticle = wxArticleParser.parseArticlByPageSource(pageSource);
+        wxArticle.setArticleUrl(articleMap.get("url"));
         return SendObjectConvertUtil.weixinArticleStaticConvert(wxArticle);
     }
 
-    public static BasicArticleDynamic convertWXArticleDynamic(BayouWXArticleDynamic wxArticleDynamic){
+    public static BasicArticleDynamic convertWXArticleDynamic(BayouWXArticleDynamic bayouDynamic){
         BasicArticleDynamic wxAritcleDynamic = new BasicArticleDynamic();
-        wxAritcleDynamic.setReads(wxArticleDynamic.getRead_num());
-        wxAritcleDynamic.setLikes(wxArticleDynamic.getLike_num());
+        wxAritcleDynamic.setReads(bayouDynamic.getRead_num());
+        wxAritcleDynamic.setLikes(bayouDynamic.getLike_num());
         wxAritcleDynamic.setPlat(1);
         wxAritcleDynamic.setTime(System.currentTimeMillis());
+        wxAritcleDynamic.setUrl(bayouDynamic.getUrl());
         return wxAritcleDynamic;
     }
 }

@@ -3,6 +3,7 @@ package com.ptb.uranus.server.bayoudata;
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleDynamic;
@@ -32,8 +33,7 @@ import static org.bouncycastle.asn1.x500.style.RFC4519Style.st;
  * Created by xuefeng on 2016/5/17.
  */
 public class BayouWeixinSync {
-    private static Logger logger = Logger.getLogger(BayouWeixinSync.class);
-    private static Logger requestLogger = Logger.getLogger("request.log");
+    private static Logger requestLogger = Logger.getLogger("bayou.request");
 
     private static String RANGEURL = null;
     private static String DATAURL = null;
@@ -42,7 +42,7 @@ public class BayouWeixinSync {
     private static final String DYNAMICARTICLEFEILD = "click";
     private static int tryNum = 3;
 
-    Sender sender = null;
+    Sender sender;
     //存放媒体biz和postTime键值对
     Map<String, Long> mediaMap = null;
     WeixinScheduleService wxSceduleService = null;
@@ -117,8 +117,8 @@ public class BayouWeixinSync {
             try {
                 pageSource = HttpUtil.getPageSourceByClient(rangeUrl);
                 DocumentContext parse = JsonPath.parse(pageSource);
-                int minId = Integer.parseInt(parse.read("$.minid").toString());
-                int maxId = Integer.parseInt(parse.read("$.maxid").toString());
+                int minId = parse.read("$.minid", Integer.class);
+                int maxId = parse.read("$.maxid", Integer.class);
                 return new RangeId(minId, maxId);
             } catch (Exception e) {
                 requestLogger.error(String.format("request url[%s] error response data[%s] exception[%s] ", rangeUrl, pageSource, e));
@@ -165,11 +165,11 @@ public class BayouWeixinSync {
         return Optional.empty();
     }
 
-    private Optional<List<BayouWXArticleStatic>> getRangeArticleStatic(String articleStaticUrl) {
+    private Optional<List<Map<String, String>>> getRangeArticleStatic(String articleStaticUrl) {
         String pageSource = null;
         try {
             pageSource = HttpUtil.getPageSourceByClient(articleStaticUrl);
-            List<BayouWXArticleStatic> wxArticleStatics = JSON.parseArray(JsonPath.parse(pageSource).read("$.pages").toString(), BayouWXArticleStatic.class);
+            List wxArticleStatics = JsonPath.parse(pageSource).read("$.pages", List.class);
             return Optional.of(wxArticleStatics);
         } catch (Exception e) {
             requestLogger.error(String.format("get article static from url[%s] error response data[%s] exception[%s]", articleStaticUrl, pageSource, e));
@@ -192,9 +192,7 @@ public class BayouWeixinSync {
 
     private void sendMedias(Optional<List<BayouWXMedia>> wxMediasOpt) {
         wxMediasOpt.ifPresent(wxMedias -> {
-            wxMedias.stream().peek(wxMedia -> {
-                WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
-            }).forEach(wxMedia -> {
+            wxMedias.stream().forEach(wxMedia -> {
                 WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
                 //发送到kafka
                 sender.sendMediaStatic(weixinMediaStatic);
@@ -217,8 +215,8 @@ public class BayouWeixinSync {
             } else {
                 mediaQueue.add(mediaDataUrl);
             }
+            IdRecordUtil.syncMediaId(i);
         }
-        IdRecordUtil.syncMediaId(maxId);
         //重试失败的url
         if (!mediaQueue.isEmpty()) {
             mediaQueue.forEach(url -> {
@@ -231,7 +229,7 @@ public class BayouWeixinSync {
         }
     }
 
-    private void sendArticleStatics(Optional<List<BayouWXArticleStatic>> wxArticlesOpt) {
+    private void sendArticleStatics(Optional<List<Map<String, String>>> wxArticlesOpt) {
         wxArticlesOpt.ifPresent(wxArticles -> {
             wxArticles.forEach(wxArticle -> {
                 //发送到kafka，更新媒体发现新文章中的媒体最新文章发文时间
@@ -250,17 +248,17 @@ public class BayouWeixinSync {
         String articleStaticUrl = null;
         for (long i = minId; i < maxId; i += 100) {
             articleStaticUrl = String.format(DATAURL, STATICARTICLEFEILD, i);
-            Optional<List<BayouWXArticleStatic>> wxArticleStaticsOpt = getRangeArticleStatic(articleStaticUrl);
+            Optional<List<Map<String, String>>> wxArticleStaticsOpt = getRangeArticleStatic(articleStaticUrl);
             if (wxArticleStaticsOpt.isPresent()) {
                 sendArticleStatics(wxArticleStaticsOpt);
             } else {
                 staticsQueue.add(articleStaticUrl);
             }
+            IdRecordUtil.syncStaticArticleId(i);
         }
-        IdRecordUtil.syncStaticArticleId(maxId);
         if (!staticsQueue.isEmpty()) {
             staticsQueue.forEach(url -> {
-                Optional<List<BayouWXArticleStatic>> rangeArticleStatics = getRangeArticleStatic(url);
+                Optional<List<Map<String, String>>> rangeArticleStatics = getRangeArticleStatic(url);
                 sendArticleStatics(rangeArticleStatics);
             });
         }
@@ -292,8 +290,8 @@ public class BayouWeixinSync {
             } else {
                 dynamicsQueue.add(articleDynamicUrl);
             }
+            IdRecordUtil.syncDynamicArticleId(i);
         }
-        IdRecordUtil.syncDynamicArticleId(maxId);
         if (!dynamicsQueue.isEmpty()) {
             dynamicsQueue.forEach(url -> {
                 Optional<List<BayouWXArticleDynamic>> rangeArticleStatics = getRangeArticleDynamic(url);
@@ -307,16 +305,11 @@ public class BayouWeixinSync {
     }
 
     public static void main(String[] args) throws ConfigurationException {
-        BayouWeixinSync bayouWeixinSync = new BayouWeixinSync(new BusSender(new KafkaBus()));
-       /* bayouWeixinSync.addMedia("biz1", 100);
-        bayouWeixinSync.addMedia("biz1", 200);
-        bayouWeixinSync.addMedia("biz2", 100);
-        bayouWeixinSync.addMedia("biz2", 300);
-        bayouWeixinSync.addMedia("biz2", 500);
-        System.out.println(bayouWeixinSync.getMediaMap());*/
-        bayouWeixinSync.syncMedias();
+        Bus bus = new KafkaBus();
+        bus.start(false, 3);
+        BayouWeixinSync bayouWeixinSync = new BayouWeixinSync(new BusSender(bus));
+//        bayouWeixinSync.syncMedias();
 //        bayouWeixinSync.syncArticleDynamics();
 //        bayouWeixinSync.syncArticleStatics();
-
     }
 }
