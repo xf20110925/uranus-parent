@@ -3,6 +3,7 @@ package com.ptb.uranus.server.bayoudata;
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleDynamic;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleStatic;
@@ -11,6 +12,7 @@ import com.ptb.uranus.server.bayoudata.entity.BayouWXMedia;
 import com.ptb.uranus.server.bayoudata.exception.BayouException;
 import com.ptb.uranus.server.bayoudata.util.ConvertUtils;
 import com.ptb.uranus.server.bayoudata.util.IdRecordUtil;
+import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeixinArticleStatic;
@@ -190,7 +192,9 @@ public class BayouWeixinSync {
 
     private void sendMedias(Optional<List<BayouWXMedia>> wxMediasOpt) {
         wxMediasOpt.ifPresent(wxMedias -> {
-            wxMedias.forEach(wxMedia -> {
+            wxMedias.stream().peek(wxMedia -> {
+                WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
+            }).forEach(wxMedia -> {
                 WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
                 //发送到kafka
                 sender.sendMediaStatic(weixinMediaStatic);
@@ -298,17 +302,21 @@ public class BayouWeixinSync {
         }
     }
 
-     private Map<String, Long> getMediaMap() {
+    private Map<String, Long> getMediaMap() {
         return mediaMap;
     }
 
     public static void main(String[] args) throws ConfigurationException {
-        BayouWeixinSync bayouWeixinSync = new BayouWeixinSync(null);
-        bayouWeixinSync.addMedia("biz1", 100);
+        BayouWeixinSync bayouWeixinSync = new BayouWeixinSync(new BusSender(new KafkaBus()));
+       /* bayouWeixinSync.addMedia("biz1", 100);
         bayouWeixinSync.addMedia("biz1", 200);
         bayouWeixinSync.addMedia("biz2", 100);
         bayouWeixinSync.addMedia("biz2", 300);
         bayouWeixinSync.addMedia("biz2", 500);
-        System.out.println(bayouWeixinSync.getMediaMap());
+        System.out.println(bayouWeixinSync.getMediaMap());*/
+        bayouWeixinSync.syncMedias();
+//        bayouWeixinSync.syncArticleDynamics();
+//        bayouWeixinSync.syncArticleStatics();
+
     }
 }
