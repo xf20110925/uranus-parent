@@ -117,8 +117,7 @@ public class WeixinScheduleService {
     }
 
     public void addArticleDynamicScheduler(long postTime, String url) {
-
-        schedulerDao.addCollScheduler(new ScheduleObject<>(new JustOneTrigger(postTime * 1000 + dynamicDelayMill),
+        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(24, TimeUnit.HOURS, new Date(postTime * 1000 + dynamicDelayMill), 7),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WX_A_D, url)));
     }
 

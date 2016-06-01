@@ -33,14 +33,19 @@ public class WeiboScheduleService {
     private CacheDao cacheDao;
     String conditonField = "obj.conditon";
     String conditonTemplate = "%s:::%d";
+    String wbIDToContainerIDTemplate= "wbcid:::%s";
 
+
+    public String getCacheContainerIDByTemplate(String weiboid) {
+        return String.format(wbIDToContainerIDTemplate, weiboid);
+    }
 
     public String getCacheBizKeyByTemplate(String weiboId) {
         return String.format("s::wb::cid::%s", weiboId);
     }
 
-    public String getConditionByTemplate(String containerID, long times) {
-        return String.format(conditonTemplate, containerID, times);
+    public String getConditionByTemplate(String weiboid, long times) {
+        return String.format(conditonTemplate, weiboid, times);
     }
 
     public WeiboScheduleService() throws ConfigurationException {
@@ -59,7 +64,7 @@ public class WeiboScheduleService {
 
 
     public void checkAndAddToMediaStaticSchedule(String weiboID) {
-        if(!isScheduleMedia(weiboID)) {
+        if (!isScheduleMedia(weiboID)) {
             addMediaStaticSchedule(weiboID);
         }
     }
@@ -79,6 +84,7 @@ public class WeiboScheduleService {
     }
 
     public void addDetectNewArticlesSchedule(String containerId, String weiboID) {
+        setContainerIDByWeiboID(containerId,weiboID);
         if (!cacheDao.hasKey(getCacheBizKeyByTemplate(weiboID)) &&
                 !(schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("%s.*", containerId))).isPresent())) {
             schedulerDao.addCollScheduler(
@@ -90,7 +96,7 @@ public class WeiboScheduleService {
                             Priority.L2,
                             new SchedulableCollectCondition(
                                     CollectType.C_WB_A_N,
-                                    getConditionByTemplate(containerId, -1)
+                                    getConditionByTemplate(weiboID, -1)
                             )
                     )
             );
@@ -116,6 +122,7 @@ public class WeiboScheduleService {
         if (!schedulerByField.isPresent()) {
             SchedulableCollectCondition schedulableCollectCondition = (SchedulableCollectCondition) schedulerByField.get().getObj();
             schedulableCollectCondition.setConditon(getConditionByTemplate(containerID, lastPushMessagePostTime));
+            schedulerByField.get().setObjByT(schedulableCollectCondition);
             schedulerDao.updateScheduler(schedulerByField.get());
         }
     }
@@ -129,8 +136,18 @@ public class WeiboScheduleService {
     }
 
     public void addArticleDynamicScheduler(long postTime, String url) {
-        schedulerDao.addCollScheduler(new ScheduleObject<>(new JustOneTrigger(postTime * 1000 + dynamicDelayMill),
+        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(24, TimeUnit.HOURS, new Date(postTime + dynamicDelayMill), 7),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WB_A_D, url)));
     }
 
+    public String getContainerIDByWeiboID(String id) {
+        String cid = getCacheContainerIDByTemplate(id);
+        String value = cacheDao.getValue(cid);
+        return value;
+    }
+
+    public void setContainerIDByWeiboID(String weiboid,String containerId) {
+        String cid = getCacheContainerIDByTemplate(weiboid);
+        cacheDao.setValue(cid,containerId);
+    }
 }
