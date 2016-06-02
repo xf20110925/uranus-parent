@@ -16,8 +16,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by eric on 15/12/8.
@@ -46,7 +48,6 @@ public class WxArticleParser {
     public WxArticle parseArticlByPageSource(String pageSource) {
 
 
-
         Document html = Jsoup.parse(pageSource);
         String title = html.select(".rich_media_title").first().text();
         String nickName = html.select(".profile_nickname").text();
@@ -67,7 +68,36 @@ public class WxArticleParser {
         String coverImgUrl = "";
 
         Elements scripts = html.select("script[type*=\"text/javascript\"]");
-        for (Element script : scripts) {
+        List<Element> scriptList = scripts.parallelStream().filter(script -> script.toString().contains("var appuin =")).collect(Collectors.toList());
+        if (!scriptList.isEmpty()) {
+            String text = scriptList.get(0).toString();
+            Matcher matcher = bizRegex.matcher(text);
+            if (matcher.find() && matcher.groupCount() > 0) {
+                biz = matcher.group(1);
+            }
+
+            Matcher matcher1 = headImgRegex.matcher(text);
+            if (matcher1.find() && matcher1.groupCount() > 0) {
+                headImgUrl = matcher1.group(1);
+            }
+            String sub = RegexUtils.sub(".*var ct = \"([^\"]*)\";.*", text, 0);
+            if (sub != null) {
+                postTime = Long.parseLong(sub);
+            }
+            if (wxid == null || wxid.length() == 0) {
+                //wxid = RegexUtils.sub(".*var user_name = \"([^\"]*)\";.*", text, 0);
+                wxid = "";
+            }
+            Matcher matcher2 = originalLinkRegex.matcher(text);
+            if (matcher2.find() && matcher2.groupCount() > 0) {
+                sourceLink = matcher2.group(1);
+            }
+            Matcher matcher3 = coverImgRegex.matcher(text);
+            if (matcher3.find() && matcher3.groupCount() > 0) {
+                coverImgUrl = matcher3.group(1);
+            }
+        }
+       /* for (Element script : scripts) {
             String text = script.toString();
             if (text.contains("var appuin =")) {
                 Matcher matcher = bizRegex.matcher(text);
@@ -97,7 +127,7 @@ public class WxArticleParser {
                 }
             }
 
-        }
+        }*/
 
         WxArticle article = new WxArticle(title, nickName, content, wxid, brief, postTime, biz, headImgUrl, author);
         article.setSourceLink(sourceLink);
@@ -119,7 +149,8 @@ public class WxArticleParser {
         wxArticle.setArticleUrl(articleUrl);
         return wxArticle;
     }
-    public ReadLikeNum parseReadLikeNumByPageSource(String pageSource){
+
+    public ReadLikeNum parseReadLikeNumByPageSource(String pageSource) {
         Document html = Jsoup.parse(pageSource);
         String readNum = html.select("#readNum3").text();
         String likeNum = html.select("#likeNum3").text();
@@ -129,17 +160,17 @@ public class WxArticleParser {
     public ReadLikeNum parseReadLikeNumByJson(String s) {
         DocumentContext parse = JsonPath.parse(s);
         int readNum = -1, likeNum = -1;
-        try{
+        try {
             readNum = parse.read("$.appmsgstat.read_num");
             likeNum = parse.read("$.appmsgstat.like_num");
             int realReadNum = parse.read("$.appmsgstat.real_read_num");
-            readNum = realReadNum > 0 ? realReadNum: readNum;
+            readNum = realReadNum > 0 ? realReadNum : readNum;
 
-        }catch (Exception e){
-            System.out.println("parseReadLikeNumByJson "+JSON.toJSON(parse)+e);
+        } catch (Exception e) {
+            System.out.println("parseReadLikeNumByJson " + JSON.toJSON(parse) + e);
         }
 
-        return new ReadLikeNum(readNum,likeNum);
+        return new ReadLikeNum(readNum, likeNum);
     }
 }
 
