@@ -64,7 +64,7 @@ public class BayouWeixinSync {
         mediaMap = new HashMap<>();
     }
 
-    private void addMedia(String mediaBiz, long nextPostTime) {
+    private synchronized void addMedia(String mediaBiz, long nextPostTime) {
         if (mediaMap.containsKey(mediaBiz)) {
             Long lastPostTime = mediaMap.get(mediaBiz);
             if (nextPostTime > lastPostTime) {
@@ -231,7 +231,7 @@ public class BayouWeixinSync {
 
     private void sendArticleStatics(Optional<List<Map<String, String>>> wxArticlesOpt) {
         wxArticlesOpt.ifPresent(wxArticles -> {
-            wxArticles.forEach(wxArticle -> {
+            wxArticles.parallelStream().forEach(wxArticle -> {
                 //发送到kafka，更新媒体发现新文章中的媒体最新文章发文时间
                 WeixinArticleStatic wxArticleStatic = ConvertUtils.convertWXArticleStatic(wxArticle);
                 sender.sendArticleStatic(wxArticleStatic);
@@ -310,6 +310,6 @@ public class BayouWeixinSync {
         BayouWeixinSync bayouWeixinSync = new BayouWeixinSync(new BusSender(bus));
 //        bayouWeixinSync.syncMedias();
 //        bayouWeixinSync.syncArticleDynamics();
-//        bayouWeixinSync.syncArticleStatics();
+        bayouWeixinSync.syncArticleStatics();
     }
 }
