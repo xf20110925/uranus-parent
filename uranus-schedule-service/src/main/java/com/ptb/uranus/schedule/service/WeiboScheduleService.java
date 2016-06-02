@@ -85,10 +85,9 @@ public class WeiboScheduleService {
         );
     }
 
-    public void addDetectNewArticlesSchedule(String containerId, String weiboID) {
-        setContainerIDByWeiboID(containerId,weiboID);
+    public void addDetectNewArticlesSchedule(String weiboID) {
         if (!cacheDao.hasKey(getCacheBizKeyByTemplate(weiboID)) &&
-                !(schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("%s.*", containerId))).isPresent())) {
+                !(schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("%s.*", weiboID))).isPresent())) {
             schedulerDao.addCollScheduler(
                     new ScheduleObject<>(
                             new PeriodicTrigger(detectArticleDelayMin,
@@ -119,13 +118,15 @@ public class WeiboScheduleService {
 
     }
 
-    public void updateMediaCondition(CollectCondition LastCondition, String containerID, Long lastPushMessagePostTime) {
+    public void updateMediaCondition(CollectCondition LastCondition, String weiboID, Long lastPushMessagePostTime) {
         Optional<ScheduleObject> schedulerByField = schedulerDao.getSchedulerByField(conditonField, LastCondition.getConditon());
         if (!schedulerByField.isPresent()) {
             SchedulableCollectCondition schedulableCollectCondition = (SchedulableCollectCondition) schedulerByField.get().getObj();
-            schedulableCollectCondition.setConditon(getConditionByTemplate(containerID, lastPushMessagePostTime));
+            schedulableCollectCondition.setConditon(getConditionByTemplate(weiboID, lastPushMessagePostTime));
             schedulerByField.get().setObjByT(schedulableCollectCondition);
             schedulerDao.updateScheduler(schedulerByField.get());
+        }else{
+            addDetectNewArticlesSchedule(weiboID);
         }
     }
 

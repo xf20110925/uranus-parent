@@ -109,6 +109,8 @@ public class WeixinScheduleService {
             SchedulableCollectCondition schedulableCollectCondition = (SchedulableCollectCondition) schedulerByField.get().getObj();
             schedulableCollectCondition.setConditon(getConditionByTemplate(biz, lastPushMessagePostTime));
             schedulerDao.updateScheduler(schedulerByField.get());
+        }else{
+            addWeixinDetectNewArticlesSchedule(biz);
         }
     }
 
