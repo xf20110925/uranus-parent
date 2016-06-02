@@ -39,7 +39,7 @@ public class WeixinArticleDynamicHandle implements CollectHandler {
             if (readLikeNum.isPresent()) {
                 BasicArticleDynamic wxArticleDynamic = SendObjectConvertUtil.wxArticleDynamicConvert(readLikeNum.get());
                 wxArticleDynamic.setUrl(message.getBody().getConditon());
-                wxSchedule.checkAndAddToMediaStaticSchedule(wxArticleDynamic.getUrl());
+//                wxSchedule.checkAndAddToMediaStaticSchedule(wxArticleDynamic.getUrl());
                 sender.sendArticleDynamic(wxArticleDynamic);
             } else {
                 ParseErroeLogger.error(new String(message.getRaw()));

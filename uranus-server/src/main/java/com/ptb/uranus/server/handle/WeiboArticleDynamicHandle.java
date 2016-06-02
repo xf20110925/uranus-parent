@@ -35,7 +35,7 @@ public class WeiboArticleDynamicHandle implements CollectHandler {
             Optional<WeiboArticle> weiboArticle = weiboSpider.getWeiboArticleByArticleUrl(message.getBody().getConditon());
             if (weiboArticle.isPresent()) {
                 BasicArticleDynamic wbArticleDynamic = SendObjectConvertUtil.weiboArticleDynamicConvert(weiboArticle.get());
-                weiboScheduleService.checkAndAddToMediaStaticSchedule(weiboArticle.get().getMediaId());
+//                weiboScheduleService.checkAndAddToMediaStaticSchedule(weiboArticle.get().getMediaId());
                 sender.sendArticleDynamic(wbArticleDynamic);
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
