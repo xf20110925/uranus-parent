@@ -7,7 +7,6 @@ import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleDynamic;
-import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleStatic;
 import com.ptb.uranus.server.bayoudata.entity.IdRecord;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXMedia;
 import com.ptb.uranus.server.bayoudata.exception.BayouException;
@@ -24,9 +23,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.st;
 
 
 /**

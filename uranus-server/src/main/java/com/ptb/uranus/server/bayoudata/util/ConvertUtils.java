@@ -1,7 +1,6 @@
 package com.ptb.uranus.server.bayoudata.util;
 
 import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleDynamic;
-import com.ptb.uranus.server.bayoudata.entity.BayouWXArticleStatic;
 import com.ptb.uranus.server.bayoudata.entity.BayouWXMedia;
 import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeixinArticleStatic;
