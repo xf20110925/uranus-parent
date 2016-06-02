@@ -139,8 +139,5 @@ public class UranusSdk implements Collector {
         return UrlFormatUtil.format(url);
     }
 
-    public static void main(String[] args) {
-        String collect = UranusSdk.i().collect("MzA5NzIzMjg3OQ==", CollectType.C_WX_A_N, new JustOneTrigger(new Date().getTime()), Priority.L1);
-        System.out.println(collect);
-    }
+
 }
