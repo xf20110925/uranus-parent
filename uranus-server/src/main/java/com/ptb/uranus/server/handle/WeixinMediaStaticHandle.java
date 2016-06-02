@@ -34,6 +34,9 @@ public class WeixinMediaStaticHandle implements CollectHandler {
     }
 
     public void handle(Bus bus, Message<CollectCondition> message) {
+//        if(true) {
+//            return ;
+//        }
         try {
             Optional<String> identify;
             try {

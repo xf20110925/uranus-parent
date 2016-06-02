@@ -33,12 +33,13 @@ public class WeixinScheduleService {
     public CacheDao cacheDao;
     public final static String ConditonField = "obj.conditon";
     public final static String ConditonTemplate = "%s:::%d";
+    private long dynamicFetchInterval;
+    private int dynamicFetchCount;
 
 
     public String getCacheBizKeyByTemplate(String biz) {
         return String.format("s::wx::biz::%s", biz);
     }
-
 
     public String getConditionByTemplate(String biz, long times) {
         return String.format(ConditonTemplate, biz, times);
@@ -50,6 +51,8 @@ public class WeixinScheduleService {
         PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
         dynamicDelayMill = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weixin.article.dynamic.delay.minute", 60 * 24));
         detectArticleDelayMin = conf.getLong("uranus.scheduler.weixin.article.detect.delay.minute", 60 * 24);
+        dynamicFetchCount = conf.getInt("uranus.scheduler.weixin.article.dynamic.fetch.num", 7);
+        dynamicFetchInterval = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weixin.article.dynamic.interval.minute", 60*24));
     }
 
 
@@ -106,6 +109,8 @@ public class WeixinScheduleService {
             SchedulableCollectCondition schedulableCollectCondition = (SchedulableCollectCondition) schedulerByField.get().getObj();
             schedulableCollectCondition.setConditon(getConditionByTemplate(biz, lastPushMessagePostTime));
             schedulerDao.updateScheduler(schedulerByField.get());
+        }else{
+            addWeixinDetectNewArticlesSchedule(biz);
         }
     }
 
@@ -117,7 +122,8 @@ public class WeixinScheduleService {
     }
 
     public void addArticleDynamicScheduler(long postTime, String url) {
-        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(24, TimeUnit.HOURS, new Date(postTime * 1000 + dynamicDelayMill), 7),
+
+        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(dynamicFetchInterval, TimeUnit.MILLISECONDS, new Date(postTime * 1000 + dynamicDelayMill), dynamicFetchCount),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WX_A_D, url)));
     }
 

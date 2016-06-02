@@ -30,13 +30,14 @@ public class WeixinArticleStaticHandle implements CollectHandler {
     }
 
     public void handle(Bus bus, Message<CollectCondition> message) {
+
         try{
+
             Optional<WxArticle> wxArticle = weixinSpider.getArticleByUrl(message.getBody().getConditon());
             if(wxArticle.isPresent()){
                 WeixinArticleStatic weixinArticleStatic = SendObjectConvertUtil.weixinArticleStaticConvert(wxArticle.get());
                 sender.sendArticleStatic(weixinArticleStatic);
 
-                wxSchedule.checkAndAddToMediaStaticSchedule(wxArticle.get().getArticleUrl());
                 wxSchedule.addArticleDynamicScheduler(wxArticle.get().getPostTime(), message.getBody().getConditon());
             }else{
                 logger.error(JSON.toJSONString(message));
