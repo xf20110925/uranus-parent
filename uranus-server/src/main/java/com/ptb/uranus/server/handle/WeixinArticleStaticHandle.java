@@ -37,7 +37,7 @@ public class WeixinArticleStaticHandle implements CollectHandler {
             if(wxArticle.isPresent()){
                 WeixinArticleStatic weixinArticleStatic = SendObjectConvertUtil.weixinArticleStaticConvert(wxArticle.get());
                 sender.sendArticleStatic(weixinArticleStatic);
-
+/*                wxSchedule.checkAndAddToMediaStaticSchedule(weixinArticleStatic.getUrl());*/
                 wxSchedule.addArticleDynamicScheduler(wxArticle.get().getPostTime(), message.getBody().getConditon());
             }else{
                 logger.error(JSON.toJSONString(message));

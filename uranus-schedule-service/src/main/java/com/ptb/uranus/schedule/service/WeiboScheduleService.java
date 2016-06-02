@@ -56,7 +56,7 @@ public class WeiboScheduleService {
         dynamicDelayMill = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weibo.article.dynamic.delay.minute", 60 * 24));
         detectArticleDelayMin = conf.getLong("uranus.scheduler.weibo.article.detect.delay.minute", 60 * 24);
         dynamicFetchCount = conf.getInt("uranus.scheduler.weibo.article.dynamic.fetch.num", 7);
-        dynamicFetchInterval = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weibo.article.dynamic.interval.minute", 60*24));
+        dynamicFetchInterval = conf.getInt("uranus.scheduler.weibo.article.dynamic.interval.minute", 60*24);
     }
 
 

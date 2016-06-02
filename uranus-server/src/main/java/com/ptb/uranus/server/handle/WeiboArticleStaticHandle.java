@@ -31,10 +31,10 @@ public class WeiboArticleStaticHandle implements CollectHandler {
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
             WeiboSpider weiboSpider = new WeiboSpider();
+
             Optional<WeiboArticle> weiboArticle = weiboSpider.getWeiboArticleByArticleUrl(message.getBody().getConditon());
             if (weiboArticle.isPresent()) {
                 WeiboArticleStatic weiboArticleStatic = SendObjectConvertUtil.weiboArticleStaticConvert(weiboArticle.get());
-//                weiboScheduleService.checkAndAddToMediaStaticSchedule(weiboArticle.get().getMediaId());
                 weiboScheduleService.addArticleDynamicScheduler(weiboArticle.get().getPostTime(), weiboArticle.get().getArticleUrl());
                 sender.sendArticleStatic(weiboArticleStatic);
             }

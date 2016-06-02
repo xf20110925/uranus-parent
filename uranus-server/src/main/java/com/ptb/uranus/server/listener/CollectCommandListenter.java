@@ -31,7 +31,6 @@ public class CollectCommandListenter implements MessageListener {
         commandHandlerMap.put(CollectType.C_WB_M_S, new WeiboMediaStaticHandle(sender));
         commandHandlerMap.put(CollectType.C_WX_A_D, new WeixinArticleDynamicHandle(sender));
         commandHandlerMap.put(CollectType.C_WX_A_S, new WeixinArticleStaticHandle(sender));
-        commandHandlerMap.put(CollectType.C_WX_M_D, new WeixinMediaDynamicHandle(sender));
         commandHandlerMap.put(CollectType.C_WX_M_S, new WeixinMediaStaticHandle(sender));
 /*        commandHandlerMap.put(CollectType.C_A_A_N, new CommonNewArticlesHandle(sender));*/
         commandHandlerMap.put(CollectType.C_WX_A_N, new WeixinNewArticlesHandle(sender));

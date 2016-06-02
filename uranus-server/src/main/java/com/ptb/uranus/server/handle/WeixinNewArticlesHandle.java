@@ -38,8 +38,8 @@ public class WeixinNewArticlesHandle implements CollectHandler {
             Optional<ImmutablePair<Long, List<String>>> recentArticles = weixinSpider.getRecentArticlesByBiz(biz, lastTime);
             if (recentArticles.isPresent()) {
                 logger.info("wx new article: [%s]", JSON.toJSONString(recentArticles));
+
                 wxSchedule.addArticleStaticSchedulers(recentArticles.get().getRight());
-                wxSchedule.updateWeixinMediaCondition(message.getBody(), biz, recentArticles.get().getLeft());
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
             }

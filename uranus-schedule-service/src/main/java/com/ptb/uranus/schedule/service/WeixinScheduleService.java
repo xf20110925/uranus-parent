@@ -52,7 +52,7 @@ public class WeixinScheduleService {
         dynamicDelayMill = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weixin.article.dynamic.delay.minute", 60 * 24));
         detectArticleDelayMin = conf.getLong("uranus.scheduler.weixin.article.detect.delay.minute", 60 * 24);
         dynamicFetchCount = conf.getInt("uranus.scheduler.weixin.article.dynamic.fetch.num", 7);
-        dynamicFetchInterval = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weixin.article.dynamic.interval.minute", 60*24));
+        dynamicFetchInterval = conf.getInt("uranus.scheduler.weixin.article.dynamic.interval.minute", 60*24);
     }
 
 
@@ -82,6 +82,7 @@ public class WeixinScheduleService {
     }
 
     public void addWeixinDetectNewArticlesSchedule(String biz) {
+
         if (!cacheDao.hasKey(getCacheBizKeyByTemplate(biz)) &&
                 !(schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s.*", biz))).isPresent())) {
             schedulerDao.addCollScheduler(
@@ -98,6 +99,9 @@ public class WeixinScheduleService {
                     )
 
             );
+
+        }
+        if(!cacheDao.hasKey(getCacheBizKeyByTemplate(biz))) {
             cacheDao.setValue(getCacheBizKeyByTemplate(biz), "1");
         }
     }
@@ -123,7 +127,7 @@ public class WeixinScheduleService {
 
     public void addArticleDynamicScheduler(long postTime, String url) {
 
-        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(dynamicFetchInterval, TimeUnit.MILLISECONDS, new Date(postTime * 1000 + dynamicDelayMill), dynamicFetchCount),
+        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(dynamicFetchInterval, TimeUnit.MINUTES, new Date(postTime * 1000 + dynamicDelayMill), dynamicFetchCount),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WX_A_D, url)));
     }
 

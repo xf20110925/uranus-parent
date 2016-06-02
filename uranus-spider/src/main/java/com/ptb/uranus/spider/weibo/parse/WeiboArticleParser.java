@@ -214,7 +214,7 @@ public class WeiboArticleParser {
 
     public static void main(String[] args) throws Exception {
         WeiboArticleParser weiboArticleParser = new WeiboArticleParser();
-        weiboArticleParser.parseFromPcPage("http://weibo.com/2165313080/Dov3pEU2d");
+        System.out.println(weiboArticleParser.parseFromPcPage("http://weibo.com/2165313080/Dov3pEU2d"));
 
     }
 

@@ -21,8 +21,8 @@ public class UranusSdkTest {
     @Test
     public void formatWeiboTest() {
         UranusSdk.i().collect(
-                "5795349182:::-1",
-                CollectType.C_WB_A_N,
+                "MTE3MzE4MTAyMQ==",
+                CollectType.C_WX_A_N,
                 new JustOneTrigger(new Date().getTime()), Priority.L1);
     }
 

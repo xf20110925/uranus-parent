@@ -12,9 +12,11 @@ import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.WxAccount;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,6 +42,12 @@ public class WeixinMediaStaticHandle implements CollectHandler {
         try {
             Optional<String> identify;
             try {
+                if(!message.getBody().getConditon().contains("http://")) {
+                    Optional<ImmutablePair<Long, List<String>>> recentArticlesByBiz = weixinSpider.getRecentArticlesByBiz(message.getBody().getConditon(), -1);
+                    if(recentArticlesByBiz.isPresent()) {
+                        message.getBody().setConditon(recentArticlesByBiz.get().getRight().get(0));
+                    }
+                }
                 identify = weixinSpider.getMediaIdentifyByArticleUrl(message.getBody().getConditon());
             } catch (Exception e) {
                 identify = Optional.empty();
