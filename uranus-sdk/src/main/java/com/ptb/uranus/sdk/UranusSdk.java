@@ -9,15 +9,19 @@ import com.ptb.uranus.schedule.dao.SchedulerDao;
 import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.model.SchedulableCollectCondition;
 import com.ptb.uranus.schedule.model.ScheduleObject;
+import com.ptb.uranus.schedule.trigger.JustOneTrigger;
 import com.ptb.uranus.schedule.trigger.Trigger;
 import com.ptb.uranus.sdk.exception.CollectArgsException;
 import com.ptb.uranus.sdk.exception.ConfigureFileException;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.utils.web.UrlFormatUtil;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,12 +72,21 @@ public class UranusSdk implements Collector {
             cond = srcCond;
         }
 
-        finalCondition = UrlFormatUtil.format(cond);
+        if ((collectType.getCode() == CollectType.C_WX_A_N.getCode())) {
+           if(srcCond.contains(":::")) {
+               return finalCondition;
+           }else{
+               try {
+                   Long.parseLong(new String(Base64.decodeBase64(cond)));
+               }catch (Exception e) {
+                   logger.warn(String.format("error condition [%s]", cond),e);
+                   return null;
+               }
+               return String.format("%s:::-1",cond);
+           }
+        }
 
-    /*    if (!finalCondition.equals(finalCondition) && finalCondition.contains("weixin")) {
-            cacheDao.setValue(finalCondition, cond);
-            cacheDao.setValue(cond, finalCondition);
-        }*/
+        finalCondition = UrlFormatUtil.format(cond);
 
         return finalCondition;
     }
@@ -83,8 +96,8 @@ public class UranusSdk implements Collector {
 
         try {
             String finalCondition = getCorrectCondition(srcCond, collectType);
-            if (collectType == null || finalCondition == null || collectType == null || priority == null || trigger == null) {
-                throw new CollectArgsException(String.format("输入的参数不正确 type:[%s] trigger[%s] priority[%s] inputValue[%s]", collectType, finalCondition));
+            if (StringUtils.isBlank(finalCondition)|| finalCondition == null || collectType == null || priority == null || trigger == null) {
+                throw new CollectArgsException(String.format("输入的参数不正确 type:[%s]  inputValue[%s]", collectType, finalCondition));
             }
             ScheduleObject scheduleObject = new ScheduleObject(trigger, priority, new SchedulableCollectCondition(collectType, finalCondition));
             if (!schedulerDao.addCollScheduler(scheduleObject)) {
@@ -103,8 +116,8 @@ public class UranusSdk implements Collector {
     public List<String> collect(List<String> srcConds, CollectType collectType, Trigger trigger, Priority priority) {
         try {
             List<String> finalConditions = srcConds.stream().map(srcCond -> getCorrectCondition(srcCond, collectType)).collect(Collectors.toList());
-            if (collectType == null || finalConditions == null || collectType == null || priority == null || trigger == null) {
-                throw new CollectArgsException(String.format("输入的参数不正确 type:[%s] trigger[%s] priority[%s] inputValue[%s]", collectType, finalConditions));
+            if (collectType == null  || finalConditions == null || collectType == null || priority == null || trigger == null) {
+                throw new CollectArgsException(String.format("输入的参数不正确 type:[%s]  inputValue[%s]", collectType, finalConditions));
             }
             List<ScheduleObject> collects = finalConditions.stream().map(fc -> new ScheduleObject(trigger, priority, new SchedulableCollectCondition(collectType, fc))).
                     collect(Collectors.toList());
@@ -118,7 +131,16 @@ public class UranusSdk implements Collector {
         return null;
     }
 
+    /*
+        建议使用getCorrectCondition
+     */
+    @Deprecated
     public String urlFormat(String url) {
         return UrlFormatUtil.format(url);
+    }
+
+    public static void main(String[] args) {
+        String collect = UranusSdk.i().collect("MzA5NzIzMjg3OQ==", CollectType.C_WX_A_N, new JustOneTrigger(new Date().getTime()), Priority.L1);
+        System.out.println(collect);
     }
 }
