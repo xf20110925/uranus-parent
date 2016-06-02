@@ -23,8 +23,8 @@ public class CollectCommandListenter implements MessageListener {
 
     public CollectCommandListenter(Sender sender) throws ConfigurationException {
         this.sender = sender;
-        commandHandlerMap.put(CollectType.C_A_A_D, new CommonArticleDynamicHandle(sender));
-        commandHandlerMap.put(CollectType.C_A_A_S, new CommonArticleStaticHandle(sender));
+/*        commandHandlerMap.put(CollectType.C_A_A_D, new CommonArticleDynamicHandle(sender));
+        commandHandlerMap.put(CollectType.C_A_A_S, new CommonArticleStaticHandle(sender));*/
         commandHandlerMap.put(CollectType.C_WB_A_D, new WeiboArticleDynamicHandle(sender));
         commandHandlerMap.put(CollectType.C_WB_A_S, new WeiboArticleStaticHandle(sender));
         commandHandlerMap.put(CollectType.C_WB_M_D, new WeiboMediaDynamicHandle(sender));
@@ -33,7 +33,7 @@ public class CollectCommandListenter implements MessageListener {
         commandHandlerMap.put(CollectType.C_WX_A_S, new WeixinArticleStaticHandle(sender));
         commandHandlerMap.put(CollectType.C_WX_M_D, new WeixinMediaDynamicHandle(sender));
         commandHandlerMap.put(CollectType.C_WX_M_S, new WeixinMediaStaticHandle(sender));
-        commandHandlerMap.put(CollectType.C_A_A_N, new CommonNewArticlesHandle(sender));
+/*        commandHandlerMap.put(CollectType.C_A_A_N, new CommonNewArticlesHandle(sender));*/
         commandHandlerMap.put(CollectType.C_WX_A_N, new WeixinNewArticlesHandle(sender));
         commandHandlerMap.put(CollectType.C_WB_A_N, new WeiboNewArticlesHandle(sender));
     }

@@ -172,7 +172,7 @@ public enum MongoUtils {
             var4.printStackTrace();
         }
 
-        String ip = config.getString("uranus.scheduler.mongo.host", "127.0.0.1");
+        String ip = config.getString("uranus.scheduler.mongo.host", "192.168.5.31");
         int port = config.getInt("uranus.scheduler.mongo.port", 27017);
 
         Builder options = new Builder();
