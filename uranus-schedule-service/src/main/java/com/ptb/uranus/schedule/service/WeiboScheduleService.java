@@ -119,7 +119,7 @@ public class WeiboScheduleService {
 
     public void updateMediaCondition(CollectCondition LastCondition, String containerID, Long lastPushMessagePostTime) {
         Optional<ScheduleObject> schedulerByField = schedulerDao.getSchedulerByField(conditonField, LastCondition.getConditon());
-        if (!schedulerByField.isPresent()) {
+        if (schedulerByField.isPresent()) {
             SchedulableCollectCondition schedulableCollectCondition = (SchedulableCollectCondition) schedulerByField.get().getObj();
             schedulableCollectCondition.setConditon(getConditionByTemplate(containerID, lastPushMessagePostTime));
             schedulerByField.get().setObjByT(schedulableCollectCondition);

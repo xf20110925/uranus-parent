@@ -66,12 +66,12 @@ public class WeiboMediaHandle implements Runnable{
             if(ret == 0){
                 pos = 0;
             }
+            logger.error("error {} {}", pos, ret);
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
     }
 }

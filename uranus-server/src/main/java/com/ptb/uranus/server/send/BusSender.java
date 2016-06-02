@@ -21,21 +21,21 @@ public class BusSender implements Sender {
 
     @Override
     public void sendArticleStatic(BasicArticleStatic article) {
-        bus.send(new Message("uranus-server", "article_basic_info", article.getPlat(), "1.0.0", article));
+        bus.send(new Message("uranus-server", "test", article.getPlat(), "1.0.0", article));
     }
 
     @Override
     public void sendArticleDynamic(BasicArticleDynamic basicArticleDynamic) {
-        bus.send(new Message("uranus-server", "article_spread_info", basicArticleDynamic.getPlat(), "1.0.0", basicArticleDynamic));
+        bus.send(new Message("uranus-server", "test", basicArticleDynamic.getPlat(), "1.0.0", basicArticleDynamic));
     }
 
     @Override
     public void sendMediaStatic(BasicMediaStatic basicMediaStatic){
-        bus.send(new Message("uranus-server", "media_basic_info", basicMediaStatic.getPlat(), "1.0.0", basicMediaStatic));
+        bus.send(new Message("uranus-server", "test", basicMediaStatic.getPlat(), "1.0.0", basicMediaStatic));
     }
 
     @Override
     public void sendMediaDynamic(BasicMediaDynamic basicMediaDynamic) {
-        bus.send(new Message("uranus-server", "media_spread_info", basicMediaDynamic.getPlat(), "1.0.0", basicMediaDynamic));
+        bus.send(new Message("uranus-server", "test", basicMediaDynamic.getPlat(), "1.0.0", basicMediaDynamic));
     }
 }

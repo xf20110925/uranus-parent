@@ -4,6 +4,7 @@ import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
+import com.ptb.uranus.server.third.WeiboArticleHandle;
 import com.ptb.uranus.server.third.WeiboMediaHandle;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -38,8 +39,8 @@ public class ThirdEntry {
         sender = new BusSender(this.bus);
 
         thread.put(ThirdEntry.TASKNAME.WEIBOMEDIA, new WeiboMediaHandle(sender));
+        thread.put(ThirdEntry.TASKNAME.WEIBOARTICLE, new WeiboArticleHandle(sender));
         bus.start(false,busWorkNum);
-        //thread.put(ThirdEntry.TASKNAME.WEIBOARTICLE, new WeiboArticleHandle(sender));
     }
 
     public static void main(String[] args) throws ConfigurationException {
@@ -53,12 +54,12 @@ public class ThirdEntry {
                 switch ((TASKNAME)runTmp.getKey()){
                     case WEIBOMEDIA:
                         for(int i = 0;i < thirdEntry.weiboMediaNum;i++){
-                            ((Runnable)(runTmp.getValue())).run();
+                            new Thread((Runnable) runTmp.getValue()).start();
                         }
                         break;
                     case WEIBOARTICLE:
                         for(int i = 0;i < thirdEntry.weiboArticleNum;i++){
-                            ((Runnable)(runTmp.getValue())).run();
+                            new Thread((Runnable) runTmp.getValue()).start();
                         }
                         break;
                     default:
@@ -66,7 +67,7 @@ public class ThirdEntry {
                 }
             }
         }catch (Exception e){
-            logger.error("start thread error!", e.getLocalizedMessage());
+            logger.error("start thread error!", e);
         }
 
         return;

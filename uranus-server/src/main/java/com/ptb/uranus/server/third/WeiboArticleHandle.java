@@ -1,18 +1,25 @@
 package com.ptb.uranus.server.third;
 
+import com.ptb.uranus.schedule.dao.MongoSchedulerDao;
+import com.ptb.uranus.schedule.dao.SchedulerDao;
+import com.ptb.uranus.schedule.model.SchedulableCollectCondition;
+import com.ptb.uranus.schedule.model.ScheduleObject;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.BasicArticleStatic;
-import com.ptb.uranus.server.send.entity.article.WeiboArticleStatic;
 import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
-import com.ptb.utils.date.TimeUtil;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * Created by watson zhang on 16/5/31.
@@ -20,27 +27,31 @@ import java.util.concurrent.TimeUnit;
 public class WeiboArticleHandle implements Runnable{
     PropertiesConfiguration conf;
     private static Logger logger = LoggerFactory.getLogger(WeiboMediaHandle.class);
-    private String driver = "com.mysql.cj.jdbc.Driver";
-    private Connection conn = null;
-    private Statement stmt = null;
+    String driver = "com.mysql.cj.jdbc.Driver";
+    String conditonField = "obj.conditon";
+    String conditonTemplate = "%s:::%d";
+    private Connection conn;
+    private Statement stmt;
 
-    private String mysqlHost;
-    private String mysqlUser;
-    private String mysqlPwd;
-    private String mysqlTableName;
-    private int maxNum;
-    private int cycle;
-    private Sender sender;
+    String mysqlHost;
+    String mysqlUser;
+    String mysqlPwd;
+    String mysqlTableName;
+    int maxNum;
+    int cycle;
+    Sender sender;
+    private SchedulerDao schedulerDao;
 
     public WeiboArticleHandle(Sender sender) throws ConfigurationException {
         conf = new PropertiesConfiguration("uranusThird.properties");
-        mysqlHost = conf.getString("com.ptb.uranus.mysqlHost", "43.241.214.85:33066/weibo");
+        mysqlHost = conf.getString("com.ptb.uranus.mysqlHost", "43.241.214.85:3306/weibo");
         mysqlUser = conf.getString("com.ptb.uranus.mysqlUser", "pintuibao");
-        mysqlPwd = conf.getString("com.ptb.uranus.mysqlPwd", "wushilong");
-        mysqlTableName = conf.getString("com.ptb.uranus.mysqlTableName", "user_profile");
-        maxNum = conf.getInt("com.ptb.uranus.maxNum", 10000);
-        cycle = conf.getInt("com.ptb.uranus.maxNum", 1000);
+        mysqlPwd = conf.getString("com.ptb.uranus.mysqlPwd", "pintuibao");
+        mysqlTableName = conf.getString("com.ptb.uranus.mysqlTableName", "fresh_data");
+        maxNum = conf.getInt("com.ptb.uranus.maxNum", 10);
+        cycle = conf.getInt("com.ptb.uranus.maxNum", 10);
         this.sender = sender;
+        schedulerDao = new MongoSchedulerDao();
     }
 
     public void connectMySQL() {
@@ -86,7 +97,6 @@ public class WeiboArticleHandle implements Runnable{
 
     public ResultSet cycleGetDataTail(int start, int cycle) throws SQLException {
         ResultSet rs;
-        //String sql = String.format("SELECT * FROM %s WHERE id < %d ORDER BY id DESC LIMIT %d", this.mysqlTableName , last, limit);
         String sql = String.format("SELECT * FROM %s limit %d, %d", this.mysqlTableName, start, cycle);
         rs = this.resultSet(sql);
         if(rs == null){
@@ -98,22 +108,61 @@ public class WeiboArticleHandle implements Runnable{
         return rs;
     }
 
+    public String getConditionByTemplate(String weiboid, long times) {
+        return String.format(conditonTemplate, weiboid, times);
+    }
+
+    public void updateSchedule(HashMap<String, Long> history) {
+        Iterator iter = history.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Optional<ScheduleObject> first = schedulerDao.getSchedulerByField(this.conditonField, Pattern.compile(String.format("%s.*", entry.getKey())));
+            if(first.isPresent()){
+                SchedulableCollectCondition schedulableCollectCondition = (SchedulableCollectCondition) first.get().getObj();
+                schedulableCollectCondition.setConditon(getConditionByTemplate((String)entry.getKey(), (Long) entry.getValue()));
+                first.get().setObjByT(schedulableCollectCondition);
+                schedulerDao.updateScheduler(first.get());
+            }
+        }
+    }
+
+    public void updateHistoryList(HashMap<String, Long> history, ResultSet rs) throws SQLException {
+        if(history == null || rs == null){
+            logger.debug("updateHistoryList error");
+            return;
+        }
+        long lastTime;
+        if(!history.containsKey(rs.getString("user_id"))){
+            history.put(rs.getString("user_id"), Long.parseLong(rs.getString("time_stamp")));
+        }else {
+            lastTime = Long.parseLong(rs.getString("time_stamp"));
+            if(history.get(rs.getString("user_id")) < lastTime){
+                history.put(rs.getString("user_id"), lastTime);
+            }
+        }
+    }
+
     public void sendTask(Sender sender) throws SQLException {
         BasicArticleDynamic bad;
         BasicArticleStatic bas;
         int start = 0;
         ResultSet rs;
+        HashMap<String, Long> history = new HashMap<>();
         try {
             while (start < this.maxNum){
                 rs = this.cycleGetDataTail(start, this.cycle);
                 start += this.cycle;
-                bas = SendObjectConvertUtil.weiboArticleStaticConvert(rs);
-                bad = SendObjectConvertUtil.weiboArticleDynamicConvert(rs);
-                sender.sendArticleStatic(bas);
-                sender.sendArticleDynamic(bad);
+                do {
+                    bas = SendObjectConvertUtil.weiboArticleStaticConvert(rs);
+                    bad = SendObjectConvertUtil.weiboArticleDynamicConvert(rs);
+                    sender.sendArticleStatic(bas);
+                    sender.sendArticleDynamic(bad);
+                    this.updateHistoryList(history, rs);
+                }while (rs.next());
+                this.updateSchedule(history);
             }
         }catch (Exception e){
-            logger.error("send task error!", e.getLocalizedMessage());
+            logger.error("send task error!", e);
         }
     }
 
