@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third;
+package com.ptb.uranus.server.third.weibo;
 
 import com.ptb.uranus.schedule.dao.MongoSchedulerDao;
 import com.ptb.uranus.schedule.dao.SchedulerDao;

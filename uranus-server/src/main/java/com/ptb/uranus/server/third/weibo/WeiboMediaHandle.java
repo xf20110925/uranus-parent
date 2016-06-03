@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third;
+package com.ptb.uranus.server.third.weibo;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
