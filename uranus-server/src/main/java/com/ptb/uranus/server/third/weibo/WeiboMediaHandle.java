@@ -31,7 +31,7 @@ public class WeiboMediaHandle implements Runnable{
     Sender sender;
 
     public WeiboMediaHandle(Sender sender) throws ConfigurationException {
-        conf = new PropertiesConfiguration("uranusThird.properties");
+        conf = new PropertiesConfiguration("uranus.properties");
         host = conf.getString("com.ptb.uranus.mongoHost", "192.168.5.31");
         port = conf.getInt("com.ptb.uranus.mongoPort", 27017);
         db = conf.getString("com.ptb.uranus.mongoDataBase", "weibo");

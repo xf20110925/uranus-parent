@@ -30,7 +30,7 @@ public class ThirdEntry {
     private int busWorkNum;
 
     public ThirdEntry() throws ConfigurationException {
-        conf = new PropertiesConfiguration("uranusThird.properties");
+        conf = new PropertiesConfiguration("uranus.properties");
         weiboMediaNum = conf.getInt("com.ptb.uranus.weiboMediaNum", 1);
         weiboArticleNum = conf.getInt("com.ptb.uranus.weiboArticleNum", 1);
         busWorkNum = conf.getInt("com.ptb.uranus.busWorkNum", 1);

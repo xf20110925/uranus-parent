@@ -43,7 +43,7 @@ public class WeiboArticleHandle implements Runnable{
     private SchedulerDao schedulerDao;
 
     public WeiboArticleHandle(Sender sender) throws ConfigurationException {
-        conf = new PropertiesConfiguration("uranusThird.properties");
+        conf = new PropertiesConfiguration("uranus.properties");
         mysqlHost = conf.getString("com.ptb.uranus.mysqlHost", "43.241.214.85:3306/weibo");
         mysqlUser = conf.getString("com.ptb.uranus.mysqlUser", "pintuibao");
         mysqlPwd = conf.getString("com.ptb.uranus.mysqlPwd", "pintuibao");
