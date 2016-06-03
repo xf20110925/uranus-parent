@@ -6,10 +6,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.weixin.bean.*;
-import com.ptb.uranus.spider.weixin.parse.GsDataWeixinParser;
-import com.ptb.uranus.spider.weixin.parse.WxArticleParser;
-import com.ptb.uranus.spider.weixin.parse.WxPushMessageParser;
-import com.ptb.uranus.spider.weixin.parse.WxSogouParser;
+import com.ptb.uranus.spider.weixin.parse.*;
 import com.ptb.utils.string.RegexUtils;
 import com.ptb.utils.web.UrlFormatUtil;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -55,6 +52,8 @@ public class WeixinSpider {
      * 清博微信
      */
     GsDataWeixinParser gbDataWeixinParser = new GsDataWeixinParser();
+
+    BayouWeixinParser bayouWeixinParser = new BayouWeixinParser();
 
 
     /**
@@ -137,6 +136,12 @@ public class WeixinSpider {
             if (articleUrl.contains("signature=")) {
                 return Optional.of(getSogouWxReadLikeNum(articleUrl));
             } else {
+                //首先通过八友微信接口获取数据
+                Optional<ReadLikeNum> bayouWxReadLike = bayouWeixinParser.getReadLikeNumByArticleUrl(articleUrl);
+                if (bayouWxReadLike.isPresent()){
+                    return bayouWxReadLike;
+                }
+                //通过微信到搜狗微信链接的转化获取数据
                 try {
                     String sogouUrl = WeixinUtil.instance().queryMapLink(WeixinUtil.instance().getUrlMapKey(articleUrl));
                     if (StringUtils.isNotBlank(sogouUrl)) {
@@ -260,8 +265,9 @@ public class WeixinSpider {
         if (!WeixinUtil.instance().isCorrectBiz(biz)) {
             return Optional.empty();
         }
-        ;
-
+        //先通过八友微信获取
+        Optional<ImmutablePair<Long, List<String>>> recentArticlesPair = bayouWeixinParser.getRecentArticlesByBiz(biz, lastArticlePostTime);
+        if (recentArticlesPair.isPresent()) return recentArticlesPair;
         try {
             List<PushMessage> recentPushList = wxPushMessageParser.getRecentPushList(biz);
             if (recentPushList.size() == 0) {
