@@ -124,7 +124,7 @@ public class UranusSdk implements Collector {
     public List<String> collect(List<String> srcConds, CollectType collectType, Trigger trigger, Priority
             priority) {
         try {
-            List<String> finalConditions = srcConds.stream().map(srcCond -> getCorrectCondition(srcCond, collectType)).collect(Collectors.toList());
+            List<String> finalConditions = srcConds.stream().map(srcCond -> getCorrectCondition(srcCond, collectType)).filter(cond->StringUtils.isNotBlank(cond)).collect(Collectors.toList());
             if (collectType == null || finalConditions == null || collectType == null || priority == null || trigger == null) {
                 throw new CollectArgsException(String.format("输入的参数不正确 type:[%s]  inputValue[%s]", collectType, finalConditions));
             }
