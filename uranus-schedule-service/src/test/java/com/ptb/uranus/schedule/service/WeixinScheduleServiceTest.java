@@ -42,6 +42,12 @@ public class WeixinScheduleServiceTest {
         assertTrue(obj.getConditon().contains("-2"));
 
     }
+    @Test
+    public void testUpdateWeixinMediaCondition(){
+         weixinScheduleService.addWeixinDetectNewArticlesSchedule(biz);
+        assertTrue(weixinScheduleService.schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s.*", biz))).isPresent());
+        weixinScheduleService.updateWeixinMediaCondition(biz, 1464070133999L);
+    }
 
 
     @After
