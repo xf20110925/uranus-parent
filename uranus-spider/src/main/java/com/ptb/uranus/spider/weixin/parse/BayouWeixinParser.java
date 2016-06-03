@@ -104,29 +104,14 @@ public class BayouWeixinParser {
     }
 
     public static void main(String[] args) throws IOException {
-       /* DocumentContext parse = JsonPath.parse(new File("G:\\IdeaWorkSpace\\uranus-parent\\uranus-spider\\src\\main\\resources\\recentUrls.txt"));
-        List read = parse.read("$.msg");
-
-        long lastPostTime = 1464490222;
-        Long last;
-        List<String> urls = new ArrayList<>();
-        List<Long> postTimes = new ArrayList<>();
-        read.stream().forEach(json -> {
-            DocumentContext doc = JsonPath.parse(json);
-            long ct = doc.read("$.ct", Long.class);
-            if (ct > lastPostTime) {
-                urls.add(doc.read("$.main_url"));
-                urls.addAll(doc.read("ext_urls"));
-                postTimes.add(ct);
-            }
-        });
-        urls.forEach(System.out::println);
-        Collections.sort(postTimes, Collections.reverseOrder());
-        System.out.println(postTimes);*/
-
         BayouWeixinParser bayouWeixinParser = new BayouWeixinParser();
-        Optional<ReadLikeNum> readLikeNumByArticleUrl = bayouWeixinParser.getReadLikeNumByArticleUrl("http://mp.weixin.qq.com/s?__biz=MzA3OTgzMzUzOA==&mid=2651224266&idx=1&sn=e6ee94cc0e9a42643d5606eb9a1f11b0#rd");
-        System.out.println(readLikeNumByArticleUrl.get());
+        if(args[0].startsWith("http")){
+            Optional<ReadLikeNum> readLikeNumByArticleUrl = bayouWeixinParser.getReadLikeNumByArticleUrl(args[0]);
+            System.out.println(readLikeNumByArticleUrl.get());
+        }else {
+            Optional<ImmutablePair<Long, List<String>>> recentArticlesOpt = bayouWeixinParser.getRecentArticlesByBiz(args[0], 0);
+            System.out.println(recentArticlesOpt.get().getRight().toString());
+        }
 
     }
 
