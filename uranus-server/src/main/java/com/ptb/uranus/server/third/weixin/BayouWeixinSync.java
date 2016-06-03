@@ -17,6 +17,7 @@ import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeixinArticleStatic;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
+import com.ptb.uranus.server.third.weixin.util.WeixinMediaUtils;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -189,6 +190,7 @@ public class BayouWeixinSync {
     private void sendMedias(Optional<List<BayouWXMedia>> wxMediasOpt) {
         wxMediasOpt.ifPresent(wxMedias -> {
             wxMedias.stream().forEach(wxMedia -> {
+                WeixinMediaUtils.updateWeixinMedia(wxMedia.getBid(), wxMedia);
                 WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
                 //发送到kafka
                 sender.sendMediaStatic(weixinMediaStatic);
@@ -304,8 +306,8 @@ public class BayouWeixinSync {
         Bus bus = new KafkaBus();
         bus.start(false, 3);
         BayouWeixinSync bayouWeixinSync = new BayouWeixinSync(new BusSender(bus));
-//        bayouWeixinSync.syncMedias();
+        bayouWeixinSync.syncMedias();
 //        bayouWeixinSync.syncArticleDynamics();
-        bayouWeixinSync.syncArticleStatics();
+//        bayouWeixinSync.syncArticleStatics();
     }
 }
