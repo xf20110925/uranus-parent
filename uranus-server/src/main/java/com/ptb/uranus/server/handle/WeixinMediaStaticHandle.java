@@ -42,7 +42,7 @@ public class WeixinMediaStaticHandle implements CollectHandler {
         try {
             Optional<String> identify;
             try {
-                if(!message.getBody().getConditon().contains("http://")) {
+                if(!message.getBody().getConditon().matches("(?:http://|https://).*")) {
                     Optional<ImmutablePair<Long, List<String>>> recentArticlesByBiz = weixinSpider.getRecentArticlesByBiz(message.getBody().getConditon(), -1);
                     if(recentArticlesByBiz.isPresent()) {
                         message.getBody().setConditon(recentArticlesByBiz.get().getRight().get(0));
