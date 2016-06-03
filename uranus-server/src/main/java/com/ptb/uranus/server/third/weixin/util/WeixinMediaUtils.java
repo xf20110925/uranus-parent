@@ -12,7 +12,7 @@ import org.bson.Document;
  * Created by xuefeng on 2016/6/3.
  */
 public class WeixinMediaUtils {
-    public static final String DB_NAME = "test";
+    public static final String DB_NAME = "uranus";
     public static final String COLL_NAME = "weixinMedia";
     static MongoCollection<Document> coll = MongoUtils.instance.getDatabase(DB_NAME).getCollection(COLL_NAME);
 
