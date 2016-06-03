@@ -6,6 +6,7 @@ import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.third.weibo.WeiboArticleHandle;
 import com.ptb.uranus.server.third.weibo.WeiboMediaHandle;
+import com.ptb.uranus.server.third.weixin.Scheduler;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
@@ -29,6 +30,9 @@ public class ThirdEntry {
     private int weiboArticleNum;
     private int busWorkNum;
 
+    private static Scheduler weixinScheduler;
+
+
     public ThirdEntry() throws ConfigurationException {
         conf = new PropertiesConfiguration("uranus.properties");
         weiboMediaNum = conf.getInt("com.ptb.uranus.weiboMediaNum", 1);
@@ -40,7 +44,9 @@ public class ThirdEntry {
 
         thread.put(ThirdEntry.TASKNAME.WEIBOMEDIA, new WeiboMediaHandle(sender));
         thread.put(ThirdEntry.TASKNAME.WEIBOARTICLE, new WeiboArticleHandle(sender));
+
         bus.start(false,busWorkNum);
+        weixinScheduler = new Scheduler(sender);
     }
 
     public static void main(String[] args) throws ConfigurationException {
@@ -69,7 +75,7 @@ public class ThirdEntry {
         }catch (Exception e){
             logger.error("start thread error!", e);
         }
-
-        return;
+        //启动微信调度器
+        weixinScheduler.schedule();
     }
 }
