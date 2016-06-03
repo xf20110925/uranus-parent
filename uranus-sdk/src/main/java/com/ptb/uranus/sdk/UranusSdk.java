@@ -75,19 +75,19 @@ public class UranusSdk implements Collector {
         }
 
         if ((collectType.getCode() == CollectType.C_WX_A_N.getCode())) {
-            if (srcCond.contains(":::")) {
-                return finalCondition;
-            } else {
-                try {
-                    Long.parseLong(new String(Base64.decodeBase64(cond)));
-                } catch (Exception e) {
-                    logger.warn(String.format("error condition [%s]", cond), e);
-                    return null;
-                }
-                return String.format("%s:::-1", cond);
-            }
-        }
 
+            if (srcCond.contains(":::")) {
+                cond = srcCond.split(":::")[0];
+            }
+
+            try {
+                Long.parseLong(new String(Base64.decodeBase64(cond)));
+            } catch (Exception e) {
+                logger.warn(String.format("error condition [%s]", cond), e);
+                return null;
+            }
+
+        }
         finalCondition = UrlFormatUtil.format(cond);
 
         return finalCondition;
@@ -121,7 +121,8 @@ public class UranusSdk implements Collector {
     }
 
     @Override
-    public List<String> collect(List<String> srcConds, CollectType collectType, Trigger trigger, Priority priority) {
+    public List<String> collect(List<String> srcConds, CollectType collectType, Trigger trigger, Priority
+            priority) {
         try {
             List<String> finalConditions = srcConds.stream().map(srcCond -> getCorrectCondition(srcCond, collectType)).collect(Collectors.toList());
             if (collectType == null || finalConditions == null || collectType == null || priority == null || trigger == null) {
@@ -143,7 +144,7 @@ public class UranusSdk implements Collector {
                 return finalConditions;
             }
         } catch (Exception e) {
-            logger.warn(String.format("cond [%s] type [%s] trgger[%s] trigger[%s]", srcConds, collectType, trigger, priority), e);
+            logger.warn(String.format("cond [%s] type [%s] ", srcConds, collectType), e);
         }
 
         return null;
