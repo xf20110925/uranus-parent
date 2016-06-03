@@ -49,7 +49,7 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
             if (StringUtils.isBlank(containerID)) {
                 recentArticlesPair = weiboSpider.getRecentArticlesByWeiboID(id, lastTime);
                 Optional<WeiboAccount> account = weiboSpider.getWeiboAccountByWeiboID(id);
-                if (account.isPresent()) {
+                if (account.isPresent() && account.get().getContainerID() != null) {
                     wbScheduleService.setContainerIDByWeiboID(account.get().getWeiboID(), account.get().getContainerID());
                 }
             } else {
@@ -61,22 +61,18 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                 logger.info("wb new article: [%s]", JSON.toJSONString(recentArticles));
                 wbScheduleService.addArticleStaticSchedulers(recentArticles);
                 long lastestTime = recentArticlesPair.get().getLeft().longValue();
-                if (recentArticles.size() > 0 && StringUtils.isBlank(weiboID)) {
-                    //如果以前是containerID,则找出weibiid,并将条件更新为WEIBO
-                    weiboID = RegexUtils.sub("http://m.weibo.cn/([\\d]*)/.*", recentArticles.get(0), 0);
-                    wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
-                } else {
-                    //如果没有找到就用以前的条件
-                    wbScheduleService.updateMediaCondition(message.getBody(), containerID, lastTime);
-                }
 
+                if(recentArticles.size() > 0 && StringUtils.isBlank(weiboID)){
+                    weiboID = RegexUtils.sub("http://m.weibo.cn/([\\d]*)/.*", recentArticles.get(0), 0);
+                }
+                if (!StringUtils.isBlank(weiboID)) {
+                    wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
+                }
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
         }
-
-
     }
 }
