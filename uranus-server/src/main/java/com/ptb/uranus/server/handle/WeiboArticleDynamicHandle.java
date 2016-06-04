@@ -40,7 +40,7 @@ public class WeiboArticleDynamicHandle implements CollectHandler {
                 sender.sendArticleDynamic(wbArticleDynamic);
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
-                LogUtils.log("uranus-server", "get-weibo-account-by-articleurl", "failed", String.valueOf(message.getRaw()));
+/*                LogUtils.log("uranus-server", "get-weibo-account-by-articleurl", "failed", String.valueOf(message.getRaw()));*/
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);

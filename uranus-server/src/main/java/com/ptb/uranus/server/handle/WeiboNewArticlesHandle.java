@@ -43,22 +43,24 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
             String id = conditon[0];
             long lastTime = Long.parseLong(conditon[1]);
             String containerID;
-            String weiboID = null;
-            if (id.length() <= 10) {
+
+            if (id.length() <= 12) {
                 containerID = wbScheduleService.getContainerIDByWeiboID(id);
             } else {
                 containerID = id;
             }
 
-            if (StringUtils.isBlank(containerID)) {
-                recentArticlesPair = weiboSpider.getRecentArticlesByWeiboID(id, lastTime);
+            if (StringUtils.isBlank(containerID) || containerID.length() < 10) {
                 Optional<WeiboAccount> account = weiboSpider.getWeiboAccountByWeiboID(id);
                 if (account.isPresent() && account.get().getContainerID() != null) {
                     wbScheduleService.setContainerIDByWeiboID(account.get().getWeiboID(), account.get().getContainerID());
+                    containerID = account.get().getContainerID();
                 }
             } else {
-                recentArticlesPair = weiboSpider.getRecentArticlesByContainerID(id, lastTime);
+
             }
+
+            recentArticlesPair = weiboSpider.getRecentArticlesByContainerID(containerID, lastTime);
 
             if (recentArticlesPair.isPresent()) {
                 List<WeiboArticle> recentArticles = recentArticlesPair.get().getRight();
@@ -66,9 +68,11 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                 long lastestTime = recentArticlesPair.get().getLeft().longValue();
 
                 for (int i = 0; i < recentArticles.size(); i++) {
-                    weiboID = recentArticles.get(i).getMediaId();
-                    if (!StringUtils.isBlank(weiboID)) {
-                        wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
+                    if(i == 0) {
+                        String weiboID = recentArticles.get(i).getMediaId();
+                        if (!StringUtils.isBlank(weiboID)) {
+                            wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
+                        }
                     }
                     wbScheduleService.addArticleDynamicScheduler(recentArticles.get(i).getPostTime(), recentArticles.get(i).getArticleUrl());
                     WeiboArticleStatic weiboArticleStatic = SendObjectConvertUtil.weiboArticleStaticConvert(recentArticles.get(i));
