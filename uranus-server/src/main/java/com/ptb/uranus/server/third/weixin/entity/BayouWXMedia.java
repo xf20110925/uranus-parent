@@ -1,7 +1,9 @@
 package com.ptb.uranus.server.third.weixin.entity;
 
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.StringUtils;
+
 
 /**
  * Created by xuefeng on 2016/5/17.
@@ -10,21 +12,14 @@ public class BayouWXMedia {
     private String code;
     private String qrcode;
     private String name;
-    private String id;
+    //    private String id;
     private String bid;
     private String info;
-    private String headImage;
+    private String headImage = "";
+    private String authentication = "";
+    private boolean original = false;
 
     public BayouWXMedia() {
-    }
-
-    public BayouWXMedia(String code, String qrcode, String name, String id, String bid, String info) {
-        this.code = code;
-        this.qrcode = qrcode;
-        this.name = name;
-        this.id = id;
-        this.bid = bid;
-        this.info = info;
     }
 
     public String getCode() {
@@ -33,7 +28,7 @@ public class BayouWXMedia {
 
     public void setCode(String code) {
         this.code = code;
-        if(StringUtils.isNotBlank(code)){
+        if (StringUtils.isNotBlank(code)) {
             headImage = "http://open.weixin.qq.com/qr/code/?username=" + code;
         }
     }
@@ -52,14 +47,6 @@ public class BayouWXMedia {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getBid() {
@@ -86,15 +73,24 @@ public class BayouWXMedia {
         this.headImage = headImage;
     }
 
+    public String getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(String authentication) {
+        this.authentication = authentication;
+    }
+
+    public boolean isOriginal() {
+        return original;
+    }
+
+    public void setOriginal(boolean original) {
+        this.original = original;
+    }
+
     @Override
     public String toString() {
-        return "WeixinMdeia{" +
-                "code='" + code + '\'' +
-                ", qrcode='" + qrcode + '\'' +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", bid='" + bid + '\'' +
-                ", info='" + info + '\'' +
-                '}';
+        return JSON.toJSONString(this);
     }
 }

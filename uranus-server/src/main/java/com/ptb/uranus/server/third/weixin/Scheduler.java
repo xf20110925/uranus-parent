@@ -3,6 +3,7 @@ package com.ptb.uranus.server.third.weixin;
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.server.send.BusSender;
+import com.ptb.uranus.server.send.Sender;
 import org.apache.commons.configuration.ConfigurationException;
 
 import java.util.concurrent.ExecutorService;
@@ -15,11 +16,13 @@ public class Scheduler {
     private ExecutorService executor = null;
     private BayouWeixinSync wxSync = null;
 
-    private Scheduler() throws ConfigurationException {
-        executor = Executors.newFixedThreadPool(3);
-        Bus bus = new KafkaBus();
+     public Scheduler(Sender sender) {
+        executor = Executors.newFixedThreadPool(5);
+       /* Bus bus = new KafkaBus();
         bus.start(false, 3);
-        wxSync = new BayouWeixinSync(new BusSender(bus));
+        wxSync = new BayouWeixinSync(new BusSender(bus));*/
+
+        wxSync = new BayouWeixinSync(sender);
     }
 
     public void schedule() {
@@ -54,7 +57,8 @@ public class Scheduler {
             }
         });
     }
-    public void sleep(long seepTime){
+
+    public void sleep(long seepTime) {
         try {
             Thread.sleep(seepTime);
         } catch (InterruptedException e) {
@@ -63,6 +67,6 @@ public class Scheduler {
     }
 
     public static void main(String[] args) throws ConfigurationException {
-        new Scheduler().schedule();
+//        new Scheduler().schedule();
     }
 }

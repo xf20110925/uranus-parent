@@ -1,5 +1,7 @@
 package com.ptb.uranus.spider.weixin.bean;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * Created by eric on 16/1/12.
  */
@@ -71,5 +73,10 @@ public class ReadLikeNum {
      * Instantiates a new Read like num.
      */
     public ReadLikeNum() {
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }

@@ -36,8 +36,4 @@ public class BayouWeixinTest {
         });
     }
 
-    @Test
-    public void syncMediaTest() {
-        bayouWeixinSync.syncMedias();
-    }
 }
