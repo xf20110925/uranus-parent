@@ -22,6 +22,7 @@ public class WeiboArticle {
     private String source;   //发布的方式,网页,手机等,如果是手机则为手机型号
     private String objectType;
     private String articleUrl;
+    private boolean isOriginality;
     /**
      * Instantiates a new Weibo article.
      */
@@ -276,5 +277,13 @@ public class WeiboArticle {
 
     public void setArticleUrl(String articleUrl) {
         this.articleUrl = articleUrl;
+    }
+
+    public boolean isOriginality() {
+        return isOriginality;
+    }
+
+    public void setOriginality(boolean originality) {
+        isOriginality = originality;
     }
 }

@@ -128,7 +128,7 @@ public class WeiboSpider {
      * @param lastestTime the lastest time
      * @return the recent articles by weibo id
      */
-    public Optional<ImmutablePair<Long, List<String>>> getRecentArticlesByWeiboID(String mediaID, Long lastestTime) {
+    public Optional<ImmutablePair<Long, List<WeiboArticle>>> getRecentArticlesByWeiboID(String mediaID, Long lastestTime) {
         try {
             WeiboAccount weiboAccount = weiboAccountParser.getWeiboAccount(String.format(String.format("http://m.weibo.cn/u/%s", mediaID)));
             return this.getRecentArticlesByContainerID(weiboAccount.getContainerID(), lastestTime);
@@ -142,21 +142,26 @@ public class WeiboSpider {
     /**
      * Gets recent articles by container id. 建议使用此接口,获取最新文章
      *
-     * @param containerID the container id  //containerID
+     * @param weiboId the container id  //containerID
      * @param startTime   the start time
      * @return the recent articles by container id
      */
-    public Optional<ImmutablePair<Long, List<String>>> getRecentArticlesByContainerID(String containerID, Long startTime) {
+    public Optional<ImmutablePair<Long, List<WeiboArticle>>> getRecentArticlesByContainerID(String weiboId, Long startTime) {
         try {
-            ImmutablePair<Long, List<String>> articleList = weiboArticleParse.getWeiboRecentArticlesByContainerID(containerID, startTime);
+            ImmutablePair<Long, List<WeiboArticle>> articleList ;
+            articleList = weiboArticleParse.getWeiboRecentArticlesByContainerID(weiboId, startTime);
             if (articleList != null) {
                 return Optional.of(articleList);
+            }else {
+                articleList = weiboArticleParse.getWeiboRecentArticlesThroughPc(weiboId, startTime);
+                if(articleList != null){
+                    return Optional.of(articleList);
+                }
             }
         } catch (Exception e) {
-            logger.warn(String.format("get weibo recent article by containerID [%s]", containerID), e);
+            logger.warn(String.format("get weibo recent article by containerID [%s]", weiboId), e);
         }
         return Optional.empty();
-
     }
 
 
@@ -177,6 +182,28 @@ public class WeiboSpider {
         return Optional.empty();
     }
 
+    public Optional<WeiboArticle> getWeiboArticleThroughPc(String articleUrl) throws Exception {
+        WeiboArticle weiboArticle = weiboArticleParse.parseFromPcPageByHttpClient(articleUrl);
+        if(weiboArticle == null){
+            return Optional.empty();
+        }else {
+            return Optional.of(weiboArticle);
+        }
+    }
+
+    public Optional<WeiboArticle> getWeiboRecentArticleThroughPc(String weiboID, Long startTime) throws Exception {
+        WeiboArticle weiboArticle = null;
+        weiboArticleParse.getWeiboRecentArticlesThroughPc(weiboID, startTime);
+        if(weiboArticle == null){
+            return Optional.empty();
+        }else {
+            return Optional.of(weiboArticle);
+        }
+    }
+
     public void close() {
     }
 }
+
+
+
