@@ -8,6 +8,7 @@ import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.server.send.entity.media.BasicMediaDynamic;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
 import com.ptb.uranus.spider.weibo.bean.WeiboAccount;
+import com.ptb.utils.log.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ public class WeiboMediaDynamicHandle implements CollectHandler {
             }
         } catch (Exception e) {
             logger.error(String.valueOf(message.getRaw()), e);
+            LogUtils.log("uranus-server", "get-weibo-account-by-articleurl-or-weiboid", "failed", String.valueOf(message.getRaw()));
 
         }
     }

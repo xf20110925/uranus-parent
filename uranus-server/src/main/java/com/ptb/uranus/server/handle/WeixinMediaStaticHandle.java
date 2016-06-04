@@ -10,6 +10,7 @@ import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.WxAccount;
+import com.ptb.utils.log.LogUtils;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -42,9 +43,9 @@ public class WeixinMediaStaticHandle implements CollectHandler {
         try {
             Optional<String> identify;
             try {
-                if(!message.getBody().getConditon().matches("(?:http://|https://).*")) {
+                if (!message.getBody().getConditon().matches("(?:http://|https://).*")) {
                     Optional<ImmutablePair<Long, List<String>>> recentArticlesByBiz = weixinSpider.getRecentArticlesByBiz(message.getBody().getConditon(), -1);
-                    if(recentArticlesByBiz.isPresent()) {
+                    if (recentArticlesByBiz.isPresent()) {
                         message.getBody().setConditon(recentArticlesByBiz.get().getRight().get(0));
                     }
                 }
@@ -61,6 +62,8 @@ public class WeixinMediaStaticHandle implements CollectHandler {
                 wxSchedule.addWeixinDetectNewArticlesSchedule(biz);
             } else {
                 ParseErroeLogger.error(JSON.toJSONString(message));
+                LogUtils.log("uranus-server", "get-weixin-account-by-articleurl", "failed", String.valueOf(message.getRaw()));
+
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);

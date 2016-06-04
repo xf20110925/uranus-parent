@@ -7,6 +7,7 @@ import com.ptb.uranus.common.entity.CollectType;
 import com.ptb.uranus.schedule.dao.MongoSchedulerDao;
 import com.ptb.uranus.schedule.dao.SchedulerDao;
 import com.ptb.uranus.schedule.model.ScheduleObject;
+import com.ptb.utils.log.LogUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
@@ -117,11 +118,13 @@ public class CrawleTask extends TimerTask {
                         logger.warn(String.format("schedule collectType [%s] Error scheduleObj [%s]", collectType, JSON.toJSONString(
                                 scheduleObject
                         ), e));
+                        LogUtils.log("uranus-schedule", "update-schedule-object", "failed", e.getMessage());
                     }
 
                 });
             } catch (Exception e) {
                 logger.warn(String.format("schedule collectType [%s] Error", collectType), e);
+                LogUtils.log("uranus-schedule", "get-schedule-object", "failed", e.getMessage());
             }
 
         });

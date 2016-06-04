@@ -11,6 +11,7 @@ import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
 import com.ptb.uranus.spider.weibo.bean.WeiboAccount;
 import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
+import com.ptb.utils.log.LogUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -64,7 +65,7 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                 logger.info("wb new article: [%s]", JSON.toJSONString(recentArticles));
                 long lastestTime = recentArticlesPair.get().getLeft().longValue();
 
-                for (int i = 0;i < recentArticles.size(); i++){
+                for (int i = 0; i < recentArticles.size(); i++) {
                     weiboID = recentArticles.get(i).getMediaId();
                     if (!StringUtils.isBlank(weiboID)) {
                         wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
@@ -75,6 +76,8 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                 }
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weibo-recent-article-by-container", "failed", String.valueOf(message.getRaw()));
+
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
