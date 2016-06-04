@@ -6,9 +6,11 @@ import com.ptb.gaia.bus.message.Message;
 import com.ptb.uranus.common.entity.CollectCondition;
 import com.ptb.uranus.schedule.service.WeiboScheduleService;
 import com.ptb.uranus.server.send.Sender;
+import com.ptb.uranus.server.send.entity.article.WeiboArticleStatic;
+import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
 import com.ptb.uranus.spider.weibo.bean.WeiboAccount;
-import com.ptb.utils.string.RegexUtils;
+import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -26,14 +28,16 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
     private static Logger logger = LoggerFactory.getLogger(WeiboNewArticlesHandle.class);
     WeiboSpider weiboSpider = new WeiboSpider();
     WeiboScheduleService wbScheduleService = new WeiboScheduleService();
+    Sender sender;
 
     public WeiboNewArticlesHandle(Sender sender) throws ConfigurationException {
+        this.sender = sender;
     }
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
             String[] conditon = message.getBody().getConditon().split(":::");
-            Optional<ImmutablePair<Long, List<String>>> recentArticlesPair;
+            Optional<ImmutablePair<Long, List<WeiboArticle>>> recentArticlesPair;
 
             String id = conditon[0];
             long lastTime = Long.parseLong(conditon[1]);
@@ -41,7 +45,6 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
             String weiboID = null;
             if (id.length() <= 10) {
                 containerID = wbScheduleService.getContainerIDByWeiboID(id);
-                weiboID = id;
             } else {
                 containerID = id;
             }
@@ -57,16 +60,18 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
             }
 
             if (recentArticlesPair.isPresent()) {
-                List<String> recentArticles = recentArticlesPair.get().getRight();
+                List<WeiboArticle> recentArticles = recentArticlesPair.get().getRight();
                 logger.info("wb new article: [%s]", JSON.toJSONString(recentArticles));
-                wbScheduleService.addArticleStaticSchedulers(recentArticles);
                 long lastestTime = recentArticlesPair.get().getLeft().longValue();
 
-                if(recentArticles.size() > 0 && StringUtils.isBlank(weiboID)){
-                    weiboID = RegexUtils.sub("http://m.weibo.cn/([\\d]*)/.*", recentArticles.get(0), 0);
-                }
-                if (!StringUtils.isBlank(weiboID)) {
-                    wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
+                for (int i = 0;i < recentArticles.size(); i++){
+                    weiboID = recentArticles.get(i).getMediaId();
+                    if (!StringUtils.isBlank(weiboID)) {
+                        wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
+                    }
+                    wbScheduleService.addArticleDynamicScheduler(recentArticles.get(i).getPostTime(), recentArticles.get(i).getArticleUrl());
+                    WeiboArticleStatic weiboArticleStatic = SendObjectConvertUtil.weiboArticleStaticConvert(recentArticles.get(i));
+                    sender.sendArticleStatic(weiboArticleStatic);
                 }
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));

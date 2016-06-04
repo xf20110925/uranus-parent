@@ -76,5 +76,17 @@ public class WbArticleTest {
         weiboSpider.close();
     }
 
+    @Test
+    public void testGetArticleByPc() throws Exception {
+        String url = "http://weibo.com/5659237191/DsBPdb0xu?ref=home&rid=0_0_1_2669681800934230908&type=comment";
+        Optional<WeiboArticle> weiboArticle = weiboSpider.getWeiboArticleThroughPc(url);
+    }
+
+    @Test
+    public void testGetRecentArticleByPc() throws Exception {
+        String weiboId = "2836096185";
+        long startTime = 0;
+        Optional<WeiboArticle> weiboArticle = weiboSpider.getWeiboRecentArticleThroughPc(weiboId, startTime);
+    }
 
 }
