@@ -9,6 +9,7 @@ import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.schedule.service.WeiboScheduleService;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
 import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
+import com.ptb.utils.log.LogUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public class WeiboArticleDynamicHandle implements CollectHandler {
                 sender.sendArticleDynamic(wbArticleDynamic);
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weibo-account-by-articleurl", "failed", String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);

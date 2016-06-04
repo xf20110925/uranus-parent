@@ -7,6 +7,7 @@ import com.ptb.uranus.common.entity.CollectCondition;
 import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
+import com.ptb.utils.log.LogUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ public class WeixinNewArticlesHandle implements CollectHandler {
                 wxSchedule.addArticleStaticSchedulers(recentArticles.get().getRight());
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weixin-recent-article-by-biz", "failed", String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);

@@ -10,6 +10,7 @@ import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
+import com.ptb.utils.log.LogUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +42,11 @@ public class WeixinArticleStaticHandle implements CollectHandler {
                 wxSchedule.addArticleDynamicScheduler(wxArticle.get().getPostTime(), message.getBody().getConditon());
             }else{
                 logger.error(JSON.toJSONString(message));
+                LogUtils.log("uranus-server", "get-weixin-article-by-url", "failed", String.valueOf(message.getRaw()));
             }
         }catch (Exception e){
             logger.error(JSON.toJSONString(message), e);
+
         }
     }
 
