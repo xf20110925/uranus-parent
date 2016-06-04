@@ -37,7 +37,7 @@ public class TimeCollectSchduler {
         this.updateCommonArticleEntryTask = new UpdateCommonArtcileListTask();
 
 
-        timer.schedule(updateCommonArticleEntryTask, 1000, conf.getLong("uranus.scheduler.crawle.entry.reload.interval.second", 36000) * 1000);
+        //timer.schedule(updateCommonArticleEntryTask, 1000, conf.getLong("uranus.scheduler.crawle.entry.reload.interval.second", 36000) * 1000);
         timer.schedule(crawleTask, 1000, conf.getLong("uranus.scheduler.spider.interval.second", 500) * 1000);
 
         Signal sig = new Signal("INT");
