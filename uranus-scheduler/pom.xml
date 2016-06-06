@@ -32,6 +32,11 @@
             <artifactId>uranus-cli</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ptb.common</groupId>
+            <artifactId>ptb-utils</artifactId>
+            <version>${ptb.utils.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
