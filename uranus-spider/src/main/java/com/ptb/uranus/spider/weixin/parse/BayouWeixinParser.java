@@ -86,8 +86,8 @@ public class BayouWeixinParser {
                 return Optional.of(new ImmutablePair<>(cts.get(0), urls));
             } else {
                 requestErrorNum.addAndGet(1);
-                requestLogger.error(String.format("request recent articles error[%s] ", parse.read("$.msg").toString()));
-                requestLogger.error(String.format("request num[%d] but fail num[%d]", requestNum.get(), requestErrorNum.get()));
+                requestLogger.warn(String.format("request recent articles error[%s] ", parse.read("$.msg").toString()));
+                requestLogger.warn(String.format("request num[%d] but fail num[%d]", requestNum.get(), requestErrorNum.get()));
             }
         } catch (IOException e) {
             logger.warn(e);
