@@ -35,7 +35,7 @@ public class GsDataTest {
 	 }*/
 	 
 	 
-/*	 @Test
+	/* @Test
 	 public void getWeixinArticleByName(){
 		 String url = weixinSpider.getWeixinArticleUrlById("whulecture");
 		 System.out.println(url);
@@ -49,10 +49,10 @@ public class GsDataTest {
 		 System.out.println("共耗时："+(System.currentTimeMillis()-stattime));
 		 
 		 List<GsData> qbW =list.get(); 
-		 System.out.println(qbW.size());
-		 System.out.println(qbW.get(0).getIncluded());
-		 System.out.println(qbW.get(0).getWechatid());
-		 System.out.println(qbW.get(0).getFunctionintroduce());
+//		 System.out.println(qbW.size());
+//		 System.out.println(qbW.get(0).getIncluded());
+//		 System.out.println(qbW.get(0).getWechatid());
+//		 System.out.println(qbW.get(0).getFunctionintroduce());
 		 System.out.println(qbW.get(0).getAuthenticationInfo());
 		 
 	 }
