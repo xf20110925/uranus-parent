@@ -56,17 +56,18 @@ public class GsDataWeixinParser {
 					}catch (Exception e) {
 
 					}
-
 //					String included=ele.select(".wx-sp span.sp-txt a").text();//最近收录
 					String included=ele.select(".wx-sp span.sp-txt a").attr("href");//文章链接
 					String qrcodeurl=ele.select(".number-codes img").attr("src");//二维码
 					String headportrurl = ele.select(".number-img a").attr("href");
+					String authenticationInfo = ele.select(".wx-sp span.sp-txt").get(1).text();
 					qb.setWechatname(wechatname);
 					qb.setWechatid(weixinId);
 					qb.setFunctionintroduce(functionintroduce);
 					qb.setIncluded(included);
 					qb.setQrcodeurl(qrcodeurl);
 					qb.setHeadportrurl(headportrurl);
+					qb.setAuthenticationInfo(authenticationInfo);
 					result.add(qb);
 					return qb;
 					
