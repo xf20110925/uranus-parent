@@ -60,7 +60,7 @@ public class WeixinMediaSend {
                 sender.sendMediaStatic(weixinMediaStatic);
                 counter.addAndGet(1);
             });
-            start = end + 1;
+            start = end;
             end += 100;
             System.out.println("start:" + start + "\tend:" + end );
             System.out.println("counter------->" + counter);
