@@ -25,6 +25,7 @@ public class WeixinArticleStaticHandle implements CollectHandler {
     Sender sender = null;
     WeixinSpider weixinSpider = new WeixinSpider();
     WeixinScheduleService wxSchedule;
+
     public WeixinArticleStaticHandle(Sender sender) throws ConfigurationException {
         this.sender = sender;
         wxSchedule = new WeixinScheduleService();
@@ -32,19 +33,19 @@ public class WeixinArticleStaticHandle implements CollectHandler {
 
     public void handle(Bus bus, Message<CollectCondition> message) {
 
-        try{
+        try {
 
             Optional<WxArticle> wxArticle = weixinSpider.getArticleByUrl(message.getBody().getConditon());
-            if(wxArticle.isPresent()){
+            if (wxArticle.isPresent()) {
                 WeixinArticleStatic weixinArticleStatic = SendObjectConvertUtil.weixinArticleStaticConvert(wxArticle.get());
                 sender.sendArticleStatic(weixinArticleStatic);
 /*                wxSchedule.checkAndAddToMediaStaticSchedule(weixinArticleStatic.getUrl());*/
                 wxSchedule.addArticleDynamicScheduler(wxArticle.get().getPostTime(), message.getBody().getConditon());
-            }else{
+            } else {
                 logger.error(JSON.toJSONString(message));
-                LogUtils.log("uranus-server", "get-weixin-article-by-url", "failed", String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weixin-article-by-url", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(JSON.toJSONString(message), e);
 
         }

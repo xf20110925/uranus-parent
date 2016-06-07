@@ -49,7 +49,7 @@ public class WeiboMediaStaticHandle implements CollectHandler {
                 weiboScheduleService.addWeiboMediaDynamicSchedule(message.getBody().getConditon());
             } else {
                 logger.error(String.valueOf(message.getRaw()));
-                LogUtils.log("uranus-server", "get-weibo-account-by-articleurl-or-weiboid", "failed", String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weibo-account-by-articleurl-or-weiboid", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             logger.error(String.valueOf(message.getRaw()), e);

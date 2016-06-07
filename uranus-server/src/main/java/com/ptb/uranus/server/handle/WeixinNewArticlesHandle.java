@@ -42,7 +42,7 @@ public class WeixinNewArticlesHandle implements CollectHandler {
                 wxSchedule.addArticleStaticSchedulers(recentArticles.get().getRight());
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
-                LogUtils.log("uranus-server", "get-weixin-recent-article-by-biz", "failed", String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weixin-recent-article-by-biz", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);

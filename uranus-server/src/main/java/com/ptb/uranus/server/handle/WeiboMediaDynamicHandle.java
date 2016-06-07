@@ -40,8 +40,13 @@ public class WeiboMediaDynamicHandle implements CollectHandler {
             }
         } catch (Exception e) {
             logger.error(String.valueOf(message.getRaw()), e);
-            LogUtils.log("uranus-server", "get-weibo-account-by-articleurl-or-weiboid", "failed", String.valueOf(message.getRaw()));
+            LogUtils.log("uranus-server", "get-weibo-account-by-articleurl-or-weiboid", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
 
         }
+    }
+
+    public static void main(String[] args) {
+        LogUtils.log("uranus-server", "get-weibo-account-by-articleurl-or-weiboid", LogUtils.ActionResult.failed, "");
+
     }
 }

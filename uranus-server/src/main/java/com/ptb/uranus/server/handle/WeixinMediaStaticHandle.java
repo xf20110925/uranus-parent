@@ -62,7 +62,7 @@ public class WeixinMediaStaticHandle implements CollectHandler {
                 wxSchedule.addWeixinDetectNewArticlesSchedule(biz);
             } else {
                 ParseErroeLogger.error(JSON.toJSONString(message));
-                LogUtils.log("uranus-server", "get-weixin-account-by-articleurl", "failed", String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weixin-account-by-articleurl", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
 
             }
         } catch (Exception e) {

@@ -80,7 +80,7 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                 }
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
-                LogUtils.log("uranus-server", "get-weibo-recent-article-by-container", "failed", String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weibo-recent-article-by-container", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
 
             }
         } catch (Exception e) {

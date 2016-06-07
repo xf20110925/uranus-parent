@@ -44,7 +44,7 @@ public class WeixinArticleDynamicHandle implements CollectHandler {
                 sender.sendArticleDynamic(wxArticleDynamic);
             } else {
                 ParseErroeLogger.error(new String(message.getRaw()));
-                LogUtils.log("uranus-server", "get-weixin-readlike-by-url", "failed", String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "get-weixin-readlike-by-url", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             ParseErroeLogger.error(new String(message.getRaw()), e);

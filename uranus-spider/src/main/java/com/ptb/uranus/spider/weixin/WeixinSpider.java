@@ -139,10 +139,10 @@ public class WeixinSpider {
             } else {
                 //首先通过八友微信接口获取数据
                 Optional<ReadLikeNum> bayouWxReadLike = bayouWeixinParser.getReadLikeNumByArticleUrl(articleUrl);
-                if (bayouWxReadLike.isPresent()){
+                if (bayouWxReadLike.isPresent()) {
                     return bayouWxReadLike;
                 }
-                LogUtils.log("uranus-spider", "get-weixin-readlike-by-bayou", "failed", "");
+                LogUtils.log("uranus-spider", "get-weixin-readlike-by-bayou", LogUtils.ActionResult.failed, "");
                 //通过微信到搜狗微信链接的转化获取数据
                 try {
                     String sogouUrl = WeixinUtil.instance().queryMapLink(WeixinUtil.instance().getUrlMapKey(articleUrl));
@@ -166,7 +166,7 @@ public class WeixinSpider {
             String data = WeixinUtil.instance().getResultByPhoneSpider(articleUrl, timeout);
             ReadLikeNum readLikeNum = null;
             if ((readLikeNum = JSON.parseObject(data, ReadLikeNum.class)) == null) {
-                LogUtils.log("uranus-spider", "get-weixin-readlike-by-phone", "failed", "");
+                LogUtils.log("uranus-spider", "get-weixin-readlike-by-phone", LogUtils.ActionResult.failed, "");
                 return Optional.empty();
             } else {
                 return Optional.of(readLikeNum);
@@ -271,7 +271,7 @@ public class WeixinSpider {
         //先通过八友微信获取
         Optional<ImmutablePair<Long, List<String>>> recentArticlesPair = bayouWeixinParser.getRecentArticlesByBiz(biz, lastArticlePostTime);
         if (recentArticlesPair.isPresent()) return recentArticlesPair;
-        LogUtils.log("uranus-spider", "get-weixin-recent-article-by-bayou", "failed", "");
+        LogUtils.log("uranus-spider", "get-weixin-recent-article-by-bayou",  LogUtils.ActionResult.failed, "");
         try {
             List<PushMessage> recentPushList = wxPushMessageParser.getRecentPushList(biz);
             if (recentPushList.size() == 0) {
@@ -321,7 +321,7 @@ public class WeixinSpider {
             }
         } catch (Exception e) {
             logger.warn("biz {}", biz, e);
-            LogUtils.log("uranus-spider", "get-weixin-recent-article", "failed", e.getMessage());
+            LogUtils.log("uranus-spider", "get-weixin-recent-article", LogUtils.ActionResult.failed, e.getMessage());
             return Optional.empty();
         }
     }
