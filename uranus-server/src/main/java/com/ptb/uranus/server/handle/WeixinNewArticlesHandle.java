@@ -32,7 +32,7 @@ public class WeixinNewArticlesHandle implements CollectHandler {
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
-            LogUtils.log("uranus-server", "C_WX_A_N recv", LogUtils.ActionResult.success, "");
+            LogUtils.logInfo("uranus-server", "C_WX_A_N recv", LogUtils.ActionResult.success, "");
             String[] conditon = message.getBody().getConditon().split(":::");
             String biz = conditon[0];
             long lastTime = Long.parseLong(conditon[1]);
@@ -40,7 +40,7 @@ public class WeixinNewArticlesHandle implements CollectHandler {
             if (recentArticles.isPresent()) {
                 logger.info("wx new article: [%s]", JSON.toJSONString(recentArticles));
                 wxSchedule.addArticleStaticSchedulers(recentArticles.get().getRight());
-                LogUtils.log("uranus-server", "C_WX_A_N add", LogUtils.ActionResult.success, "");
+                LogUtils.logInfo("uranus-server", "C_WX_A_N add", LogUtils.ActionResult.success, "");
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
                 LogUtils.log("uranus-server", "C_WX_A_N error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));

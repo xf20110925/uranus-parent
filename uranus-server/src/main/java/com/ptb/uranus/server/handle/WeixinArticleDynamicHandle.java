@@ -32,7 +32,7 @@ public class WeixinArticleDynamicHandle implements CollectHandler {
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
-            LogUtils.log("uranus-server", "C_WX_A_D recv", LogUtils.ActionResult.success, "");
+            LogUtils.logInfo("uranus-server", "C_WX_A_D recv", LogUtils.ActionResult.success, "");
             Optional<ReadLikeNum> readLikeNum = weixinSpider.getArticleReadLikeNumByUrl(message.getBody().getConditon(), 60);
             if(!readLikeNum.isPresent()) {
                 readLikeNum = weixinSpider.getArticleReadLikeNumByUrl(message.getBody().getConditon(), 60);
@@ -43,7 +43,7 @@ public class WeixinArticleDynamicHandle implements CollectHandler {
                 wxArticleDynamic.setUrl(message.getBody().getConditon());
 //                wxSchedule.checkAndAddToMediaStaticSchedule(wxArticleDynamic.getUrl());
                 sender.sendArticleDynamic(wxArticleDynamic);
-                LogUtils.log("uranus-server", "C_WX_A_D send", LogUtils.ActionResult.success, "");
+                LogUtils.logInfo("uranus-server", "C_WX_A_D send", LogUtils.ActionResult.success, "");
             } else {
                 ParseErroeLogger.error(new String(message.getRaw()));
                 LogUtils.log("uranus-server", "C_WX_A_D error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
