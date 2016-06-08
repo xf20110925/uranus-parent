@@ -92,7 +92,7 @@ public class BayouWeixinParser {
         } catch (IOException e) {
             logger.warn(e);
         } catch (Exception e) {
-            logger.equals(e);
+            logger.error(e);
         }
         return Optional.empty();
     }

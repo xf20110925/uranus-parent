@@ -51,12 +51,13 @@ public class GsDataWeixinParser {
 					String wechatname = ele.select(".number-title a").text();
 					String weixinId = ele.select(".wx-sp span.gray").text();//微信号
 					String functionintroduce = "";
+					String authenticationInfo = "";
 					try {
 						functionintroduce = ele.select(".wx-sp span.sp-txt").get(0).text();//功能介绍
+						authenticationInfo = ele.select(".wx-sp span.sp-txt").get(1).text();
 					}catch (Exception e) {
 
 					}
-
 //					String included=ele.select(".wx-sp span.sp-txt a").text();//最近收录
 					String included=ele.select(".wx-sp span.sp-txt a").attr("href");//文章链接
 					String qrcodeurl=ele.select(".number-codes img").attr("src");//二维码
@@ -67,6 +68,7 @@ public class GsDataWeixinParser {
 					qb.setIncluded(included);
 					qb.setQrcodeurl(qrcodeurl);
 					qb.setHeadportrurl(headportrurl);
+					qb.setAuthenticationInfo(authenticationInfo);
 					result.add(qb);
 					return qb;
 					

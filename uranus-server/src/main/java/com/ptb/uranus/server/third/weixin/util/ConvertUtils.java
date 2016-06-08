@@ -23,8 +23,8 @@ public class ConvertUtils {
         weixinMediaStatic.setPlat(1);
         weixinMediaStatic.setMediaName(wxMedia.getName());
         weixinMediaStatic.setBiz(wxMedia.getBid());
-//        weixinMediaStatic.setOriginal(false);
-//        weixinMediaStatic.setAuthentication(identify.get());
+        weixinMediaStatic.setOriginal(false);
+        weixinMediaStatic.setAuthentication(wxMedia.getAuthentication());
         weixinMediaStatic.setBrief(wxMedia.getInfo());
         weixinMediaStatic.setHeadImg(wxMedia.getHeadImage());
         weixinMediaStatic.setQrCode(wxMedia.getQrcode());
