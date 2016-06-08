@@ -37,10 +37,8 @@ public class WeixinMediaStaticHandle implements CollectHandler {
     }
 
     public void handle(Bus bus, Message<CollectCondition> message) {
-//        if(true) {
-//            return ;
-//        }
         try {
+            LogUtils.log("uranus-server", "C_WX_M_S recv", LogUtils.ActionResult.success, "");
             Optional<String> identify;
             try {
                 if (!message.getBody().getConditon().matches("(?:http://|https://).*")) {
@@ -60,14 +58,14 @@ public class WeixinMediaStaticHandle implements CollectHandler {
                 sender.sendMediaStatic(weixinMediaStatic);
                 String biz = RegexUtils.sub(".*__biz=([^#&]*).*", message.getBody().getConditon(), 0);
                 wxSchedule.addWeixinDetectNewArticlesSchedule(biz);
+                LogUtils.log("uranus-server", "C_WX_M_S send", LogUtils.ActionResult.success, "");
             } else {
                 ParseErroeLogger.error(JSON.toJSONString(message));
-                LogUtils.log("uranus-server", "get-weixin-account-by-articleurl", "failed", String.valueOf(message.getRaw()));
-
+                LogUtils.log("uranus-server", "C_WX_M_S error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
+            LogUtils.log("uranus-server", "C_WX_M_S exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
         }
     }
-
 }

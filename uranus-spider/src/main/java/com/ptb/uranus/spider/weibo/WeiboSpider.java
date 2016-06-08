@@ -146,10 +146,10 @@ public class WeiboSpider {
      * @param startTime   the start time
      * @return the recent articles by container id
      */
-    public Optional<ImmutablePair<Long, List<WeiboArticle>>> getRecentArticlesByContainerID(String weiboId, Long startTime) {
+    public Optional<ImmutablePair<Long, List<WeiboArticle>>> getRecentArticlesByContainerID(String weiboId, String containerID, Long startTime) {
         try {
             ImmutablePair<Long, List<WeiboArticle>> articleList ;
-            articleList = weiboArticleParse.getWeiboRecentArticlesByContainerID(weiboId, startTime);
+            articleList = weiboArticleParse.getWeiboRecentArticlesByContainerID(containerID, startTime);
             if (articleList != null) {
                 return Optional.of(articleList);
             }else {
@@ -159,7 +159,27 @@ public class WeiboSpider {
                 }
             }
         } catch (Exception e) {
-            logger.warn(String.format("get weibo recent article by containerID [%s]", weiboId), e);
+            logger.warn("get weibo recent article by weiboID {}, containerID {}", weiboId,containerID, e);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Gets recent articles by container id. 建议使用此接口,获取最新文章
+     *
+     * @param containerID the container id  //containerID
+     * @param startTime   the start time
+     * @return the recent articles by container id
+     */
+    public Optional<ImmutablePair<Long, List<WeiboArticle>>> getRecentArticlesByContainerID(String containerID, Long startTime) {
+        try {
+            ImmutablePair<Long, List<WeiboArticle>> articleList ;
+            articleList = weiboArticleParse.getWeiboRecentArticlesByContainerID(containerID, startTime);
+            if (articleList != null) {
+                return Optional.of(articleList);
+            }
+        } catch (Exception e) {
+            logger.warn(String.format("get weibo recent article by containerID [%s]", containerID), e);
         }
         return Optional.empty();
     }

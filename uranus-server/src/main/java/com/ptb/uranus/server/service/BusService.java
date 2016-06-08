@@ -7,7 +7,6 @@ import com.ptb.gaia.bus.message.MessageListener;
 import com.ptb.uranus.server.listener.CollectCommandListenter;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
-import org.ansj.util.MyStaticValue;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

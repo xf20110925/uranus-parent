@@ -33,18 +33,20 @@ public class WeiboArticleDynamicHandle implements CollectHandler {
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
+            LogUtils.logInfo("uranus","C_WB_A_D recv", LogUtils.ActionResult.success, "");
             Optional<WeiboArticle> weiboArticle = weiboSpider.getWeiboArticleByArticleUrl(message.getBody().getConditon());
             if (weiboArticle.isPresent()) {
                 BasicArticleDynamic wbArticleDynamic = SendObjectConvertUtil.weiboArticleDynamicConvert(weiboArticle.get());
 //                weiboScheduleService.checkAndAddToMediaStaticSchedule(weiboArticle.get().getMediaId());
                 sender.sendArticleDynamic(wbArticleDynamic);
+                LogUtils.logInfo("uranus","C_WB_A_D send", LogUtils.ActionResult.success, "");
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
-/*                LogUtils.log("uranus-server", "get-weibo-account-by-articleurl", "failed", String.valueOf(message.getRaw()));*/
+                LogUtils.logInfo("uranus","C_WB_A_D error", LogUtils.ActionResult.failed, "not get weibo article");
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
+            LogUtils.log("uranus","C_WB_A_D exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
         }
-
     }
 }

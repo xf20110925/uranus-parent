@@ -7,6 +7,8 @@ package com.ptb.uranus.schedule.utils;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -17,6 +19,7 @@ import java.util.Set;
 
 public class JedisUtil {
 
+    private static Logger logger = LoggerFactory.getLogger(JedisUtil.class);
     private static String JEDIS_IP;
     private static int JEDIS_PORT;
     private static String JEDIS_PASSWORD;
@@ -560,7 +563,7 @@ public class JedisUtil {
         } catch (Exception e) {
             //释放redis对象
             jedisPool.returnBrokenResource(jedis);
-            e.printStackTrace();
+            logger.error("delete all key error! ip:{} port:{}" ,JEDIS_IP,JEDIS_PORT, e);
         } finally {
             //返还到连接池
             close(jedis);
@@ -578,7 +581,7 @@ public class JedisUtil {
         } catch (Exception e) {
             //释放redis对象
             jedisPool.returnBrokenResource(jedis);
-            e.printStackTrace();
+            logger.error("connect to redis error! ip:{} port:{}" ,JEDIS_IP,JEDIS_PORT, e);
         } finally {
             //返还到连接池
             close(jedis);

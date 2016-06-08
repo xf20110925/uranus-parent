@@ -118,13 +118,13 @@ public class CrawleTask extends TimerTask {
                         logger.warn(String.format("schedule collectType [%s] Error scheduleObj [%s]", collectType, JSON.toJSONString(
                                 scheduleObject
                         ), e));
-                        LogUtils.log("uranus-schedule", "update-schedule-object", "failed", e.getMessage());
+                        LogUtils.log("uranus-schedule", "update-schedule-object", LogUtils.ActionResult.failed, e.getMessage());
                     }
 
                 });
             } catch (Exception e) {
                 logger.warn(String.format("schedule collectType [%s] Error", collectType), e);
-                LogUtils.log("uranus-schedule", "get-schedule-object", "failed", e.getMessage());
+                LogUtils.log("uranus-schedule", "get-schedule-object", LogUtils.ActionResult.failed, e.getMessage());
             }
 
         });

@@ -329,7 +329,7 @@ public class WeiboArticleParser {
         try{
             List<WeiboArticle> weiboArticles = new ArrayList<>();
             int i = 3;
-            String aritcleUrl = String.format("http://weibo.com/u/%s", weiboID);
+            String aritcleUrl = String.format("http://weibo.com/u/%s?is_all=1", weiboID);
             String pageSource = null;
             while (i-- > 0){
                 pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null);

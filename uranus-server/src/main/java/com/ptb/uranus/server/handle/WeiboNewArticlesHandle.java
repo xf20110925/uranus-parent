@@ -37,54 +37,61 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
+            LogUtils.logInfo("uranus-server", "C_WB_A_N recv", LogUtils.ActionResult.success, "");
             String[] conditon = message.getBody().getConditon().split(":::");
             Optional<ImmutablePair<Long, List<WeiboArticle>>> recentArticlesPair;
 
             String id = conditon[0];
             long lastTime = Long.parseLong(conditon[1]);
             String containerID;
+            String weiboID = null;
 
-            if (id.length() <= 12) {
+            if (id.length() <= 10) {
                 containerID = wbScheduleService.getContainerIDByWeiboID(id);
+                weiboID = id;
             } else {
                 containerID = id;
             }
 
-            if (StringUtils.isBlank(containerID) || containerID.length() < 10) {
+            if (StringUtils.isBlank(containerID) || containerID.length() <= 10) {
                 Optional<WeiboAccount> account = weiboSpider.getWeiboAccountByWeiboID(id);
                 if (account.isPresent() && account.get().getContainerID() != null) {
                     wbScheduleService.setContainerIDByWeiboID(account.get().getWeiboID(), account.get().getContainerID());
                     containerID = account.get().getContainerID();
                 }
-            } else {
+            } else if(StringUtils.isBlank(weiboID)){
 
             }
 
-            recentArticlesPair = weiboSpider.getRecentArticlesByContainerID(containerID, lastTime);
+            recentArticlesPair = weiboSpider.getRecentArticlesByContainerID(weiboID, containerID, lastTime);
+            LogUtils.logInfo("uranus-server", "C_WB_A_N get", LogUtils.ActionResult.success, "");
 
             if (recentArticlesPair.isPresent()) {
                 List<WeiboArticle> recentArticles = recentArticlesPair.get().getRight();
-                logger.info("wb new article: [%s]", JSON.toJSONString(recentArticles));
                 long lastestTime = recentArticlesPair.get().getLeft().longValue();
+                if(weiboID == null){
+                    weiboID = recentArticles.get(0).getMediaId();
+                }
 
+                if (!StringUtils.isBlank(weiboID)) {
+                    wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
+                }
                 for (int i = 0; i < recentArticles.size(); i++) {
-                    if(i == 0) {
-                        String weiboID = recentArticles.get(i).getMediaId();
-                        if (!StringUtils.isBlank(weiboID)) {
-                            wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
-                        }
-                    }
+                    logger.info("wb new article: {}", JSON.toJSONString(recentArticles.get(i)));
                     wbScheduleService.addArticleDynamicScheduler(recentArticles.get(i).getPostTime(), recentArticles.get(i).getArticleUrl());
+                    LogUtils.logInfo("uranus-server", "C_WB_A_N add", LogUtils.ActionResult.success, "");
                     WeiboArticleStatic weiboArticleStatic = SendObjectConvertUtil.weiboArticleStaticConvert(recentArticles.get(i));
                     sender.sendArticleStatic(weiboArticleStatic);
+                    LogUtils.logInfo("uranus-server", "C_WB_A_N send", LogUtils.ActionResult.success, "");
                 }
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
-                LogUtils.log("uranus-server", "get-weibo-recent-article-by-container", "failed", String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "C_WB_A_N error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
 
             }
         } catch (Exception e) {
             ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
+            LogUtils.log("uranus-server", "C_WB_A_N exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
         }
     }
 }

@@ -11,6 +11,7 @@ import com.ptb.uranus.spider.smart.SmartSpider;
 import com.ptb.uranus.spider.smart.SpiderResult;
 import com.ptb.uranus.spider.smart.entity.DynamicData;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
+import com.ptb.utils.log.LogUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,18 +36,22 @@ public class CommonArticleDynamicHandle implements CollectHandler {
     public void handle(Bus bus, Message<CollectCondition> message) {
         String url = message.getBody().getConditon();
         try {
+            LogUtils.logInfo("uranus","C_A_A_D recv", LogUtils.ActionResult.success, "");
             Optional<SpiderResult> spiderResultOptional = smartSpider.crawl(url, "articleDynamicData");
             if (spiderResultOptional.isPresent()) {
                 DynamicData dynamicData = SmartSpiderConverter.convertToDynamicData(spiderResultOptional.get());
                 sender.sendArticleDynamic(SendObjectConvertUtil.commonArticleDyanmicConvert(dynamicData, url));
+                LogUtils.logInfo("uranus","C_A_A_D send", LogUtils.ActionResult.success, "");
                 if(ParseSuccessLogger.isInfoEnabled()){
                     ParseSuccessLogger.info(JSON.toJSONString(dynamicData));
                 }
             }else{
                 ParseErrorLogger.error(String.valueOf(message.getRaw()));
+                LogUtils.logInfo("uranus","C_A_A_D error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             ParseErrorLogger.error(String.valueOf(message.getRaw()), e);
+            LogUtils.logInfo("uranus","C_A_A_D exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
             return;
         }
     }

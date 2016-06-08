@@ -19,6 +19,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public enum MongoUtils {
     instance;
 
     private MongoClient mongoClient;
+    private static Logger logger = LoggerFactory.getLogger(MongoUtils.class);
 
     MongoUtils() {
     }
@@ -159,7 +162,6 @@ public enum MongoUtils {
             this.mongoClient.close();
             this.mongoClient = null;
         }
-
     }
 
 
@@ -182,6 +184,10 @@ public enum MongoUtils {
         options.socketTimeout(0);
         options.threadsAllowedToBlockForConnectionMultiplier(5000);
         options.writeConcern(WriteConcern.SAFE);
-        instance.mongoClient = new MongoClient(new ServerAddress(ip, port), options.build());
+        try{
+            instance.mongoClient = new MongoClient(new ServerAddress(ip, port), options.build());
+        }catch (MongoException e){
+            instance.logger.error("connect to mongo error ip:{} port:{}",ip, port);
+        }
     }
 }

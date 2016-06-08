@@ -9,6 +9,7 @@ import com.ptb.uranus.server.send.entity.article.WeiboArticleStatic;
 import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
 import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
+import com.ptb.utils.log.LogUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public class WeiboArticleStaticHandle implements CollectHandler {
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
+            LogUtils.logInfo("uranus","C_WB_A_S recv",LogUtils.ActionResult.success,"");
             WeiboSpider weiboSpider = new WeiboSpider();
 
             Optional<WeiboArticle> weiboArticle = weiboSpider.getWeiboArticleByArticleUrl(message.getBody().getConditon());
@@ -37,9 +39,11 @@ public class WeiboArticleStaticHandle implements CollectHandler {
                 WeiboArticleStatic weiboArticleStatic = SendObjectConvertUtil.weiboArticleStaticConvert(weiboArticle.get());
                 weiboScheduleService.addArticleDynamicScheduler(weiboArticle.get().getPostTime(), weiboArticle.get().getArticleUrl());
                 sender.sendArticleStatic(weiboArticleStatic);
+                LogUtils.logInfo("uranus","C_WB_A_S send",LogUtils.ActionResult.success,"");
             }
         } catch (Exception e) {
             logger.error(String.valueOf(message.getRaw()), e);
+            LogUtils.log("uranus","C_WB_A_S exception",LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
         }
     }
 

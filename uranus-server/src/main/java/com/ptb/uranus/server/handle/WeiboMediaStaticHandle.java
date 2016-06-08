@@ -32,6 +32,7 @@ public class WeiboMediaStaticHandle implements CollectHandler {
 
     public void handle(Bus bus, Message<CollectCondition> message) {
         try {
+            LogUtils.logInfo("uranus-server", "C_WB_M_S recv", LogUtils.ActionResult.success, "");
             Optional<WeiboAccount> wbAccount;
             if(message.getBody().getConditon().contains("http://") || message.getBody().getConditon().contains("https://")) {
                 wbAccount = weiboSpider.getWeiboAccountByArticleUrl(message.getBody().getConditon());
@@ -47,12 +48,14 @@ public class WeiboMediaStaticHandle implements CollectHandler {
 
                 weiboScheduleService.addDetectNewArticlesSchedule(wbAccount.get().getWeiboID());
                 weiboScheduleService.addWeiboMediaDynamicSchedule(message.getBody().getConditon());
+                LogUtils.logInfo("uranus-server", "C_WB_M_S send", LogUtils.ActionResult.success, "");
             } else {
                 logger.error(String.valueOf(message.getRaw()));
-                LogUtils.log("uranus-server", "get-weibo-account-by-articleurl-or-weiboid", "failed", String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "C_WB_M_S error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
             }
         } catch (Exception e) {
             logger.error(String.valueOf(message.getRaw()), e);
+            LogUtils.log("uranus-server", "C_WB_M_S exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
         }
     }
 
