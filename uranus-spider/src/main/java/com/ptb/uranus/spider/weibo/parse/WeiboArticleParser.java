@@ -66,6 +66,9 @@ public class WeiboArticleParser {
             } else {
                 objectType = JsonPathUtil.parse(parse, "$.stage.single[1].mblog.page_info.object_type", null);
             }
+            if(objectType == ""){
+                objectType = "common";
+            }
 
             weiboArticle.setBrief(desc);
             weiboArticle.setCommentCount(comments_count);
@@ -293,20 +296,34 @@ public class WeiboArticleParser {
             }
             WeiboArticle weiboArticle = new WeiboArticle();
             LinkedHashMap userHash = (LinkedHashMap) hashMap.get("user");
+            String mediaId = null;
+            if(userHash != null){
+                weiboArticle.setMediaName((String) userHash.get("screen_name"));
+                mediaId = RegexUtils.sub("/u/([0-9]*)", (String) userHash.get("profile_url"), 0);
+                weiboArticle.setHeadImg((String) userHash.get("profile_image_url"));
+            }
 
-            weiboArticle.setMediaName((String) userHash.get("screen_name"));
-            String mediaId = RegexUtils.sub("/u/([0-9]*)", (String) userHash.get("profile_url"), 0);
             weiboArticle.setMediaId(mediaId);
             weiboArticle.setPostTime(createTime);
             weiboArticle.setCommentCount((Integer) hashMap.get("comments_count"));
             weiboArticle.setLikeCount((Integer) hashMap.get("attitudes_count"));
             weiboArticle.setRepostCount((Integer) hashMap.get("reposts_count"));
             weiboArticle.setContent((String) hashMap.get("text"));
-            weiboArticle.setHeadImg((String) userHash.get("profile_image_url"));
             weiboArticle.setSource((String) hashMap.get("source"));
-            //weiboArticle.setObjectType(hashMap.get(""));
+
+            LinkedHashMap pageInfo = (LinkedHashMap) hashMap.get("page_info");
+            String objType;
+            if(pageInfo == null){
+                objType = "common";
+            }else {
+                objType = (String) pageInfo.get("object_type");
+                if(objType == null){
+                    objType = "common";
+                }
+            }
+            weiboArticle.setObjectType(objType);
             weiboArticle.setGender((String) userHash.get("gender"));
-            //weiboArticle.setBrief(hashMap.get(""));
+            weiboArticle.setBrief((String) userHash.get("description"));
             List<String> img = (List<String>) hashMap.get("pic_ids");
             if(img != null) {
                 for (int i = 0; i < img.size(); i++) {
@@ -315,7 +332,7 @@ public class WeiboArticleParser {
             }
             weiboArticle.setImgs(img);
             weiboArticle.setArticleUrl(String.format("http://m.weibo.cn/%s/%s", mediaId, hashMap.get("bid")));
-            if(hashMap.get("retweeted_status") != null){
+            if(hashMap.get("retweeted_status") == null){
                 weiboArticle.setOriginality(true);
             }
 
@@ -402,7 +419,7 @@ public class WeiboArticleParser {
                 }
                 String articleId = RegexUtils.sub("/[0-9]*/(.*)\\?.*", ele.select(".WB_from a:nth-child(1)").attr("href"), 0);
                 String articleUrl = String.format("http://weibo.com/%s/%s", weiboID, articleId);
-                if(ele.select("WB_feed_expand") != null){
+                if(ele.select("WB_feed_expand") == null){
                     weiboArticle.setOriginality(true);
                 }
                 weiboArticle.setArticleUrl(articleUrl);
