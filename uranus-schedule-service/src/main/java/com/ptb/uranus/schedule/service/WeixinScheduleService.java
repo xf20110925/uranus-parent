@@ -85,7 +85,7 @@ public class WeixinScheduleService {
     public void addWeixinDetectNewArticlesSchedule(String biz) {
 
         if (!cacheDao.hasKey(getCacheBizKeyByTemplate(biz)) &&
-                !(schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s.*", biz))).isPresent())) {
+                !(schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s:::.*", biz))).isPresent())) {
             schedulerDao.addCollScheduler(
                     new ScheduleObject<>(
                             new PeriodicTrigger(detectArticleDelayMin,
