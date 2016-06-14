@@ -40,6 +40,7 @@ public class WeixinNewArticlesHandle implements CollectHandler {
             if (recentArticles.isPresent()) {
                 logger.info("wx new article: [%s]", JSON.toJSONString(recentArticles));
                 wxSchedule.addArticleStaticSchedulers(recentArticles.get().getRight());
+                wxSchedule.updateWeixinMediaCondition(biz, recentArticles.get().getLeft());
                 LogUtils.logInfo("uranus-server", "C_WX_A_N add", LogUtils.ActionResult.success, "");
             } else {
                 ParseErroeLogger.error(String.valueOf(message.getRaw()));
