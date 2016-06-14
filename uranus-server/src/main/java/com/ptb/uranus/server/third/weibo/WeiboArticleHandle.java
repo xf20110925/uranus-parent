@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -37,19 +36,21 @@ public class WeiboArticleHandle implements Runnable{
     String mysqlUser;
     String mysqlPwd;
     String mysqlTableName;
+    long cycleMill;
     int maxNum;
-    int cycle;
+    int cycleNum;
     Sender sender;
     private SchedulerDao schedulerDao;
 
     public WeiboArticleHandle(Sender sender) throws ConfigurationException {
         conf = new PropertiesConfiguration("uranus.properties");
-        mysqlHost = conf.getString("com.ptb.uranus.mysqlHost", "43.241.214.85:3306/weibo");
-        mysqlUser = conf.getString("com.ptb.uranus.mysqlUser", "pintuibao");
-        mysqlPwd = conf.getString("com.ptb.uranus.mysqlPwd", "pintuibao");
-        mysqlTableName = conf.getString("com.ptb.uranus.mysqlTableName", "fresh_data");
-        maxNum = conf.getInt("com.ptb.uranus.maxNum", 10);
-        cycle = conf.getInt("com.ptb.uranus.maxNum", 10);
+        mysqlHost = conf.getString("uranus.bayou.mysqlHost", "43.241.214.85:3306/weibo");
+        mysqlUser = conf.getString("uranus.bayou.mysqlUser", "pintuibao");
+        mysqlPwd = conf.getString("uranus.bayou.mysqlPwd", "pintuibao");
+        mysqlTableName = conf.getString("uranus.bayou.mysqlTableName", "fresh_data");
+        maxNum = conf.getInt("uranus.bayou.maxNum", 10000);
+        cycleNum = conf.getInt("uranus.bayou.cycleNum", 1000);
+        cycleMill = conf.getLong("uranus.bayou.cycleMill", 3600000);
         this.sender = sender;
         schedulerDao = new MongoSchedulerDao();
     }
@@ -150,8 +151,8 @@ public class WeiboArticleHandle implements Runnable{
         HashMap<String, Long> history = new HashMap<>();
         try {
             while (start < this.maxNum){
-                rs = this.cycleGetDataTail(start, this.cycle);
-                start += this.cycle;
+                rs = this.cycleGetDataTail(start, this.cycleNum);
+                start += this.cycleNum;
                 do {
                     bas = SendObjectConvertUtil.weiboArticleStaticConvert(rs);
                     bad = SendObjectConvertUtil.weiboArticleDynamicConvert(rs);
@@ -175,7 +176,7 @@ public class WeiboArticleHandle implements Runnable{
                 e.printStackTrace();
             }
             try {
-                Thread.sleep(TimeUnit.HOURS.toMillis(24));
+                Thread.sleep(cycleMill);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
