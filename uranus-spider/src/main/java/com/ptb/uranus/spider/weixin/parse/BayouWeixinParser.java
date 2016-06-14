@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class BayouWeixinParser {
 
-    static Logger requestLogger = Logger.getLogger("baiyou.request");
+    static Logger requestLogger = Logger.getLogger("bayou.request");
     static Logger logger = Logger.getLogger(BayouWeixinParser.class);
     private String RECENT_ARTILES_URL = null;
     private String READ_LIKE_URL = null;

@@ -1,6 +1,5 @@
 package com.ptb.uranus.server.third.weibo.script;
 
-import com.alibaba.fastjson.JSON;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.ptb.gaia.bus.Bus;
@@ -10,13 +9,8 @@ import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.server.send.entity.media.WeiboMediaStatic;
-import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
-import com.ptb.uranus.server.third.weixin.entity.BayouWXMedia;
-import com.ptb.uranus.server.third.weixin.util.ConvertUtils;
 import org.bson.Document;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -59,8 +53,6 @@ public class WeiboMediaSend {
             }
             start = end;
             end += 100;
-            System.out.println("start:" + start + "\tend:" + end );
-            System.out.println("counter------->" + counter);
         }
     }
 

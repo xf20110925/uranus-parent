@@ -32,10 +32,10 @@ public class WeiboMediaHandle implements Runnable{
 
     public WeiboMediaHandle(Sender sender) throws ConfigurationException {
         conf = new PropertiesConfiguration("uranus.properties");
-        host = conf.getString("com.ptb.uranus.mongoHost", "192.168.5.31");
-        port = conf.getInt("com.ptb.uranus.mongoPort", 27017);
-        db = conf.getString("com.ptb.uranus.mongoDataBase", "weibo");
-        coll = conf.getString("com.ptb.uranus.mongoColl", "media");
+        host = conf.getString("uranus.bayou.mongo.host", "192.168.5.31");
+        port = conf.getInt("uranus.bayou.mongo.port", 27017);
+        db = conf.getString("uranus.bayou.mongo.db", "uranus");
+        coll = conf.getString("com.ptb.bayou.mongo.coll", "weiboMedia");
 
         dbHead = new MongoClient(host, port);
         collHead = dbHead.getDatabase(db).getCollection(coll);

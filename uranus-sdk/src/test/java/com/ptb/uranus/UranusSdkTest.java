@@ -21,8 +21,8 @@ public class UranusSdkTest {
     @Test
     public void formatWeiboTest() {
         UranusSdk.i().collect(
-                "2993049293",
-                CollectType.C_WB_M_S,
+                "MzA3NDgyNTYyMQ==",
+                CollectType.C_WX_A_N,
                 new JustOneTrigger(new Date().getTime()), Priority.L1);
     }
 
@@ -69,7 +69,7 @@ public class UranusSdkTest {
     @Test
     public void collectWeixinMedia() {
         assertTrue(UranusSdk.i().collect(
-                "rmrbwx"
+                "MzA3NDgyNTYyMQ=="
                 , CollectType.C_WX_M_S,
                 new JustOneTrigger(new Date().getTime()), Priority.L1) != null);
     }
