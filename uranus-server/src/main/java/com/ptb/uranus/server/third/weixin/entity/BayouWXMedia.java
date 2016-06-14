@@ -16,7 +16,7 @@ public class BayouWXMedia {
     private String bid;
     private String info;
     private String headImage = "";
-    private String authentication = "";
+    private String authentication;
     private boolean original = false;
 
     public BayouWXMedia() {
