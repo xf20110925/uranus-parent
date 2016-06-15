@@ -41,12 +41,12 @@ public class WeixinArticleStaticHandle implements CollectHandler {
                 wxSchedule.addArticleDynamicScheduler(wxArticle.get().getPostTime(), message.getBody().getConditon());
                 LogUtils.logInfo("uranus-server", "C_WX_A_S send", LogUtils.ActionResult.success, "");
             }else{
-                logger.error(JSON.toJSONString(message));
-                LogUtils.log("uranus-server", "C_WX_A_S error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+                logger.error(new String(message.getRaw()));
+                LogUtils.log("uranus-server", "C_WX_A_S error", LogUtils.ActionResult.failed, new String(message.getRaw()));
             }
         }catch (Exception e){
-            logger.error(JSON.toJSONString(message), e);
-            LogUtils.log("uranus-server", "C_WX_A_S exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+            logger.error(new String(message.getRaw()), e);
+            LogUtils.log("uranus-server", "C_WX_A_S exception", LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
         }
     }
 }

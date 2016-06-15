@@ -147,11 +147,10 @@ public class WeiboArticleHandle implements Runnable{
         BasicArticleDynamic bad;
         BasicArticleStatic bas;
         int start = 0;
-        ResultSet rs;
         HashMap<String, Long> history = new HashMap<>();
         try {
             while (start < this.maxNum){
-                rs = this.cycleGetDataTail(start, this.cycleNum);
+                ResultSet rs = this.cycleGetDataTail(start, this.cycleNum);
                 start += this.cycleNum;
                 do {
                     bas = SendObjectConvertUtil.weiboArticleStaticConvert(rs);
