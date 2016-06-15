@@ -8,6 +8,7 @@ import com.ptb.uranus.common.entity.CollectType;
 import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.trigger.JustOneTrigger;
 import com.ptb.uranus.sdk.UranusSdk;
+import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.GsData;
 import org.apache.commons.io.FileUtils;
@@ -89,6 +90,13 @@ public final class WxTools {
         bus.start(true, 1);
     }
 
+    public static void syncWXMedia(String wxId){
+        System.out.println("starting....");
+        Bus bus = new KafkaBus();
+        bus.start(false, 3);
+        WxMediaImport wxMediaImport = new WxMediaImport(new BusSender(bus));
+        wxMediaImport.syncWXMedia(wxId);
+    }
     public static void main(String[] args) {
         WeixinSpider weixinSpider = new WeixinSpider();
         Optional<List<GsData>> mofzpy = weixinSpider.getWeixinAccountByIdOrName("mofzpy", 1);
