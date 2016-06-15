@@ -88,6 +88,7 @@ public class Tools {
         }else if(commandLine.hasOption("sync_wx_media")){
             String wxMedia = commandLine.getOptionValue("sync_wx_media");
             WxTools.syncWXMedia(wxMedia);
+            System.exit(1);
         }else {
             formatter.printHelp("usage:", options);
         }
