@@ -126,7 +126,7 @@ public class BayouWeixinSync {
                 }
             }
         }
-        throw new BayouException(String.format("get rangeId from url[%s] error"));
+        throw new BayouException(String.format("get rangeId from url[%s] error", rangeUrl));
     }
 
     private RangeId getRangeId(String url, String identify) {
