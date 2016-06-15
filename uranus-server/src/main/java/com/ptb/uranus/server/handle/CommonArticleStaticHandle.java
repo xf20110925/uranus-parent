@@ -50,13 +50,13 @@ public class CommonArticleStaticHandle implements CollectHandler {
                         ParseSuccessLogger.info(JSON.toJSONString(article));
                     }
                 } else {
-                    ParseErrorLogger.error(String.valueOf(message.getRaw()));
-                    LogUtils.logInfo("uranus","C_A_A_S error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+                    ParseErrorLogger.error(new String(message.getRaw()));
+                    LogUtils.logInfo("uranus","C_A_A_S error", LogUtils.ActionResult.failed, new String(message.getRaw()));
                 }
             }
         } catch (Exception e) {
-            ParseErrorLogger.error(JSON.toJSONString(message), e);
-            LogUtils.logInfo("uranus","C_A_A_D exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+            ParseErrorLogger.error(new String(message.getRaw()), e);
+            LogUtils.logInfo("uranus","C_A_A_D exception", LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
             return;
         }
 

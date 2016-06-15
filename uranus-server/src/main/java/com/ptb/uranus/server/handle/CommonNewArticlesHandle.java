@@ -48,13 +48,13 @@ public class CommonNewArticlesHandle implements CollectHandler {
                     ParseSuccessLogger.info(JSON.toJSONString(newScheduleUrls));
                 }
             }else{
-                ParseErrorLogger.error(String.valueOf(message.getRaw()));
-                LogUtils.logInfo("uranus","C_A_A_N error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+                ParseErrorLogger.error(new String(message.getRaw()));
+                LogUtils.logInfo("uranus","C_A_A_N error", LogUtils.ActionResult.failed, new String(message.getRaw()));
             }
 
         } catch (Exception e) {
-            ParseErrorLogger.error(String.valueOf(message.getRaw()), e);
-            LogUtils.logInfo("uranus","C_A_A_N exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+            ParseErrorLogger.error(new String(message.getRaw()), e);
+            LogUtils.logInfo("uranus","C_A_A_N exception", LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
             return;
         }
     }

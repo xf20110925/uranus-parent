@@ -46,11 +46,11 @@ public class WeixinArticleDynamicHandle implements CollectHandler {
                 LogUtils.logInfo("uranus-server", "C_WX_A_D send", LogUtils.ActionResult.success, "");
             } else {
                 ParseErroeLogger.error(new String(message.getRaw()));
-                LogUtils.log("uranus-server", "C_WX_A_D error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+                LogUtils.log("uranus-server", "C_WX_A_D error", LogUtils.ActionResult.failed, new String(message.getRaw()));
             }
         } catch (Exception e) {
             ParseErroeLogger.error(new String(message.getRaw()), e);
-            LogUtils.log("uranus-server", "C_WX_A_D exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+            LogUtils.log("uranus-server", "C_WX_A_D exception", LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
         }
 
     }

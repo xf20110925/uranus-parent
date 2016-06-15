@@ -43,12 +43,12 @@ public class WeixinNewArticlesHandle implements CollectHandler {
                 wxSchedule.updateWeixinMediaCondition(biz, recentArticles.get().getLeft());
                 LogUtils.logInfo("uranus-server", "C_WX_A_N add", LogUtils.ActionResult.success, "");
             } else {
-                ParseErroeLogger.error(String.valueOf(message.getRaw()));
-                LogUtils.log("uranus-server", "C_WX_A_N error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+                ParseErroeLogger.error(new String(message.getRaw()));
+                LogUtils.log("uranus-server", "C_WX_A_N error", LogUtils.ActionResult.failed, new String(message.getRaw()));
             }
         } catch (Exception e) {
-            ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
-            LogUtils.log("uranus-server", "C_WX_A_N exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+            ParseErroeLogger.error(new String(message.getRaw()), e);
+            LogUtils.log("uranus-server", "C_WX_A_N exception", LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
         }
     }
 }

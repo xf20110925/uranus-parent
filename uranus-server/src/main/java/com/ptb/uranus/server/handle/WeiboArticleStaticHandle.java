@@ -42,8 +42,8 @@ public class WeiboArticleStaticHandle implements CollectHandler {
                 LogUtils.logInfo("uranus","C_WB_A_S send",LogUtils.ActionResult.success,"");
             }
         } catch (Exception e) {
-            logger.error(String.valueOf(message.getRaw()), e);
-            LogUtils.log("uranus","C_WB_A_S exception",LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+            logger.error(new String(message.getRaw()), e);
+            LogUtils.log("uranus","C_WB_A_S exception",LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
         }
     }
 

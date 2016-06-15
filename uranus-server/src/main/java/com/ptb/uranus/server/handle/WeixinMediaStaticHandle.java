@@ -60,12 +60,12 @@ public class WeixinMediaStaticHandle implements CollectHandler {
                 wxSchedule.addWeixinDetectNewArticlesSchedule(biz);
                 LogUtils.logInfo("uranus-server", "C_WX_M_S send", LogUtils.ActionResult.success, "");
             } else {
-                ParseErroeLogger.error(JSON.toJSONString(message));
-                LogUtils.log("uranus-server", "C_WX_M_S error", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+                ParseErroeLogger.error(new String(message.getRaw()));
+                LogUtils.log("uranus-server", "C_WX_M_S error", LogUtils.ActionResult.failed, new String(message.getRaw()));
             }
         } catch (Exception e) {
-            ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
-            LogUtils.log("uranus-server", "C_WX_M_S exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+            ParseErroeLogger.error(new String(message.getRaw()), e);
+            LogUtils.log("uranus-server", "C_WX_M_S exception", LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
         }
     }
 }

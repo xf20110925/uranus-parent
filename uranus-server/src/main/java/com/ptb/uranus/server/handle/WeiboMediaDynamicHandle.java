@@ -41,8 +41,8 @@ public class WeiboMediaDynamicHandle implements CollectHandler {
                 LogUtils.logInfo("uranus-server", "C_WB_M_D send", LogUtils.ActionResult.success, "");
             }
         } catch (Exception e) {
-            logger.error(String.valueOf(message.getRaw()), e);
-            LogUtils.log("uranus-server", "C_WB_M_D exception", LogUtils.ActionResult.failed, String.valueOf(message.getRaw()));
+            logger.error(new String(message.getRaw()), e);
+            LogUtils.log("uranus-server", "C_WB_M_D exception", LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
         }
     }
 }
