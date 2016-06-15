@@ -45,6 +45,11 @@
             <artifactId>gaia-bus</artifactId>
             <version>${ptb.bus.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ptb.uranus</groupId>
+            <artifactId>uranus-server</artifactId>
+            <version>2.2.6-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <!--将依赖JAR解压后，打在一起-->
     <build>
