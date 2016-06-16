@@ -15,9 +15,6 @@ import org.slf4j.LoggerFactory;
 public class WeiboInit {
     private static Logger logger = LoggerFactory.getLogger(ThirdEntry.class);
     private PropertiesConfiguration conf;
-    private int weiboMediaNum;
-    private int weiboArticleNum;
-    private int busWorkNum;
     private Sender sender;
 
 
@@ -27,9 +24,6 @@ public class WeiboInit {
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
-        weiboMediaNum = conf.getInt("com.ptb.uranus.weiboMediaNum", 1);
-        weiboArticleNum = conf.getInt("com.ptb.uranus.weiboArticleNum", 1);
-        busWorkNum = conf.getInt("com.ptb.uranus.busWorkNum", 1);
         this.sender = sender;
     }
 

@@ -7,11 +7,14 @@ import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.third.weibo.WeiboInit;
 import com.ptb.uranus.server.third.weixin.Scheduler;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * Created by watson zhang on 16/5/31.
  */
 public class ThirdEntry {
+    private PropertiesConfiguration conf;
+    private int busWorkNum;
     private Bus bus;
     private Sender sender;
     private static Scheduler weixinScheduler;
@@ -19,9 +22,15 @@ public class ThirdEntry {
 
 
     public ThirdEntry() {
+        try {
+            conf = new PropertiesConfiguration("uranus.properties");
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        }
+        busWorkNum = conf.getInt("com.ptb.uranus.busWorkNum", 3);
         bus = new KafkaBus();
         sender = new BusSender(this.bus);
-        bus.start(false,3);
+        bus.start(false,busWorkNum);
         weixinScheduler = new Scheduler(sender);
         weiboScheduler = new WeiboInit(sender);
     }
