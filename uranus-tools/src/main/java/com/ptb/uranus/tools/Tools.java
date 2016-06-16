@@ -40,6 +40,7 @@ public class Tools {
         options.addOption("sdk_type",true,"采集类型： C_WX_M_D,C_WX_M_S,C_WX_A_D,C_WX_A_S,C_WB_A_S,C_WB_A_D,C_WB_M_D，C_WB_M_S，C_A_A_D，C_A_A_S，C_A_A_N，C_WB_A_N，C_WX_A_N");
         options.addOption("sdk_time",true,"程序执行时间戳，如果需要立即执行请输入1；");
         options.addOption("sdk_priority",true,"优先级：L1，L2，L3");
+        options.addOption("sync_wx_media",true,"参数为微信id");
         CommandLine commandLine;
         HelpFormatter formatter = new HelpFormatter();
         try {
@@ -84,6 +85,10 @@ public class Tools {
                 String name= UranusSdk.i().collect(sdk_url,  CollectType.valueOf(sdk_type), time, Priority.valueOf(sdk_priority));
      	        System.out.println(name);
         	}
+        }else if(commandLine.hasOption("sync_wx_media")){
+            String wxMedia = commandLine.getOptionValue("sync_wx_media");
+            WxTools.syncWXMedia(wxMedia);
+            System.exit(1);
         }else {
             formatter.printHelp("usage:", options);
         }
