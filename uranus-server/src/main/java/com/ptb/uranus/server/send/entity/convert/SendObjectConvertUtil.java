@@ -165,14 +165,18 @@ public class SendObjectConvertUtil {
         return wbArticleDynamic;
     }
 
-    public static BasicArticleDynamic weiboArticleDynamicConvert(ResultSet rs) throws SQLException {
+    public static BasicArticleDynamic weiboArticleDynamicConvert(ResultSet rs) {
         BasicArticleDynamic wbArticleDynamic = new BasicArticleDynamic();
-        String url = String.format("weibo.com/u/%s", rs.getString("user_id"));
-        wbArticleDynamic.setUrl(url);
-        wbArticleDynamic.setComments(Integer.parseInt(rs.getString("ping")));
-        wbArticleDynamic.setLikes(Integer.parseInt(rs.getString("zhan")));
-        wbArticleDynamic.setForwards(Integer.parseInt(rs.getString("zhuan")));
-        wbArticleDynamic.setPlat(2);
+        try {
+            String url = String.format("weibo.com/u/%s", rs.getString("user_id"));
+            wbArticleDynamic.setUrl(url);
+            wbArticleDynamic.setComments(Integer.parseInt(rs.getString("ping")));
+            wbArticleDynamic.setLikes(Integer.parseInt(rs.getString("zhan")));
+            wbArticleDynamic.setForwards(Integer.parseInt(rs.getString("zhuan")));
+            wbArticleDynamic.setPlat(2);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return wbArticleDynamic;
     }
 
@@ -218,37 +222,43 @@ public class SendObjectConvertUtil {
 
     }
 
-    public static WeiboArticleStatic weiboArticleStaticConvert(ResultSet rs) throws SQLException {
+    public static WeiboArticleStatic weiboArticleStaticConvert(ResultSet rs) {
         TextAnalyzeResult textAnalyzeResult;
-        textAnalyzeResult = textAnalyzer.ArticleAnalyze(rs.getString("weibo_content"));
-        WeiboArticleStatic weiboArticleStatic = new WeiboArticleStatic();
-        weiboArticleStatic.setWeiboId(rs.getString("user_id"));
-        weiboArticleStatic.setPicture(rs.getString("pic_content"));
+        WeiboArticleStatic weiboArticleStatic = null;
+        try {
+            textAnalyzeResult = textAnalyzer.ArticleAnalyze(rs.getString("weibo_content"));
+            weiboArticleStatic = new WeiboArticleStatic();
+            weiboArticleStatic.setWeiboId(rs.getString("user_id"));
+            weiboArticleStatic.setPicture(rs.getString("pic_content"));
 
-        weiboArticleStatic.setType("");
-        weiboArticleStatic.setKeywords(textAnalyzeResult.getAbstracts());
-        weiboArticleStatic.setTitle(textAnalyzeResult.getArticle());
-        weiboArticleStatic.setAuthor(rs.getString("nick_name"));
-        weiboArticleStatic.setClassify("");
-        weiboArticleStatic.setContent(rs.getString("weibo_content"));
+            weiboArticleStatic.setType("");
+            weiboArticleStatic.setKeywords(textAnalyzeResult.getAbstracts());
+            weiboArticleStatic.setTitle(textAnalyzeResult.getArticle());
+            weiboArticleStatic.setAuthor(rs.getString("nick_name"));
+            weiboArticleStatic.setClassify("");
+            weiboArticleStatic.setContent(rs.getString("weibo_content"));
 
-        String pic = rs.getString("pic_content");
-        if(pic != null){
-            String[] picArray = pic.split(",");
-            for(int i = 0; i < picArray.length; i++){
-                textAnalyzeResult.getHyperLink().put(String.format("http://ww3.sinaimg.cn/large/%s.jpg",picArray[i]), "");
+            String pic = rs.getString("pic_content");
+            if(pic != null){
+                String[] picArray = pic.split(",");
+                for(int i = 0; i < picArray.length; i++){
+                    textAnalyzeResult.getHyperLink().put(String.format("http://ww3.sinaimg.cn/large/%s.jpg",picArray[i]), "");
+                }
+            }else {
+                textAnalyzeResult.getHyperLink().put("", "");
             }
-        }else {
-            textAnalyzeResult.getHyperLink().put("", "");
-        }
 
-        weiboArticleStatic.setLinks(textAnalyzeResult.getHyperLink());
-        weiboArticleStatic.setPlat(2);
-        weiboArticleStatic.setPostTime(Long.parseLong(rs.getString("time_stamp")));
-        weiboArticleStatic.setSource(rs.getString("device"));
-        weiboArticleStatic.setSplitwords(textAnalyzeResult.getSplitword());
-        String url = String.format("weibo.com/%s/%s", rs.getString("user_id"), rs.getString("weibo_id"));
-        weiboArticleStatic.setUrl(url);
+            weiboArticleStatic.setLinks(textAnalyzeResult.getHyperLink());
+            weiboArticleStatic.setPlat(2);
+            weiboArticleStatic.setPostTime(Long.parseLong(rs.getString("time_stamp")));
+            weiboArticleStatic.setSource(rs.getString("device"));
+            weiboArticleStatic.setSplitwords(textAnalyzeResult.getSplitword());
+            String url = String.format("weibo.com/%s/%s", rs.getString("user_id"), rs.getString("weibo_id"));
+            weiboArticleStatic.setUrl(url);
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return weiboArticleStatic;
     }

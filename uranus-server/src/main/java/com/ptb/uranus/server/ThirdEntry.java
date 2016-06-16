@@ -4,77 +4,31 @@ import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.weibo.WeiboArticleHandle;
-import com.ptb.uranus.server.third.weibo.WeiboMediaHandle;
+import com.ptb.uranus.server.third.weibo.WeiboInit;
 import com.ptb.uranus.server.third.weixin.Scheduler;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.*;
 
 /**
  * Created by watson zhang on 16/5/31.
  */
 public class ThirdEntry {
-    public enum TASKNAME{
-        WEIBOMEDIA,
-        WEIBOARTICLE,
-    }
-    private static Logger logger = LoggerFactory.getLogger(ThirdEntry.class);
     private Bus bus;
     private Sender sender;
-    private PropertiesConfiguration conf;
-    private HashMap<TASKNAME, Runnable> thread = new HashMap<>();
-    private int weiboMediaNum;
-    private int weiboArticleNum;
-    private int busWorkNum;
-
     private static Scheduler weixinScheduler;
+    private static WeiboInit weiboScheduler;
 
 
-    public ThirdEntry() throws ConfigurationException {
-        conf = new PropertiesConfiguration("uranus.properties");
-        weiboMediaNum = conf.getInt("com.ptb.uranus.weiboMediaNum", 1);
-        weiboArticleNum = conf.getInt("com.ptb.uranus.weiboArticleNum", 1);
-        busWorkNum = conf.getInt("com.ptb.uranus.busWorkNum", 1);
+    public ThirdEntry() {
         bus = new KafkaBus();
-
         sender = new BusSender(this.bus);
-
-        thread.put(ThirdEntry.TASKNAME.WEIBOMEDIA, new WeiboMediaHandle(sender));
-        thread.put(ThirdEntry.TASKNAME.WEIBOARTICLE, new WeiboArticleHandle(sender));
-
-        bus.start(false,busWorkNum);
+        bus.start(false,3);
         weixinScheduler = new Scheduler(sender);
+        weiboScheduler = new WeiboInit(sender);
     }
 
     public static void main(String[] args) throws ConfigurationException {
-        logger.debug("begin ...");
-        ThirdEntry thirdEntry = new ThirdEntry();
-
-        try{
-            Iterator iter = thirdEntry.thread.entrySet().iterator();
-            while (iter.hasNext()){
-                Map.Entry runTmp = (Map.Entry)iter.next();
-                switch ((TASKNAME)runTmp.getKey()){
-                    case WEIBOMEDIA:
-                        for(int i = 0;i < thirdEntry.weiboMediaNum;i++){
-                            new Thread((Runnable) runTmp.getValue()).start();
-                        }
-                        break;
-                    case WEIBOARTICLE:
-                        for(int i = 0;i < thirdEntry.weiboArticleNum;i++){
-                            new Thread((Runnable) runTmp.getValue()).start();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }catch (Exception e){
-            logger.error("start thread error!", e);
-        }
+        //启动微博调度器
+        weiboScheduler.startWeibo();
         //启动微信调度器
         weixinScheduler.schedule();
     }
