@@ -38,8 +38,8 @@ public class WeiboArticleHandle implements Runnable{
 
     public WeiboArticleHandle(Sender sender) throws ConfigurationException {
         conf = new PropertiesConfiguration("uranus.properties");
-        startNum = conf.getLong("uranus.bayou.maxNum", 1295883035);
-        lastNum = conf.getLong("uranus.bayou.maxNum", 1309360356);
+        startNum = conf.getLong("uranus.bayou.startNum", 1295883035);
+        lastNum = conf.getLong("uranus.bayou.lastNum", 1309360356);
         cycleNum = conf.getInt("uranus.bayou.cycleNum", 1000);
         schedulerDao = new MongoSchedulerDao();
         this.sender = sender;
