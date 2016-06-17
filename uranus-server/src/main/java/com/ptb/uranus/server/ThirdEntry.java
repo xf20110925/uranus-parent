@@ -36,6 +36,7 @@ public class ThirdEntry {
     }
 
     public static void main(String[] args) throws ConfigurationException {
+        new ThirdEntry();
         //启动微博调度器
         weiboScheduler.startWeibo();
         //启动微信调度器
