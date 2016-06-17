@@ -26,7 +26,7 @@ public class Scheduler {
     }
 
     public void schedule() {
-        executor.execute(() -> {
+       /* executor.execute(() -> {
             while (true) {
                 try {
                     wxSync.syncArticleDynamics();
@@ -45,7 +45,7 @@ public class Scheduler {
                 }
                 sleep(1000);
             }
-        });
+        });*/
         executor.execute(() -> {
             while (true) {
                 try {

@@ -191,9 +191,9 @@ public class BayouWeixinSync {
         wxMediasOpt.ifPresent(wxMedias -> {
             wxMedias.stream().forEach(wxMedia -> {
                 WeixinMediaUtils.updateWeixinMedia(wxMedia.getBid(), wxMedia);
-                WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
+               /* WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
                 //发送到kafka
-                sender.sendMediaStatic(weixinMediaStatic);
+                sender.sendMediaStatic(weixinMediaStatic);*/
             });
         });
     }

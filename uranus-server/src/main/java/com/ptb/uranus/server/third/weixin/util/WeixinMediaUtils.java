@@ -25,6 +25,7 @@ public class WeixinMediaUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println(updateResult.toString());
         return updateResult;
     }
 }
