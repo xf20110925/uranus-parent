@@ -15,7 +15,7 @@ public class BayouWXMedia {
     //    private String id;
     private String bid;
     private String info;
-    private String headImage = "";
+    private String headimage = "";
     private String authentication;
     private boolean original = false;
 
@@ -29,7 +29,7 @@ public class BayouWXMedia {
     public void setCode(String code) {
         this.code = code;
         if (StringUtils.isNotBlank(code)) {
-            headImage = "http://open.weixin.qq.com/qr/code/?username=" + code;
+            headimage = "http://open.weixin.qq.com/qr/code/?username=" + code;
         }
     }
 
@@ -65,12 +65,12 @@ public class BayouWXMedia {
         this.info = info;
     }
 
-    public String getHeadImage() {
-        return headImage;
+    public String getHeadimage() {
+        return headimage;
     }
 
-    public void setHeadImage(String headImage) {
-        this.headImage = headImage;
+    public void setHeadimage(String headimage) {
+        this.headimage = headimage;
     }
 
     public String getAuthentication() {

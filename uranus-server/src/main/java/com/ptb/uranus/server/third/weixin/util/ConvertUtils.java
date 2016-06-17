@@ -26,7 +26,7 @@ public class ConvertUtils {
         weixinMediaStatic.setOriginal(false);
         weixinMediaStatic.setAuthentication(wxMedia.getAuthentication());
         weixinMediaStatic.setBrief(wxMedia.getInfo());
-        weixinMediaStatic.setHeadImg(wxMedia.getHeadImage());
+        weixinMediaStatic.setHeadImg(wxMedia.getHeadimage());
         weixinMediaStatic.setQrCode(wxMedia.getQrcode());
         weixinMediaStatic.setWeixinId(wxMedia.getCode());
         return weixinMediaStatic;
