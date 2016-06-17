@@ -46,8 +46,8 @@ public class BayouWeixinSync {
 
     private void loadConfig() throws ConfigurationException {
         PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
-        RANGEURL = conf.getString("uranus.bayou.range.url", "http://weixindata.pullword.com:58600/%s/range?auth_usr=vip_yahoo");
-        DATAURL = conf.getString("uranus.bayou.data.url", "http://weixindata.pullword.com:58600/%s/%d?auth_usr=vip_yahoo");
+        RANGEURL = conf.getString("uranus.bayou.range.url", "http://weixindata.pullword.com:58600/%s/range?auth_usr=pintuibao");
+        DATAURL = conf.getString("uranus.bayou.data.url", "http://weixindata.pullword.com:58600/%s/%d?auth_usr=pintuibao");
     }
 
     public BayouWeixinSync(Sender sender) {
