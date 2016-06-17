@@ -12,7 +12,6 @@ import java.util.List;
  * Created by watson zhang on 16/6/15.
  */
 public class MysqlClient {
-    PropertiesConfiguration conf;
     String driver = "com.mysql.cj.jdbc.Driver";
     private Connection conn;
     private Statement stmt;
@@ -20,24 +19,19 @@ public class MysqlClient {
     String mysqlHost;
     String mysqlUser;
     String mysqlPwd;
-    String mysqlTableName;
+    String tableName;
 
-    public MysqlClient() {
-        try {
-            conf = new PropertiesConfiguration("uranus.properties");
-        } catch (ConfigurationException e) {
-            e.printStackTrace();
-        }
-        mysqlHost = conf.getString("uranus.bayou.mysqlHost", "43.241.214.85:3306/weibo");
-        mysqlUser = conf.getString("uranus.bayou.mysqlUser", "pintuibao");
-        mysqlPwd = conf.getString("uranus.bayou.mysqlPwd", "pintuibao");
-        mysqlTableName = conf.getString("uranus.bayou.mysqlTableName", "fresh_data");
+    public MysqlClient(String host, String user, String password, String tableName) {
+        this.mysqlHost = host;
+        this.mysqlUser = user;
+        this.mysqlPwd = password;
+        this.tableName = tableName;
     }
 
     public void connectMySQL() {
         try {
             Class.forName(driver).newInstance();
-            conn = (Connection) DriverManager.getConnection("jdbc:mysql://"
+            conn = DriverManager.getConnection("jdbc:mysql://"
                     + mysqlHost + "?useUnicode=true&characterEncoding=UTF8", mysqlUser, mysqlPwd);
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -116,7 +110,7 @@ public class MysqlClient {
     public int getStartId(){
         int start = 0;
         List<HashMap<String, String>> rsList;
-        String sql = String.format("SELECT * from %s ORDER BY id LIMIT 1",this.mysqlTableName);
+        String sql = String.format("SELECT * from %s ORDER BY id LIMIT 1",this.tableName);
         rsList = this.result(sql);
         start = Integer.parseInt(rsList.get(0).get("id"));
         return start;
@@ -125,7 +119,7 @@ public class MysqlClient {
     public int getLastId(){
         int last = 0;
         List<HashMap<String, String>> rsList;
-        String sql = String.format("SELECT * from %s ORDER BY id DESC LIMIT 1", this.mysqlTableName);
+        String sql = String.format("SELECT * from %s ORDER BY id DESC LIMIT 1", this.tableName);
         rsList = this.result(sql);
         last = Integer.parseInt(rsList.get(0).get("id"));
         return last;
@@ -134,7 +128,7 @@ public class MysqlClient {
     public int updateStartId(long oldStart){
         int start = 0;
         ResultSet rs;
-        String sql = String.format("SELECT * from %s WHERE id > %d  ORDER BY id LIMIT 1", this.mysqlTableName, oldStart);
+        String sql = String.format("SELECT * from %s WHERE id > %d  ORDER BY id LIMIT 1", this.tableName, oldStart);
         rs = this.resultSet(sql);
         try {
             start = Integer.parseInt(rs.getString("id").toString());
@@ -147,7 +141,7 @@ public class MysqlClient {
     public int updateLastId(long oldLast){
         int last = 0;
         List<HashMap<String, String>> rs;
-        String sql = String.format("SELECT * from %s WHERE id < %d  ORDER BY id DESC LIMIT 1", this.mysqlTableName, oldLast);
+        String sql = String.format("SELECT * from %s WHERE id < %d  ORDER BY id DESC LIMIT 1", this.tableName, oldLast);
         rs = this.result(sql);
         last = Integer.parseInt(rs.get(0).get("id"));
         return last;
@@ -155,7 +149,7 @@ public class MysqlClient {
 
     public ResultSet cycleGetDataTail(long start, int cycle) throws SQLException {
         ResultSet rs;
-        String sql = String.format("SELECT * FROM %s limit %d, %d", this.mysqlTableName, start, cycle);
+        String sql = String.format("SELECT * FROM %s limit %d, %d", this.tableName, start, cycle);
         rs = this.resultSet(sql);
         if(rs == null){
             return null;
@@ -168,7 +162,7 @@ public class MysqlClient {
 
     public ResultSet cycleGetData(long start, int limit) throws SQLException {
         ResultSet rs;
-        String sql = String.format("SELECT * FROM %s WHERE id > %d LIMIT %d", this.mysqlTableName , start, limit);
+        String sql = String.format("SELECT * FROM %s WHERE id > %d LIMIT %d", this.tableName, start, limit);
         rs = this.resultSet(sql);
         if(rs == null){
             return null;

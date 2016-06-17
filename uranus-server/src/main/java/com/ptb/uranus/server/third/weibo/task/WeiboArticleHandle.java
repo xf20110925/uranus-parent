@@ -36,6 +36,12 @@ public class WeiboArticleHandle implements Runnable{
     long lastNum;
     int cycleNum;
 
+    String mysqlHost;
+    String mysqlUser;
+    String mysqlPwd;
+    String tableName;
+
+
     public WeiboArticleHandle(Sender sender) throws ConfigurationException {
         conf = new PropertiesConfiguration("uranus.properties");
         startNum = conf.getLong("uranus.bayou.startNum", 1295883035);
@@ -43,6 +49,11 @@ public class WeiboArticleHandle implements Runnable{
         cycleNum = conf.getInt("uranus.bayou.cycleNum", 1000);
         schedulerDao = new MongoSchedulerDao();
         this.sender = sender;
+
+        mysqlHost = conf.getString("uranus.bayou.mysqlHost", "43.241.214.85:3306/weibo");
+        mysqlUser = conf.getString("uranus.bayou.mysqlUser", "pintuibao");
+        mysqlPwd = conf.getString("uranus.bayou.mysqlPwd", "pintuibao");
+        tableName = conf.getString("uranus.bayou.mysqlArticleTableName", "fresh_data");
     }
 
     public String getConditionByTemplate(String weiboid, long times) {
@@ -101,7 +112,7 @@ public class WeiboArticleHandle implements Runnable{
 
     @Override
     public void run() {
-        MysqlClient mysqlClient = new MysqlClient();
+        MysqlClient mysqlClient = new MysqlClient(mysqlHost, mysqlUser, mysqlPwd, tableName);
         BasicArticleDynamic bad;
         BasicArticleStatic bas;
         HashMap<String, Long> history = new HashMap<>();
