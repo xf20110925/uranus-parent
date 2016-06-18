@@ -47,8 +47,6 @@ public class WxArticleParser {
     }
 
     public WxArticle parseArticlByPageSource(String pageSource) {
-
-
         Document html = Jsoup.parse(pageSource);
         String title = html.select(".rich_media_title").first().text();
         String nickName = html.select(".profile_nickname").text();
@@ -86,8 +84,7 @@ public class WxArticleParser {
                 postTime = Long.parseLong(sub);
             }
             if (wxid == null || wxid.length() == 0) {
-                //wxid = RegexUtils.sub(".*var user_name = \"([^\"]*)\";.*", text, 0);
-                wxid = "";
+                wxid = RegexUtils.sub(".*var user_name = \"([^\"]*)\";.*", text, 0);
             }
             Matcher matcher2 = originalLinkRegex.matcher(text);
             if (matcher2.find() && matcher2.groupCount() > 0) {
