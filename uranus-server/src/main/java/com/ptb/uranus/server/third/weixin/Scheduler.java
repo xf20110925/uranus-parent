@@ -53,7 +53,7 @@ public class Scheduler {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                sleep(1000);
+                sleep(30 * 1000);
             }
         });
     }

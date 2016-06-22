@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import java.util.*;
 
 
+
 /**
  * Created by xuefeng on 2016/5/17.
  */
@@ -37,7 +38,7 @@ public class BayouWeixinSync {
     private static final String MEDIAFEILD = "biz";
     private static final String STATICARTICLEFEILD = "page";
     private static final String DYNAMICARTICLEFEILD = "click";
-    private static int tryNum = 3;
+    private static int TRYNUM = 3;
 
     Sender sender;
     //存放媒体biz和postTime键值对
@@ -108,7 +109,7 @@ public class BayouWeixinSync {
      * @param rangeUrl
      * @return
      */
-    private RangeId getRangeId(String rangeUrl) {
+    private RangeId getRangeId(String rangeUrl, int tryNum) {
         while (tryNum-- > 0) {
             String pageSource = null;
             try {
@@ -131,7 +132,7 @@ public class BayouWeixinSync {
 
     private RangeId getRangeId(String url, String identify) {
         String rangeUrl = String.format(url, identify);
-        RangeId rangeId = getRangeId(rangeUrl);
+        RangeId rangeId = getRangeId(rangeUrl, TRYNUM);
         long minId = rangeId.getMinId();
         Optional<IdRecord> idRecord = IdRecordUtil.getIdRecord();
         idRecord.ifPresent(idRec -> {
@@ -144,6 +145,8 @@ public class BayouWeixinSync {
                     break;
                 case DYNAMICARTICLEFEILD:
                     if (idRec.getDynamicArticleId() > minId) rangeId.setMinId(idRec.getDynamicArticleId());
+                    break;
+                default:
                     break;
             }
         });
@@ -205,7 +208,8 @@ public class BayouWeixinSync {
         //存放请求失败的url
         Queue<String> mediaQueue = new LinkedList<>();
         String mediaDataUrl = null;
-        for (long i = minId; i < maxId; i += 100) {
+        if(minId > maxId) return;
+        for (long i = minId; i <= maxId; i += 100) {
             mediaDataUrl = String.format(DATAURL, MEDIAFEILD, i);
             Optional<List<BayouWXMedia>> wxMediasOpt = getRangeMedia(mediaDataUrl);
             if (wxMediasOpt.isPresent()) {
@@ -213,7 +217,7 @@ public class BayouWeixinSync {
             } else {
                 mediaQueue.add(mediaDataUrl);
             }
-            IdRecordUtil.syncMediaId(i);
+            IdRecordUtil.syncMediaId(i + 100);
         }
         //重试失败的url
         if (!mediaQueue.isEmpty()) {
@@ -244,7 +248,8 @@ public class BayouWeixinSync {
         long maxId = rangeId.getMaxId();
         Queue<String> staticsQueue = new LinkedList<>();
         String articleStaticUrl = null;
-        for (long i = minId; i < maxId; i += 100) {
+        if(minId > maxId) return;
+        for (long i = minId; i <= maxId; i += 100) {
             articleStaticUrl = String.format(DATAURL, STATICARTICLEFEILD, i);
             Optional<List<Map<String, String>>> wxArticleStaticsOpt = getRangeArticleStatic(articleStaticUrl);
             if (wxArticleStaticsOpt.isPresent()) {
@@ -252,7 +257,7 @@ public class BayouWeixinSync {
             } else {
                 staticsQueue.add(articleStaticUrl);
             }
-            IdRecordUtil.syncStaticArticleId(i);
+            IdRecordUtil.syncStaticArticleId(i + 100);
         }
         if (!staticsQueue.isEmpty()) {
             staticsQueue.forEach(url -> {
@@ -280,7 +285,8 @@ public class BayouWeixinSync {
         long maxId = rangeId.getMaxId();
         Queue<String> dynamicsQueue = new LinkedList<>();
         String articleDynamicUrl = null;
-        for (long i = minId; i < maxId; i += 100) {
+        if (minId > maxId) return;
+        for (long i = minId; i <= maxId; i += 100) {
             articleDynamicUrl = String.format(DATAURL, DYNAMICARTICLEFEILD, minId);
             Optional<List<BayouWXArticleDynamic>> articleDynamicsOpt = getRangeArticleDynamic(articleDynamicUrl);
             if (articleDynamicsOpt.isPresent()) {
@@ -288,7 +294,7 @@ public class BayouWeixinSync {
             } else {
                 dynamicsQueue.add(articleDynamicUrl);
             }
-            IdRecordUtil.syncDynamicArticleId(i);
+            IdRecordUtil.syncDynamicArticleId(i + 100);
         }
         if (!dynamicsQueue.isEmpty()) {
             dynamicsQueue.forEach(url -> {
