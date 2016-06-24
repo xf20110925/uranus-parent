@@ -8,6 +8,7 @@ import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
 import com.ptb.uranus.spider.weixin.parse.WxArticleParser;
+import com.ptb.utils.web.UrlFormatUtil;
 
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class ConvertUtils {
     public static WeixinArticleStatic convertWXArticleStatic(Map<String, String> articleMap) {
         String pageSource = articleMap.get("content");
         WxArticle wxArticle = wxArticleParser.parseArticlByPageSource(pageSource);
-        wxArticle.setArticleUrl(articleMap.get("url"));
+        wxArticle.setArticleUrl(UrlFormatUtil.format(articleMap.get("url")));
         return SendObjectConvertUtil.weixinArticleStaticConvert(wxArticle);
     }
 
@@ -45,7 +46,7 @@ public class ConvertUtils {
         wxAritcleDynamic.setLikes(bayouDynamic.getLike_num());
         wxAritcleDynamic.setPlat(1);
         wxAritcleDynamic.setTime(System.currentTimeMillis());
-        wxAritcleDynamic.setUrl(bayouDynamic.getUrl());
+        wxAritcleDynamic.setUrl(UrlFormatUtil.format(bayouDynamic.getUrl()));
         return wxAritcleDynamic;
     }
 }
