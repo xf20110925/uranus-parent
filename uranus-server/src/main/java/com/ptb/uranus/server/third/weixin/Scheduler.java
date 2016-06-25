@@ -1,8 +1,5 @@
 package com.ptb.uranus.server.third.weixin;
 
-import com.ptb.gaia.bus.Bus;
-import com.ptb.gaia.bus.kafka.KafkaBus;
-import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import org.apache.commons.configuration.ConfigurationException;
 
@@ -26,7 +23,7 @@ public class Scheduler {
     }
 
     public void schedule() {
-       /* executor.execute(() -> {
+       executor.execute(() -> {
             while (true) {
                 try {
                     wxSync.syncArticleDynamics();
@@ -45,7 +42,7 @@ public class Scheduler {
                 }
                 sleep(1000);
             }
-        });*/
+        });
         executor.execute(() -> {
             while (true) {
                 try {
