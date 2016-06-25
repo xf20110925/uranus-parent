@@ -6,18 +6,17 @@ import com.jayway.jsonpath.JsonPath;
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.schedule.service.WeixinScheduleService;
-import com.ptb.uranus.server.third.weixin.entity.BayouWXArticleDynamic;
-import com.ptb.uranus.server.third.weixin.entity.IdRecord;
-import com.ptb.uranus.server.third.weixin.entity.BayouWXMedia;
-import com.ptb.uranus.server.third.weixin.exception.BayouException;
-import com.ptb.uranus.server.third.weixin.util.ConvertUtils;
-import com.ptb.uranus.server.third.weixin.util.IdRecordUtil;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeixinArticleStatic;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
-import com.ptb.uranus.server.third.weixin.util.WeixinMediaUtils;
+import com.ptb.uranus.server.third.weixin.entity.BayouWXArticleDynamic;
+import com.ptb.uranus.server.third.weixin.entity.BayouWXMedia;
+import com.ptb.uranus.server.third.weixin.entity.IdRecord;
+import com.ptb.uranus.server.third.weixin.exception.BayouException;
+import com.ptb.uranus.server.third.weixin.util.ConvertUtils;
+import com.ptb.uranus.server.third.weixin.util.IdRecordUtil;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -193,10 +192,10 @@ public class BayouWeixinSync {
     private void sendMedias(Optional<List<BayouWXMedia>> wxMediasOpt) {
         wxMediasOpt.ifPresent(wxMedias -> {
             wxMedias.stream().forEach(wxMedia -> {
-                WeixinMediaUtils.updateWeixinMedia(wxMedia.getBid(), wxMedia);
-               /* WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
+                //WeixinMediaUtils.updateWeixinMedia(wxMedia.getBid(), wxMedia);
+                WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(wxMedia);
                 //发送到kafka
-                sender.sendMediaStatic(weixinMediaStatic);*/
+                sender.sendMediaStatic(weixinMediaStatic);
             });
         });
     }

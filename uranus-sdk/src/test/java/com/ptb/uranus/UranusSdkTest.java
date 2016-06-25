@@ -69,7 +69,7 @@ public class UranusSdkTest {
     @Test
     public void collectWeixinMedia() {
         assertTrue(UranusSdk.i().collect(
-                "MzA3NDgyNTYyMQ=="
+                "http://mp.weixin.qq.com/s?__biz=MzA4MzI1ODkwMw==&mid=2651213775&idx=1&sn=da41706db2b23371a1e147c98f389303#rd"
                 , CollectType.C_WX_M_S,
                 new JustOneTrigger(new Date().getTime()), Priority.L1) != null);
     }

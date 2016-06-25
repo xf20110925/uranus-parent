@@ -19,16 +19,13 @@ import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
 import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
 import com.ptb.uranus.spider.weixin.bean.WxAccount;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
-import com.sun.javadoc.Doc;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.Int;
-import scala.util.parsing.combinator.testing.Str;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -47,7 +44,7 @@ public class SendObjectConvertUtil {
         }
     }
 
-    public SendObjectConvertUtil(){
+    public SendObjectConvertUtil() {
     }
 
     public static WeixinMediaStatic weixinMediaStaticConvert(WxAccount wxAccount, Optional<String> identify) {
@@ -99,9 +96,9 @@ public class SendObjectConvertUtil {
         return wxAritcleDynamic;
     }
 
-    public static BasicMediaDynamic weiboMediaDynamicConvert(WeiboAccount weiboAccount){
+    public static BasicMediaDynamic weiboMediaDynamicConvert(WeiboAccount weiboAccount) {
         WeiboMediaDynamic weiboMediaDynamic = new WeiboMediaDynamic();
-        weiboMediaDynamic.setTime(System.currentTimeMillis()/1000L);
+        weiboMediaDynamic.setTime(System.currentTimeMillis() / 1000L);
         weiboMediaDynamic.setWeiboId(weiboAccount.getWeiboID());
         weiboMediaDynamic.setPlat(2);
         weiboMediaDynamic.setFans(weiboAccount.getFansNum());
@@ -112,7 +109,7 @@ public class SendObjectConvertUtil {
 
     public static BasicMediaDynamic weiboMediaDynamicConvert(Document doc) {
         WeiboMediaDynamic weiboMediaDynamic = new WeiboMediaDynamic();
-        weiboMediaDynamic.setTime(System.currentTimeMillis()/1000L);
+        weiboMediaDynamic.setTime(System.currentTimeMillis() / 1000L);
         weiboMediaDynamic.setWeiboId(doc.getString("user_id"));
         weiboMediaDynamic.setPlat(2);
         weiboMediaDynamic.setFans(Integer.parseInt(doc.getString("fans_number")));
@@ -138,7 +135,7 @@ public class SendObjectConvertUtil {
         return weiboMediaStatic;
     }
 
-    public static WeiboMediaStatic weiboMediaStaticConvert(Document doc){
+    public static WeiboMediaStatic weiboMediaStaticConvert(Document doc) {
         WeiboMediaStatic weiboMediaStatic = new WeiboMediaStatic();
         weiboMediaStatic.setWeiboId(doc.getString("user_id"));
         weiboMediaStatic.setPlat(2);
@@ -187,24 +184,24 @@ public class SendObjectConvertUtil {
         weiboArticleStatic.setWeiboId(weiboArticle.getMediaId());
         if ((weiboArticle.getImgs() != null) && (weiboArticle.getImgs().size()) > 0) {
             weiboArticleStatic.setPicture(weiboArticle.getImgs().get(0));
-        } else if ((weiboArticle.getVideos() != null)&&(weiboArticle.getVideos().size()) > 0) {
+        } else if ((weiboArticle.getVideos() != null) && (weiboArticle.getVideos().size()) > 0) {
             weiboArticleStatic.setPicture(weiboArticle.getVideos().get(0));
         } else {
             weiboArticleStatic.setPicture("");
         }
-        weiboArticleStatic.setType((weiboArticle.getObjectType() == null)?"":weiboArticle.getObjectType());
+        weiboArticleStatic.setType((weiboArticle.getObjectType() == null) ? "" : weiboArticle.getObjectType());
         weiboArticleStatic.setKeywords(textAnalyzeResult.getAbstracts());
         weiboArticleStatic.setTitle(textAnalyzeResult.getArticle());
         weiboArticleStatic.setAuthor(weiboArticle.getMediaName());
         weiboArticleStatic.setClassify(weiboArticle.getObjectType());
         weiboArticleStatic.setContent(weiboArticle.getContent());
 
-        if ((weiboArticle.getImgs() != null)&&(weiboArticle.getImgs().size()) > 0) {
+        if ((weiboArticle.getImgs() != null) && (weiboArticle.getImgs().size()) > 0) {
             for (String iter : weiboArticle.getImgs()) {
                 textAnalyzeResult.getHyperLink().put(iter, "");
             }
         }
-        if ((weiboArticle.getVideos() != null)&&(weiboArticle.getVideos().size()) > 0) {
+        if ((weiboArticle.getVideos() != null) && (weiboArticle.getVideos().size()) > 0) {
             for (String iter : weiboArticle.getVideos()) {
                 textAnalyzeResult.getHyperLink().put(iter, "");
             }
@@ -229,34 +226,48 @@ public class SendObjectConvertUtil {
             textAnalyzeResult = textAnalyzer.ArticleAnalyze(rs.getString("weibo_content"));
             weiboArticleStatic = new WeiboArticleStatic();
             weiboArticleStatic.setWeiboId(rs.getString("user_id"));
-            weiboArticleStatic.setPicture(rs.getString("pic_content"));
-
-            weiboArticleStatic.setType("");
             weiboArticleStatic.setKeywords(textAnalyzeResult.getAbstracts());
             weiboArticleStatic.setTitle(textAnalyzeResult.getArticle());
             weiboArticleStatic.setAuthor(rs.getString("nick_name"));
             weiboArticleStatic.setClassify("");
             weiboArticleStatic.setContent(rs.getString("weibo_content"));
-
+            if (weiboArticleStatic.getContent().contains("vodeo_defalut.png") || weiboArticleStatic.getContent().contains("http://video.weibo.com") || weiboArticleStatic.getContent().contains("miaopai.")) {
+                weiboArticleStatic.setType("video");
+            } else if (weiboArticleStatic.getContent().contains("http://huati.weibo")) {
+                weiboArticleStatic.setType("topic");
+            } else if (weiboArticleStatic.getContent().contains("vote_default.png")) {
+                weiboArticleStatic.setType("vote");
+            } else if (weiboArticleStatic.getContent().contains("music_defalut.png")) {
+                weiboArticleStatic.setType("audio");
+            }else{
+                weiboArticleStatic.setType("article");
+            }
+            weiboArticleStatic.setType("");
             String pic = rs.getString("pic_content");
-            if(pic != null){
+            if (pic != null) {
                 String[] picArray = pic.split(",");
-                for(int i = 0; i < picArray.length; i++){
-                    textAnalyzeResult.getHyperLink().put(String.format("http://ww3.sinaimg.cn/large/%s.jpg",picArray[i]), "");
+                for (int i = 0; i < picArray.length; i++) {
+                    String imgUrl = String.format("http://ww4.sinaimg.cn/thumb180/%s.jpg", picArray[i]);
+                    if (StringUtils.isBlank(weiboArticleStatic.getPicture())) {
+                        weiboArticleStatic.setPicture(rs.getString("pic_content"));
+                    }
+                    textAnalyzeResult.getHyperLink().put("", imgUrl);
                 }
-            }else {
+            } else {
                 textAnalyzeResult.getHyperLink().put("", "");
             }
+
 
             weiboArticleStatic.setLinks(textAnalyzeResult.getHyperLink());
             weiboArticleStatic.setPlat(2);
             weiboArticleStatic.setPostTime(Long.parseLong(rs.getString("time_stamp")));
             weiboArticleStatic.setSource(rs.getString("device"));
             weiboArticleStatic.setSplitwords(textAnalyzeResult.getSplitword());
+
             String url = String.format("weibo.com/%s/%s", rs.getString("user_id"), rs.getString("weibo_id"));
             weiboArticleStatic.setUrl(url);
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

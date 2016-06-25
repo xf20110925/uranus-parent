@@ -7,4 +7,4 @@ libjar=`ls libs | grep .jar | awk '{jar=jar"'"libs/"'"$1":"} END {print jar}'`
 echo $jars
 
 echo $HOME/config:$jars:$libjar
-nohup  java -cp $HOME/config:$libjar:$jars  com.ptb.uranus.manager.UranusManagerApplication  $* >> log/run.log 2>&1 &
+nohup  java -cp $HOME/config:$libjar:$jars  com.ptb.uranus.manager.UranusManagerApplication  $* >> logs/run.log 2>&1 &

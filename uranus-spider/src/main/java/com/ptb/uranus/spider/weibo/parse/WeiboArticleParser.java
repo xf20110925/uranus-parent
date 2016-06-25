@@ -120,6 +120,7 @@ public class WeiboArticleParser {
             while (i-- > 0) {
                 WebDriverPool webDriverFromPool = i > 0 ? WebDriverPoolUtils.instance().getWebDriverFromPool(false, true) : WebDriverPoolUtils.instance().getWebDriverFromPool(false, false);
                 driver = webDriverFromPool.borrowObject();
+                driver.quit();
                 try {
                     driver.manage().addCookie(new Cookie("SUB", UUID.randomUUID().toString(), ".weibo.com", "/", null, false));
                     driver.get(aritcleUrl);

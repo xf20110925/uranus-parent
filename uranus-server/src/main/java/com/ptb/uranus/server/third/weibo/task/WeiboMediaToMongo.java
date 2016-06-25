@@ -1,6 +1,8 @@
 package com.ptb.uranus.server.third.weibo.task;
 
-import com.ptb.uranus.server.third.weibo.script.MongoClientm;
+import com.ptb.uranus.server.send.Sender;
+import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
+import com.ptb.uranus.server.send.entity.media.WeiboMediaStatic;
 import com.ptb.uranus.server.third.weibo.script.MysqlClient;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -18,6 +20,8 @@ import java.util.List;
  * Created by watson zhang on 16/5/20.
  */
 public class WeiboMediaToMongo implements Runnable {
+
+    private Sender sender = null;
 
     public class ShareData{
         private long start;
@@ -59,39 +63,34 @@ public class WeiboMediaToMongo implements Runnable {
     }
     private static Logger logger = LoggerFactory.getLogger(MysqlClient.class);
     private ShareData shd = new ShareData();
-    private String mongoHost;
-    private int mongoPort;
-    private String mongoDbName;
-    private String mongoColl;
 
     String mysqlHost;
     String mysqlUser;
     String mysqlPwd;
     String tableName;
 
-    public WeiboMediaToMongo(String lock) throws ConfigurationException {
+    public WeiboMediaToMongo(String lock,Sender sender) throws ConfigurationException {
         PropertiesConfiguration conf;
         conf = new PropertiesConfiguration("uranus.properties");
         shd.setCycle(conf.getInt("uranus.bayou.cycleNum", 1000));
         shd.setStart(conf.getLong("uranus.bayou.startNum", 1329986614));
         shd.setLast(conf.getLong("uranus.bayou.lastNum", 1340272263));
         shd.setLock(lock);
+        this.sender = sender;
 
         try {
             conf = new PropertiesConfiguration("uranus.properties");
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
-        mongoHost = conf.getString("com.ptb.uranus.mongoHost", "192.168.5.31");
-        mongoPort = conf.getInt("com.ptb.uranus.mongoPort", 27017);
-        mongoDbName = conf.getString("com.ptb.uranus.mongoDbName", "weibo");
-        mongoColl = conf.getString("com.ptb.uranus.mongoColl", "thread_test");
 
         mysqlHost = conf.getString("uranus.bayou.mysqlHost", "43.241.214.85:3306/weibo");
         mysqlUser = conf.getString("uranus.bayou.mysqlUser", "pintuibao");
         mysqlPwd = conf.getString("uranus.bayou.mysqlPwd", "pintuibao");
         tableName = conf.getString("uranus.bayou.mysqlMediaTableName", "user_profile");
     }
+
+
 
     public void getStartId(MysqlClient mysql){
         int startTmp = mysql.getStartId();
@@ -158,7 +157,6 @@ public class WeiboMediaToMongo implements Runnable {
     public void run() {
         MysqlClient mysql;
         mysql = new MysqlClient(mysqlHost, mysqlUser, mysqlPwd, tableName);
-        MongoClientm mongo = new MongoClientm(this.mongoHost, this.mongoPort, this.mongoDbName, this.mongoColl);
         List<Document> docList = null;
         ResultSet rs = null;
 
@@ -178,7 +176,11 @@ public class WeiboMediaToMongo implements Runnable {
                     e.printStackTrace();
                     continue;
                 }
-                mongo.updateObj(docList);
+
+                for (Document document : docList) {
+                    WeiboMediaStatic weiboMediaStatic = SendObjectConvertUtil.weiboMediaStaticConvert(document);
+                    this.sender.sendMediaStatic(weiboMediaStatic);
+                }
             }
             try {
                 Thread.sleep(10000);
@@ -189,12 +191,5 @@ public class WeiboMediaToMongo implements Runnable {
                 return;
             }
         }
-    }
-
-
-    public static void main(String[] args) throws ConfigurationException {
-
-        String lock = new String("lock");
-        new Thread((Runnable)new WeiboMediaToMongo(lock)).start();
     }
 }

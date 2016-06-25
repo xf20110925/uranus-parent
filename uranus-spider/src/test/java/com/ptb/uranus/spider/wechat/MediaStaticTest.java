@@ -54,7 +54,7 @@ public class MediaStaticTest {
     @Test
     public void testWeixinMediaStaticByArticleErrorAddress() {
         Optional<WxAccount> wxAccountOptional =
-                weixinSpider.getWeixinAccountByArticleUrl("http://mp.weixin.qq.com/s?__biz=MjM5NDI4NzI1Mg==&mid=2652298876&idx=1&sn=6f4581f89d0e5cb773d0fc44ab128ac2&scene=4#wechat_redirect");
+                weixinSpider.getWeixinAccountByArticleUrl("view-source:http://mp.weixin.qq.com/s?src=3&timestamp=1466248692&ver=1&signature=NdZJSQPpWyha4-K6AxQmlzHj-D4kkLjzn3Ef9lgNjRw99Kb4MgrKbpUdPXUYywBV*C3zl4s7hQeDRbcliXiQEBMlaiBysB-nNwS2z8cgIKZNX9JmKfbBWzdnHg36rlsWZk08Ko5cNbgOQz8ZhX-hkj3i6o65glHGZPumlVVwFX8=");
         assertFalse("返回一个空对象", wxAccountOptional.isPresent());
     }
     /**

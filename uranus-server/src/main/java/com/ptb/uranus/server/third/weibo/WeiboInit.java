@@ -3,7 +3,6 @@ package com.ptb.uranus.server.third.weibo;
 import com.ptb.uranus.server.ThirdEntry;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.third.weibo.task.WeiboArticleHandle;
-import com.ptb.uranus.server.third.weibo.task.WeiboMediaHandle;
 import com.ptb.uranus.server.third.weibo.task.WeiboMediaToMongo;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -31,11 +30,11 @@ public class WeiboInit {
     public void startWeibo(){
         try {
             String lock = new String("lock");
-            //new Thread((Runnable) new WeiboArticleHandle(this.sender)).start();
-            //new Thread((Runnable) new WeiboMediaHandle(this.sender)).start();
-            new Thread((Runnable) new WeiboMediaToMongo(lock)).start();
+            new Thread((Runnable) new WeiboArticleHandle(this.sender)).start();
+            new Thread((Runnable) new WeiboMediaToMongo(lock,this.sender)).start();
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
     }
+
 }
