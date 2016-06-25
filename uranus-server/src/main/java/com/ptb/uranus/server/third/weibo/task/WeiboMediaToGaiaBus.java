@@ -19,11 +19,11 @@ import java.util.List;
 /**
  * Created by watson zhang on 16/5/20.
  */
-public class WeiboMediaToMongo implements Runnable {
+public class WeiboMediaToGaiaBus implements Runnable {
 
     private Sender sender = null;
 
-    public class ShareData{
+    public class ShareData {
         private long start;
         private long last;
         private int cycle;
@@ -61,6 +61,7 @@ public class WeiboMediaToMongo implements Runnable {
             this.lock = lock;
         }
     }
+
     private static Logger logger = LoggerFactory.getLogger(MysqlClient.class);
     private ShareData shd = new ShareData();
 
@@ -69,7 +70,7 @@ public class WeiboMediaToMongo implements Runnable {
     String mysqlPwd;
     String tableName;
 
-    public WeiboMediaToMongo(String lock,Sender sender) throws ConfigurationException {
+    public WeiboMediaToGaiaBus(String lock, Sender sender) throws ConfigurationException {
         PropertiesConfiguration conf;
         conf = new PropertiesConfiguration("uranus.properties");
         shd.setCycle(conf.getInt("uranus.bayou.cycleNum", 1000));
@@ -91,43 +92,42 @@ public class WeiboMediaToMongo implements Runnable {
     }
 
 
-
-    public void getStartId(MysqlClient mysql){
+    public void getStartId(MysqlClient mysql) {
         int startTmp = mysql.getStartId();
-        synchronized (shd.getLock()){
+        synchronized (shd.getLock()) {
             shd.setStart(startTmp);
         }
     }
 
-    public void getLastId(MysqlClient mysql){
+    public void getLastId(MysqlClient mysql) {
         int lastTmp = mysql.getLastId();
-        synchronized (shd.getLock()){
+        synchronized (shd.getLock()) {
             shd.setLast(lastTmp);
         }
     }
 
-    public void updateStartId(MysqlClient mysql){
+    public void updateStartId(MysqlClient mysql) {
         int startTmp = mysql.updateStartId(shd.getStart());
-        synchronized (shd.getLock()){
+        synchronized (shd.getLock()) {
             shd.setStart(startTmp);
         }
     }
 
-    private ResultSet updateStart(MysqlClient mysql){
+    private ResultSet updateStart(MysqlClient mysql) {
         ResultSet rs = null;
-        try{
+        try {
             long startTime = System.currentTimeMillis();
-            synchronized (shd.getLock()){
+            synchronized (shd.getLock()) {
                 logger.warn("start: {} [normal]", shd.getStart());
                 rs = mysql.cycleGetData(shd.getStart(), shd.getCycle());
-                if((rs != null) && rs.last()){
+                if ((rs != null) && rs.last()) {
                     shd.setStart(Long.parseLong(rs.getString("id").toString()));
                 }
             }
             long endTime = System.currentTimeMillis();
             logger.info("Once time: {}", endTime - startTime);
             return rs;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error("updateStart error!", e);
         }
         return rs;
@@ -140,11 +140,11 @@ public class WeiboMediaToMongo implements Runnable {
         int num = 0;
         Document doc = null;
 
-        rs.first();
-        while (rs.next()){
+        rs.beforeFirst();
+        while (rs.next()) {
             num++;
             doc = new Document();
-            for(int i = 1;i < cc; i++){
+            for (int i = 1; i < cc; i++) {
                 doc.append(md.getColumnName(i), rs.getString(i));
             }
             docList.add(doc);
@@ -159,37 +159,35 @@ public class WeiboMediaToMongo implements Runnable {
         mysql = new MysqlClient(mysqlHost, mysqlUser, mysqlPwd, tableName);
         List<Document> docList = null;
         ResultSet rs = null;
+        Long startId = 1L;
+        int batch = 500;
 
-        while (true){
-            while (shd.getStart() < shd.getLast()){
-                rs = this.updateStart(mysql);
+        while (true) {
+            try {
+                rs = mysql.cycleGetData(startId, batch);
+                if(rs != null) {
+                    if (rs.last()) {
+                        startId = rs.getLong("id");
+                    }
 
-                if(rs == null){
-                    this.updateStartId(mysql);
-                    this.getLastId(mysql);
-                    continue;
-                }
 
-                try {
                     docList = this.resultsetTodoc(rs);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    continue;
+                    for (Document document : docList) {
+                        WeiboMediaStatic weiboMediaStatic = SendObjectConvertUtil.weiboMediaStaticConvert(document);
+                        this.sender.sendMediaStatic(weiboMediaStatic);
+                    }
                 }
-
-                for (Document document : docList) {
-                    WeiboMediaStatic weiboMediaStatic = SendObjectConvertUtil.weiboMediaStaticConvert(document);
-                    this.sender.sendMediaStatic(weiboMediaStatic);
-                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                continue;
             }
             try {
                 Thread.sleep(10000);
-                this.getStartId(mysql);
-                this.getLastId(mysql);
             } catch (InterruptedException e) {
                 logger.error("restart failed!", e);
                 return;
             }
         }
+
     }
 }

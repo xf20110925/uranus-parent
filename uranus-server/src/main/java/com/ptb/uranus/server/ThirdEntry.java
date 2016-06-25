@@ -40,6 +40,6 @@ public class ThirdEntry {
         //启动微博调度器
         weiboScheduler.startWeibo();
         //启动微信调度器
-        weixinScheduler.schedule();
+        //weixinScheduler.schedule();
     }
 }

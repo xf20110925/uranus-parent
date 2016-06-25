@@ -1,8 +1,5 @@
 package com.ptb.uranus.server.third.weibo.script;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,7 +134,7 @@ public class MysqlClient {
         }
         return start;
     }
-
+/*
     public int updateLastId(long oldLast){
         int last = 0;
         List<HashMap<String, String>> rs;
@@ -158,7 +155,7 @@ public class MysqlClient {
             return null;
         }
         return rs;
-    }
+    }*/
 
     public ResultSet cycleGetData(long start, int limit) throws SQLException {
         ResultSet rs;

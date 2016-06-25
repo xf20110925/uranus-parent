@@ -17,14 +17,18 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
  * Created by watson zhang on 16/5/31.
  */
-public class WeiboArticleHandle implements Runnable{
+public class WeiboArticleToGaiaBus implements Runnable {
     PropertiesConfiguration conf;
     private static Logger logger = LoggerFactory.getLogger(WeiboMediaHandle.class);
     SchedulerDao schedulerDao;
@@ -42,7 +46,7 @@ public class WeiboArticleHandle implements Runnable{
     String tableName;
 
 
-    public WeiboArticleHandle(Sender sender) throws ConfigurationException {
+    public WeiboArticleToGaiaBus(Sender sender) throws ConfigurationException {
         conf = new PropertiesConfiguration("uranus.properties");
         startNum = conf.getLong("uranus.bayou.startNum", 1295883035);
         lastNum = conf.getLong("uranus.bayou.lastNum", 1309360356);
@@ -65,9 +69,10 @@ public class WeiboArticleHandle implements Runnable{
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             Optional<ScheduleObject> first = schedulerDao.getSchedulerByField(this.conditonField, Pattern.compile(String.format("%s.*", entry.getKey())));
-            if(first.isPresent()){
+            if (first.isPresent()) {
                 SchedulableCollectCondition schedulableCollectCondition = (SchedulableCollectCondition) first.get().getObj();
-                schedulableCollectCondition.setConditon(getConditionByTemplate((String)entry.getKey(), (Long) entry.getValue()));
+
+                schedulableCollectCondition.setConditon(getConditionByTemplate((String) entry.getKey(), (Long) entry.getValue()));
                 first.get().setObjByT(schedulableCollectCondition);
                 schedulerDao.updateScheduler(first.get());
             }
@@ -76,16 +81,16 @@ public class WeiboArticleHandle implements Runnable{
 
     public void updateHistoryList(HashMap<String, Long> history, ResultSet rs) {
         try {
-            if(history == null || rs == null){
+            if (history == null || rs == null) {
                 logger.debug("updateHistoryList error");
                 return;
             }
             long lastTime;
-            if(!history.containsKey(rs.getString("user_id"))){
+            if (!history.containsKey(rs.getString("user_id"))) {
                 history.put(rs.getString("user_id"), Long.parseLong(rs.getString("time_stamp")));
-            }else {
+            } else {
                 lastTime = Long.parseLong(rs.getString("time_stamp"));
-                if(history.get(rs.getString("user_id")) < lastTime){
+                if (history.get(rs.getString("user_id")) < lastTime) {
                     history.put(rs.getString("user_id"), lastTime);
                 }
             }
@@ -95,58 +100,26 @@ public class WeiboArticleHandle implements Runnable{
 
     }
 
-
-    private ResultSet getArticle(MysqlClient mysql){
-        ResultSet rs = null;
-        try{
-            rs = mysql.cycleGetData(this.startNum, this.cycleNum);
-            if((rs != null) && rs.last()){
-                this.startNum = Long.parseLong(rs.getString("id").toString());
-            }
-            return rs;
-        }catch (SQLException e){
-            logger.error("get article error!", e);
-        }
-        return rs;
-    }
-
     @Override
     public void run() {
         MysqlClient mysqlClient = new MysqlClient(mysqlHost, mysqlUser, mysqlPwd, tableName);
         BasicArticleDynamic bad;
         BasicArticleStatic bas;
-        HashMap<String, Long> history = new HashMap<>();
-        while (true){
-            this.startNum = mysqlClient.getStartId();
-            this.lastNum = mysqlClient.getLastId();
-            while (this.startNum < this.lastNum){
-                ResultSet rs = this.getArticle(mysqlClient);
-                if(rs == null){
-                    this.startNum = mysqlClient.updateStartId(this.startNum);
-                    this.lastNum = mysqlClient.getLastId();
-                    continue;
-                }
 
-                try {
-                    do {
-                        bas = SendObjectConvertUtil.weiboArticleStaticConvert(rs);
-                        bad = SendObjectConvertUtil.weiboArticleDynamicConvert(rs);
-                        sender.sendArticleStatic(bas);
-                        sender.sendArticleDynamic(bad);
-                        this.updateHistoryList(history, rs);
-                    }while (rs.next());
-                    this.updateSchedule(history);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    continue;
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
+        Long startId = 1L;
+        int batch = 500;
 
+        while (true) {
             try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
+                ResultSet rs = mysqlClient.cycleGetData(startId, batch);
+                while(rs.next()) {
+                    bas = SendObjectConvertUtil.weiboArticleStaticConvert(rs);
+                    bad = SendObjectConvertUtil.weiboArticleDynamicConvert(rs);
+                    sender.sendArticleStatic(bas);
+                    sender.sendArticleDynamic(bad);
+                    startId = rs.getLong("id");
+                }
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -157,7 +130,7 @@ public class WeiboArticleHandle implements Runnable{
         Bus bus = new KafkaBus();
         Sender sender = new BusSender(bus);
 
-        bus.start(false,1);
-        new Thread((Runnable)new WeiboArticleHandle(sender)).start();
+        bus.start(false, 1);
+        new Thread((Runnable) new WeiboArticleToGaiaBus(sender)).start();
     }
 }
