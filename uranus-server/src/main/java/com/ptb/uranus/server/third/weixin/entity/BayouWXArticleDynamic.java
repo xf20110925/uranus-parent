@@ -10,6 +10,7 @@ public class BayouWXArticleDynamic {
     private String title;
     private int read_num;
     private int like_num;
+    private long ts;
 
     public BayouWXArticleDynamic() {
     }
@@ -20,6 +21,14 @@ public class BayouWXArticleDynamic {
         this.title = title;
         this.read_num = read_num;
         this.like_num = like_num;
+    }
+
+    public long getTs() {
+        return ts;
+    }
+
+    public void setTs(long ts) {
+        this.ts = ts;
     }
 
     public String getId() {

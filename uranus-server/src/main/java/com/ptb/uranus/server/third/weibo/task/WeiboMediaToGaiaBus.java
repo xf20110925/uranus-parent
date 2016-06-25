@@ -176,16 +176,17 @@ public class WeiboMediaToGaiaBus implements Runnable {
                         WeiboMediaStatic weiboMediaStatic = SendObjectConvertUtil.weiboMediaStaticConvert(document);
                         this.sender.sendMediaStatic(weiboMediaStatic);
                     }
+                }else{
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        logger.error("restart failed!", e);
+                        return;
+                    }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
                 continue;
-            }
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                logger.error("restart failed!", e);
-                return;
             }
         }
 

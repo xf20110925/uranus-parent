@@ -45,7 +45,7 @@ public class ConvertUtils {
         wxAritcleDynamic.setReads(bayouDynamic.getRead_num());
         wxAritcleDynamic.setLikes(bayouDynamic.getLike_num());
         wxAritcleDynamic.setPlat(1);
-        wxAritcleDynamic.setTime(System.currentTimeMillis());
+        wxAritcleDynamic.setTime(bayouDynamic.getTs()*1000);
         wxAritcleDynamic.setUrl(UrlFormatUtil.format(bayouDynamic.getUrl()));
         return wxAritcleDynamic;
     }

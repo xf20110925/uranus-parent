@@ -2,6 +2,7 @@ package com.ptb.uranus.server.third.weibo;
 
 import com.ptb.uranus.server.ThirdEntry;
 import com.ptb.uranus.server.send.Sender;
+import com.ptb.uranus.server.third.weibo.task.WeiboArticleToGaiaBus;
 import com.ptb.uranus.server.third.weibo.task.WeiboMediaToGaiaBus;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -29,7 +30,7 @@ public class WeiboInit {
     public void startWeibo(){
         try {
             String lock = new String("lock");
-            //new Thread((Runnable) new WeiboArticleToGaiaBus(this.sender)).start();
+            new Thread((Runnable) new WeiboArticleToGaiaBus(this.sender)).start();
             new Thread((Runnable) new WeiboMediaToGaiaBus(lock,this.sender)).start();
         } catch (ConfigurationException e) {
             e.printStackTrace();

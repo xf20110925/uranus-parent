@@ -59,7 +59,7 @@ public class SendObjectConvertUtil {
         }
         weixinMediaStatic.setOriginal(false);
         weixinMediaStatic.setBrief(wxAccount.getBrief());
-        weixinMediaStatic.setHeadImg(wxAccount.getHeadImg());
+        weixinMediaStatic.setHeadImg(String.format("http://open.weixin.qq.com/qr/code/?username=%s", wxAccount.getId()));
         weixinMediaStatic.setQrCode(wxAccount.getQcCode());
         weixinMediaStatic.setWeixinId(wxAccount.getId());
         return weixinMediaStatic;
@@ -165,12 +165,13 @@ public class SendObjectConvertUtil {
     public static BasicArticleDynamic weiboArticleDynamicConvert(ResultSet rs) {
         BasicArticleDynamic wbArticleDynamic = new BasicArticleDynamic();
         try {
-            String url = String.format("weibo.com/u/%s", rs.getString("user_id"));
+            String url = String.format("http://m.weibo.cn/%s/%s", rs.getString("user_id"), rs.getString("url"));
             wbArticleDynamic.setUrl(url);
             wbArticleDynamic.setComments(Integer.parseInt(rs.getString("ping")));
             wbArticleDynamic.setLikes(Integer.parseInt(rs.getString("zhan")));
             wbArticleDynamic.setForwards(Integer.parseInt(rs.getString("zhuan")));
             wbArticleDynamic.setPlat(2);
+            wbArticleDynamic.setTime(rs.getLong("crawler_time_stamp"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -242,14 +243,16 @@ public class SendObjectConvertUtil {
             }else{
                 weiboArticleStatic.setType("article");
             }
-            weiboArticleStatic.setType("");
             String pic = rs.getString("pic_content");
             if (pic != null) {
                 String[] picArray = pic.split(",");
                 for (int i = 0; i < picArray.length; i++) {
+                    if(picArray[i].length() > 31) {
+                        continue;
+                    }
                     String imgUrl = String.format("http://ww4.sinaimg.cn/thumb180/%s.jpg", picArray[i]);
-                    if (StringUtils.isBlank(weiboArticleStatic.getPicture())) {
-                        weiboArticleStatic.setPicture(rs.getString("pic_content"));
+                    if (StringUtils.isNotBlank(weiboArticleStatic.getPicture())) {
+                        weiboArticleStatic.setPicture(imgUrl);
                     }
                     textAnalyzeResult.getHyperLink().put("", imgUrl);
                 }
@@ -264,7 +267,7 @@ public class SendObjectConvertUtil {
             weiboArticleStatic.setSource(rs.getString("device"));
             weiboArticleStatic.setSplitwords(textAnalyzeResult.getSplitword());
 
-            String url = String.format("weibo.com/%s/%s", rs.getString("user_id"), rs.getString("weibo_id"));
+            String url = String.format("http://m.weibo.cn/%s/%s", rs.getString("user_id"), rs.getString("url"));
             weiboArticleStatic.setUrl(url);
 
         } catch (SQLException e) {
