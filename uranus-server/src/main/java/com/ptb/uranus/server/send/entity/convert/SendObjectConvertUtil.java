@@ -245,10 +245,10 @@ public class SendObjectConvertUtil {
                 weiboArticleStatic.setType("article");
             }
             String pic = rs.getString("pic_content");
-            if (pic != null) {
+            if (StringUtils.isNotBlank(pic)) {
                 String[] picArray = pic.split(",");
                 for (int i = 0; i < picArray.length; i++) {
-                    if(picArray[i].length() > 31) {
+                    if(picArray[i].length() < 30) {
                         continue;
                     }
                     String imgUrl = String.format("http://ww4.sinaimg.cn/thumb180/%s.jpg", picArray[i]);

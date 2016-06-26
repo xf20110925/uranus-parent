@@ -188,6 +188,7 @@ public class WeiboMediaToGaiaBus implements Runnable {
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(),e);
+            }finally {
                 if(rs != null) {
                     try {
                         rs.close();
@@ -195,7 +196,6 @@ public class WeiboMediaToGaiaBus implements Runnable {
                         e1.printStackTrace();
                     }
                 }
-                continue;
             }
         }
 
