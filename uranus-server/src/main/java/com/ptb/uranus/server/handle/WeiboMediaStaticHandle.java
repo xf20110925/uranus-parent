@@ -5,6 +5,7 @@ import com.ptb.gaia.bus.message.Message;
 import com.ptb.uranus.common.entity.CollectCondition;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
+import com.ptb.uranus.server.send.entity.media.BasicMediaDynamic;
 import com.ptb.uranus.server.send.entity.media.WeiboMediaStatic;
 import com.ptb.uranus.schedule.service.WeiboScheduleService;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
@@ -42,12 +43,11 @@ public class WeiboMediaStaticHandle implements CollectHandler {
 
             if (wbAccount.isPresent()) {
                 WeiboMediaStatic weiboMediaStatic = SendObjectConvertUtil.weiboMediaStaticConvert(wbAccount.get());
-
                 sender.sendMediaStatic(weiboMediaStatic);
+                BasicMediaDynamic weiboMediaDynamic = SendObjectConvertUtil.weiboMediaDynamicConvert(wbAccount.get());
+                sender.sendMediaDynamic(weiboMediaDynamic);
                 weiboScheduleService.setContainerIDByWeiboID(wbAccount.get().getWeiboID(),wbAccount.get().getContainerID());
-
                 weiboScheduleService.addDetectNewArticlesSchedule(wbAccount.get().getWeiboID());
-                weiboScheduleService.addWeiboMediaDynamicSchedule(message.getBody().getConditon());
                 LogUtils.logInfo("uranus-server", "C_WB_M_S send", LogUtils.ActionResult.success, "");
             } else {
                 logger.error(new String(message.getRaw()));
