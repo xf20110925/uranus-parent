@@ -5,7 +5,6 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
-import com.ptb.uranus.schedule.service.WeixinScheduleService;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
@@ -42,7 +41,6 @@ public class BayouWeixinSync {
     Sender sender;
     //存放媒体biz和postTime键值对
     Map<String, Long> mediaMap = null;
-    WeixinScheduleService wxSceduleService = null;
 
     private void loadConfig() throws ConfigurationException {
         PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
@@ -53,7 +51,7 @@ public class BayouWeixinSync {
     public BayouWeixinSync(Sender sender) {
         try {
             loadConfig();
-            wxSceduleService = new WeixinScheduleService();
+            //wxSceduleService = new WeixinScheduleService();
         } catch (ConfigurationException e) {
 
         }
@@ -265,7 +263,7 @@ public class BayouWeixinSync {
             });
         }
         //更新媒体最新发文时间
-        mediaMap.forEach((k, v) -> wxSceduleService.updateWeixinMediaCondition(k, v));
+       // mediaMap.forEach((k, v) -> wxSceduleService.updateWeixinMediaCondition(k, v));
     }
 
     private void sendArticleDynamics(Optional<List<BayouWXArticleDynamic>> articleDynamicsOpt) {

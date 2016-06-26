@@ -2,6 +2,7 @@ package com.ptb.uranus.server.third.weibo.task;
 
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
+import com.ptb.uranus.server.send.entity.media.BasicMediaDynamic;
 import com.ptb.uranus.server.send.entity.media.WeiboMediaStatic;
 import com.ptb.uranus.server.third.weibo.script.MysqlClient;
 import org.apache.commons.configuration.ConfigurationException;
@@ -144,7 +145,7 @@ public class WeiboMediaToGaiaBus implements Runnable {
         while (rs.next()) {
             num++;
             doc = new Document();
-            for (int i = 1; i < cc; i++) {
+            for (int i = 1; i <= cc; i++) {
                 doc.append(md.getColumnName(i), rs.getString(i));
             }
             docList.add(doc);
@@ -170,11 +171,12 @@ public class WeiboMediaToGaiaBus implements Runnable {
                         startId = rs.getLong("id");
                     }
 
-
                     docList = this.resultsetTodoc(rs);
                     for (Document document : docList) {
                         WeiboMediaStatic weiboMediaStatic = SendObjectConvertUtil.weiboMediaStaticConvert(document);
+                        BasicMediaDynamic basicMediaDynamic = SendObjectConvertUtil.weiboMediaDynamicConvert(document);
                         this.sender.sendMediaStatic(weiboMediaStatic);
+                        this.sender.sendMediaDynamic(basicMediaDynamic);
                     }
                 }else{
                     try {
@@ -184,8 +186,15 @@ public class WeiboMediaToGaiaBus implements Runnable {
                         return;
                     }
                 }
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(),e);
+                if(rs != null) {
+                    try {
+                        rs.close();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
                 continue;
             }
         }

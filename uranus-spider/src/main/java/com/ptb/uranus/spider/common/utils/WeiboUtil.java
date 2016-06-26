@@ -172,4 +172,7 @@ public class WeiboUtil {
         return s62;
     }
 
+    public static void main(String[] args) {
+        System.out.println(WeiboUtil.mid2url("3990222200538637"));
+    }
 }

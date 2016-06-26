@@ -12,6 +12,7 @@ import com.ptb.uranus.server.send.entity.media.BasicMediaDynamic;
 import com.ptb.uranus.server.send.entity.media.WeiboMediaDynamic;
 import com.ptb.uranus.server.send.entity.media.WeiboMediaStatic;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
+import com.ptb.uranus.spider.common.utils.WeiboUtil;
 import com.ptb.uranus.spider.smart.entity.Article;
 import com.ptb.uranus.spider.smart.entity.DynamicData;
 import com.ptb.uranus.spider.weibo.bean.WeiboAccount;
@@ -98,7 +99,7 @@ public class SendObjectConvertUtil {
 
     public static BasicMediaDynamic weiboMediaDynamicConvert(WeiboAccount weiboAccount) {
         WeiboMediaDynamic weiboMediaDynamic = new WeiboMediaDynamic();
-        weiboMediaDynamic.setTime(System.currentTimeMillis() / 1000L);
+        weiboMediaDynamic.setTime(System.currentTimeMillis());
         weiboMediaDynamic.setWeiboId(weiboAccount.getWeiboID());
         weiboMediaDynamic.setPlat(2);
         weiboMediaDynamic.setFans(weiboAccount.getFansNum());
@@ -109,7 +110,7 @@ public class SendObjectConvertUtil {
 
     public static BasicMediaDynamic weiboMediaDynamicConvert(Document doc) {
         WeiboMediaDynamic weiboMediaDynamic = new WeiboMediaDynamic();
-        weiboMediaDynamic.setTime(System.currentTimeMillis() / 1000L);
+        weiboMediaDynamic.setTime(System.currentTimeMillis());
         weiboMediaDynamic.setWeiboId(doc.getString("user_id"));
         weiboMediaDynamic.setPlat(2);
         weiboMediaDynamic.setFans(Integer.parseInt(doc.getString("fans_number")));
@@ -165,7 +166,7 @@ public class SendObjectConvertUtil {
     public static BasicArticleDynamic weiboArticleDynamicConvert(ResultSet rs) {
         BasicArticleDynamic wbArticleDynamic = new BasicArticleDynamic();
         try {
-            String url = String.format("http://m.weibo.cn/%s/%s", rs.getString("user_id"), rs.getString("url"));
+            String url = String.format("http://m.weibo.cn/%s/%s", rs.getString("user_id"), WeiboUtil.mid2url(rs.getString("weibo_id")));
             wbArticleDynamic.setUrl(url);
             wbArticleDynamic.setComments(Integer.parseInt(rs.getString("ping")));
             wbArticleDynamic.setLikes(Integer.parseInt(rs.getString("zhan")));
@@ -267,7 +268,7 @@ public class SendObjectConvertUtil {
             weiboArticleStatic.setSource(rs.getString("device"));
             weiboArticleStatic.setSplitwords(textAnalyzeResult.getSplitword());
 
-            String url = String.format("http://m.weibo.cn/%s/%s", rs.getString("user_id"), rs.getString("url"));
+            String url = String.format("http://m.weibo.cn/%s/%s", rs.getString("user_id"), WeiboUtil.mid2url(rs.getString("weibo_id")));
             weiboArticleStatic.setUrl(url);
 
         } catch (SQLException e) {
