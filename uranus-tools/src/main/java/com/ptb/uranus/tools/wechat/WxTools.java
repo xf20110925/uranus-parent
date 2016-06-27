@@ -1,5 +1,9 @@
 package com.ptb.uranus.tools.wechat;
 
+import com.alibaba.fastjson.JSON;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.gaia.bus.message.Message;
@@ -7,18 +11,22 @@ import com.ptb.gaia.bus.message.MessageListener;
 import com.ptb.uranus.common.entity.CollectType;
 import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.trigger.JustOneTrigger;
+import com.ptb.uranus.schedule.utils.MongoUtils;
 import com.ptb.uranus.sdk.UranusSdk;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.GsData;
+import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.Document;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public final class WxTools {
@@ -90,15 +98,59 @@ public final class WxTools {
         bus.start(true, 1);
     }
 
-    public static void syncWXMedia(String wxId){
+    public static void syncWXMedia(String wxId) {
         System.out.println("starting....");
         Bus bus = new KafkaBus();
         bus.start(false, 3);
         WxMediaImport wxMediaImport = new WxMediaImport(new BusSender(bus));
         wxMediaImport.syncWXMedia(wxId);
     }
+
     public static void main(String[] args) {
-        WeixinSpider weixinSpider = new WeixinSpider();
-        Optional<List<GsData>> mofzpy = weixinSpider.getWeixinAccountByIdOrName("mofzpy", 1);
+        importToWxSearch();
     }
+
+
+    public static void importToWxSearch() {
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()) {
+            String weiboName = scanner.next();
+            importSearchResult(weiboName);
+        }
+    }
+
+    private static void importSearchResult(String weixinName) {
+        WeixinSpider weixinSpider = new WeixinSpider();
+        MongoCollection<Document> collection = MongoUtils.instance.getCollection("uranus", "weixinMedia");
+        Optional<List<GsData>> winxinMatchingByName = weixinSpider.getWinxinMatchingByName(weixinName, 1);
+        if (winxinMatchingByName.isPresent()) {
+            winxinMatchingByName.get().stream().filter(gsData -> gsData.getWechatname().equals(weixinName)).forEach(gsData -> {
+                SearchLibWxMedia searchLibWxMedia = ConvertGsDataToSearchLibMedia(gsData);
+                if (searchLibWxMedia == null) {
+                    return;
+                }else {
+                    collection.updateOne(Filters.eq("bid", searchLibWxMedia.getBid()), new Document("$set", Document.parse(JSON.toJSONString(searchLibWxMedia))), new UpdateOptions().upsert(true));
+                    System.out.println(String.format("导入微信媒体 name[%s] 成功", JSON.toJSONString(searchLibWxMedia)));
+                }
+            });
+        }
+        System.out.println(String.format("没有找到媒体名称[%s]", weixinName));
+
+    }
+
+    private static SearchLibWxMedia ConvertGsDataToSearchLibMedia(GsData gsData) {
+        SearchLibWxMedia searchLibWxMedia = new SearchLibWxMedia();
+        searchLibWxMedia.setAuthentication(gsData.getAuthenticationInfo().replaceAll(".*：","").replace("暂未认证",""));
+        searchLibWxMedia.setBid(RegexUtils.sub(".*__biz=([^&]+)&*", gsData.getIncluded(), 0));
+        searchLibWxMedia.setHeadImage(gsData.getQrcodeurl());
+        searchLibWxMedia.setQrcode(gsData.getQrcodeurl());
+        searchLibWxMedia.setCode(gsData.getWechatid());
+        searchLibWxMedia.setName(gsData.getWechatname());
+        searchLibWxMedia.setInfo(gsData.getFunctionintroduce());
+        if (gsData.getIncluded() == null) {
+            return null;
+        }
+        return searchLibWxMedia;
+    }
+
 }

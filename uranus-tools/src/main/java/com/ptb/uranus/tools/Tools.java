@@ -1,23 +1,19 @@
 package com.ptb.uranus.tools;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-
 import com.ptb.uranus.common.entity.CollectType;
 import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.trigger.JustOneTrigger;
 import com.ptb.uranus.sdk.UranusSdk;
+import com.ptb.uranus.spider.weixin.WeixinUtil;
 import com.ptb.uranus.spider.weixin.mapping.WeixinLinkMap;
 import com.ptb.uranus.tools.wechat.WxTools;
 import com.ptb.uranus.tools.weibo.WeiboTools;
+import org.apache.commons.cli.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by eric on 16/2/25.
@@ -41,6 +37,8 @@ public class Tools {
         options.addOption("sdk_time",true,"程序执行时间戳，如果需要立即执行请输入1；");
         options.addOption("sdk_priority",true,"优先级：L1，L2，L3");
         options.addOption("sync_wx_media",true,"参数为微信id");
+        options.addOption("i_wx_s",true,"参数为微信昵称");
+        options.addOption("i_wb_s",true,"参数为微博昵称");
         CommandLine commandLine;
         HelpFormatter formatter = new HelpFormatter();
         try {
@@ -89,6 +87,10 @@ public class Tools {
             String wxMedia = commandLine.getOptionValue("sync_wx_media");
             WxTools.syncWXMedia(wxMedia);
             System.exit(1);
+        }else if(commandLine.hasOption("i_wx_s")) {
+            WxTools.importToWxSearch();
+        }else if(commandLine.hasOption("i_wb_s")) {
+            WeiboTools.importToWbSearch();
         }else {
             formatter.printHelp("usage:", options);
         }

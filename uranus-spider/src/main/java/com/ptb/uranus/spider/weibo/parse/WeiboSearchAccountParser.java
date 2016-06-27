@@ -59,8 +59,10 @@ public class WeiboSearchAccountParser {
 
                 String fans = em.select(".person_detail .person_num span:nth-child(2) a").text().trim();//粉丝
                 fans = fans.replace("万", "0000");
-                String weibo = em.select(".person_detail .person_num span:nth-child(3)").text().trim();//粉丝
-                String focus = em.select(".person_detail .person_num span:nth-child(1)").text().trim();//关注
+                String weibo = em.select(".person_detail .person_num span:nth-child(3) a").text().trim();//粉丝
+                weibo = weibo.replace("万", "0000");
+                String focus = em.select(".person_detail .person_num span:nth-child(1) a").text().trim();//关注
+                focus = focus.replace("万", "0000");
                 String info = em.select(".person_detail .person_info").text();//简介
                 String vertifyType = em.select(".person_detail .person_name a:nth-child(2)").attr("title");
                 weAccount.setHeadportrait(headportrait);
