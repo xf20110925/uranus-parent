@@ -7,6 +7,16 @@ public class WeiboArticleStatic extends BasicArticleStatic{
     private String weiboId;
     private String type;
     private String picture;
+    private int isOrignal;
+
+
+    public int getIsOrignal() {
+        return isOrignal;
+    }
+
+    public void setIsOrignal(int isOrignal) {
+        this.isOrignal = isOrignal;
+    }
 
     public String getWeiboId() {
         return weiboId;

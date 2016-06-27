@@ -50,7 +50,7 @@ public class Scheduler {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                sleep(5000);
+                sleep(1000);
             }
         });
     }

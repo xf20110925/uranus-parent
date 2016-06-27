@@ -113,6 +113,9 @@ public class WeiboArticleToGaiaBus implements Runnable {
             ResultSet rs = null;
             try {
                 rs = mysqlClient.cycleGetData(startId, batch);
+                if(rs == null) {
+                    Thread.sleep(5000);
+                }
                 while(rs.next()) {
                     bas = SendObjectConvertUtil.weiboArticleStaticConvert(rs);
                     bad = SendObjectConvertUtil.weiboArticleDynamicConvert(rs);
@@ -122,7 +125,9 @@ public class WeiboArticleToGaiaBus implements Runnable {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-            }finally {
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
                 if(rs != null) {
                     try {
                         rs.close();

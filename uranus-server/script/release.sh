@@ -18,7 +18,7 @@ cp -rf ${HOME}/README.md ${DistDir}
 cp -rf ${HOME}/target/libs ${DistDir}
 mkdir ${DistDir}/logs
 cd $HOME/target/dist/
-chmod -R 755   ${PNAME}/
+chmod -R 744   ${PNAME}/
 tar czvf ${PNAME}.tar.gz ${PNAME}
 cp ${PNAME}.tar.gz  $OUTPUT_DIR
 rm  -rf ${PNAME}/

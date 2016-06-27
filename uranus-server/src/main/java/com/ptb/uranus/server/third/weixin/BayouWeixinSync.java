@@ -284,7 +284,7 @@ public class BayouWeixinSync {
         String articleDynamicUrl = null;
         if (minId > maxId) return;
         for (long i = minId; i <= maxId; i += 100) {
-            articleDynamicUrl = String.format(DATAURL, DYNAMICARTICLEFEILD, minId);
+            articleDynamicUrl = String.format(DATAURL, DYNAMICARTICLEFEILD, i);
             Optional<List<BayouWXArticleDynamic>> articleDynamicsOpt = getRangeArticleDynamic(articleDynamicUrl);
             if (articleDynamicsOpt.isPresent()) {
                 sendArticleDynamics(articleDynamicsOpt);
