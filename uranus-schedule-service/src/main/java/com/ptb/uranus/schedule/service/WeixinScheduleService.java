@@ -103,7 +103,7 @@ public class WeixinScheduleService {
 
         }
         if(!cacheDao.hasKey(getCacheBizKeyByTemplate(biz))) {
-            cacheDao.setValue(getCacheBizKeyByTemplate(biz), "1");
+            cacheDao.setValue(getCacheBizKeyByTemplate(biz), "1", Math.toIntExact(TimeUnit.DAYS.toSeconds(1)));
         }
     }
 

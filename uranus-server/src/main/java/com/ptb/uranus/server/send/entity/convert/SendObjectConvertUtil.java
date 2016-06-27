@@ -198,7 +198,7 @@ public class SendObjectConvertUtil {
         weiboArticleStatic.setAuthor(weiboArticle.getMediaName());
         weiboArticleStatic.setClassify(weiboArticle.getObjectType());
         weiboArticleStatic.setContent(weiboArticle.getContent());
-        weiboArticleStatic.setIsOrignal(weiboArticle.isOriginality() ? 1 : 0);
+        weiboArticleStatic.setOriginal(weiboArticle.isOriginality());
 
         if ((weiboArticle.getImgs() != null) && (weiboArticle.getImgs().size()) > 0) {
             for (String iter : weiboArticle.getImgs()) {
@@ -269,7 +269,7 @@ public class SendObjectConvertUtil {
             weiboArticleStatic.setPostTime(Long.parseLong(rs.getString("time_stamp")));
             weiboArticleStatic.setSource(rs.getString("device"));
             weiboArticleStatic.setSplitwords(textAnalyzeResult.getSplitword());
-            weiboArticleStatic.setIsOrignal(rs.getInt("is_retweet"));
+            weiboArticleStatic.setOriginal(rs.getInt("is_retweet") == 1);
 
             String url = String.format("http://m.weibo.cn/%s/%s", rs.getString("user_id"), WeiboUtil.mid2url(rs.getString("weibo_id")));
             weiboArticleStatic.setUrl(url);
