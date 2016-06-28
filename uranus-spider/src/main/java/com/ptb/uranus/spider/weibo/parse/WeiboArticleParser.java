@@ -66,7 +66,7 @@ public class WeiboArticleParser {
             } else {
                 objectType = JsonPathUtil.parse(parse, "$.stage.single[1].mblog.page_info.object_type", null);
             }
-            if(objectType == ""){
+            if (objectType == "") {
                 objectType = "common";
             }
 
@@ -104,10 +104,12 @@ public class WeiboArticleParser {
      * @throws IOException the io exception
      */
     public WeiboArticle getWeiboArticleByArticleUrl(String articleUrl) throws Exception {
-        WeiboArticle weiboArticle = parseFromMobilePage(articleUrl.replaceFirst("[w\\.]*weibo.com/", "m.weibo.cn/"));
+        String s = articleUrl.replaceFirst("[w\\.]*weibo.com/", "m.weibo.cn/");
+        WeiboArticle weiboArticle = parseFromMobilePage(s);
         if (weiboArticle == null) {
-             weiboArticle = parseFromPcPageByWebDriver(articleUrl.replace("m.weibo.cn", "weibo.com"));
+            weiboArticle = parseFromPcPageByWebDriver(articleUrl.replace("m.weibo.cn", "weibo.com"));
         }
+        weiboArticle.setArticleUrl(s);
         return weiboArticle;
     }
 
@@ -199,9 +201,9 @@ public class WeiboArticleParser {
         try {
             int i = 3;
             String pageSource = null;
-            while (i-- > 0){
+            while (i-- > 0) {
                 pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null);
-                if(pageSource != null){
+                if (pageSource != null) {
                     break;
                 }
             }
@@ -285,19 +287,19 @@ public class WeiboArticleParser {
         List<LinkedHashMap> scope = parse.read("$..mblog");
         Iterator<LinkedHashMap> iter = scope.iterator();
         long lastTime = startTime;
-        while (iter.hasNext()){
+        while (iter.hasNext()) {
             LinkedHashMap hashMap = iter.next();
             long createTime = Long.parseLong(hashMap.get("created_timestamp").toString());
-            if(createTime < startTime){
+            if (createTime < startTime) {
                 continue;
             }
-            if(createTime > lastTime){
+            if (createTime > lastTime) {
                 lastTime = createTime;
             }
             WeiboArticle weiboArticle = new WeiboArticle();
             LinkedHashMap userHash = (LinkedHashMap) hashMap.get("user");
             String mediaId = null;
-            if(userHash != null){
+            if (userHash != null) {
                 weiboArticle.setMediaName((String) userHash.get("screen_name"));
                 mediaId = RegexUtils.sub("/u/([0-9]*)", (String) userHash.get("profile_url"), 0);
                 weiboArticle.setHeadImg((String) userHash.get("profile_image_url"));
@@ -313,11 +315,11 @@ public class WeiboArticleParser {
 
             LinkedHashMap pageInfo = (LinkedHashMap) hashMap.get("page_info");
             String objType;
-            if(pageInfo == null){
+            if (pageInfo == null) {
                 objType = "common";
-            }else {
+            } else {
                 objType = (String) pageInfo.get("object_type");
-                if(objType == null){
+                if (objType == null) {
                     objType = "common";
                 }
             }
@@ -325,14 +327,14 @@ public class WeiboArticleParser {
             weiboArticle.setGender((String) userHash.get("gender"));
             weiboArticle.setBrief((String) userHash.get("description"));
             List<String> img = (List<String>) hashMap.get("pic_ids");
-            if(img != null) {
+            if (img != null) {
                 for (int i = 0; i < img.size(); i++) {
-                    img.set(i, String.format("http://ww1.sinaimg.cn/thumbnail/%s.jpg",img.get(i)));
+                    img.set(i, String.format("http://ww1.sinaimg.cn/thumbnail/%s.jpg", img.get(i)));
                 }
             }
             weiboArticle.setImgs(img);
             weiboArticle.setArticleUrl(String.format("http://m.weibo.cn/%s/%s", mediaId, hashMap.get("bid")));
-            if(hashMap.get("retweeted_status") == null){
+            if (hashMap.get("retweeted_status") == null) {
                 weiboArticle.setOriginality(true);
             }
 
@@ -342,15 +344,15 @@ public class WeiboArticleParser {
         return ImmutablePair.of(lastTime, weiboArticles);
     }
 
-    public ImmutablePair<Long,List<WeiboArticle>> getWeiboRecentArticlesThroughPc(String weiboID, long startTime){
-        try{
+    public ImmutablePair<Long, List<WeiboArticle>> getWeiboRecentArticlesThroughPc(String weiboID, long startTime) {
+        try {
             List<WeiboArticle> weiboArticles = new ArrayList<>();
             int i = 3;
             String aritcleUrl = String.format("http://weibo.com/u/%s?is_all=1", weiboID);
             String pageSource = null;
-            while (i-- > 0){
+            while (i-- > 0) {
                 pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null);
-                if(pageSource != null){
+                if (pageSource != null) {
                     break;
                 }
             }
@@ -364,17 +366,17 @@ public class WeiboArticleParser {
 
             long lastTime = startTime;
             Elements element = doc.select(".WB_cardwrap.WB_feed_type");
-            for (i = 0;i < element.size();i++){
+            for (i = 0; i < element.size(); i++) {
                 Element ele = element.get(i);
                 long postTime = Long.valueOf(ele.select("a[node-type=\"feed_list_item_date\"]").attr("date")) / 1000;
-                if(postTime < startTime){
+                if (postTime < startTime) {
                     continue;
                 }
                 WeiboArticle weiboArticle = new WeiboArticle();
                 weiboArticle.setMediaName(ele.select(".WB_info .W_f14").text());
                 weiboArticle.setMediaId(RegexUtils.sub("\\$CONFIG\\[\'oid\'\\]=\'(\\d*)\';", pageSource, 0));
                 weiboArticle.setPostTime(postTime);
-                if(lastTime < postTime){
+                if (lastTime < postTime) {
                     lastTime = postTime;
                 }
 
@@ -419,7 +421,7 @@ public class WeiboArticleParser {
                 }
                 String articleId = RegexUtils.sub("/[0-9]*/(.*)\\?.*", ele.select(".WB_from a:nth-child(1)").attr("href"), 0);
                 String articleUrl = String.format("http://weibo.com/%s/%s", weiboID, articleId);
-                if(ele.select("WB_feed_expand") == null){
+                if (ele.select("WB_feed_expand") == null) {
                     weiboArticle.setOriginality(true);
                 }
                 weiboArticle.setArticleUrl(articleUrl);
@@ -427,8 +429,8 @@ public class WeiboArticleParser {
             }
             return ImmutablePair.of(lastTime, weiboArticles);
 
-        }catch (Exception e){
-            logger.error("get weibo recent article error! weibo id {} ", weiboID,e);
+        } catch (Exception e) {
+            logger.error("get weibo recent article error! weibo id {} ", weiboID, e);
         }
         return null;
     }
