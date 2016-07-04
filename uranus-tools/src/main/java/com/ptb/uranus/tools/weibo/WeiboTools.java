@@ -129,7 +129,7 @@ public class WeiboTools {
         weiboMediaStatic.setHeadImg(weiboSearchAccount.getHeadportrait());
         weiboMediaStatic.setWeiboId(weiboSearchAccount.getWeiboId());
         weiboMediaStatic.setAuthDescription(weiboSearchAccount.getCompany());
-
+        weiboMediaStatic.setHomePage(weiboSearchAccount.getPersonalpage());
         String type = "-1";
         if (weiboSearchAccount.getVertifyType().contains("个人")) {
             type = "0";
