@@ -146,7 +146,6 @@ public class WeiboArticleParser {
                         Thread.sleep(1000);
                         break;
                     }
-                } catch (Exception e) {
 
                 } finally {
                     if (driver != null) {
