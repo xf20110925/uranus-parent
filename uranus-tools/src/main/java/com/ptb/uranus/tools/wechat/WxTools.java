@@ -1,9 +1,5 @@
 package com.ptb.uranus.tools.wechat;
 
-import com.alibaba.fastjson.JSON;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOptions;
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.gaia.bus.message.Message;
@@ -11,15 +7,14 @@ import com.ptb.gaia.bus.message.MessageListener;
 import com.ptb.uranus.common.entity.CollectType;
 import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.trigger.JustOneTrigger;
-import com.ptb.uranus.schedule.utils.MongoUtils;
 import com.ptb.uranus.sdk.UranusSdk;
 import com.ptb.uranus.server.send.BusSender;
+import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.GsData;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bson.Document;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,35 +107,59 @@ public final class WxTools {
 
 
     public static void importToWxSearch() {
+        KafkaBus bus = new KafkaBus("uranus-tool");
+        bus.start(false, 0);
+        BusSender busSender = new BusSender(bus);
+
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNext()) {
-            String weiboName = scanner.next();
-            importSearchResult(weiboName);
+            try {
+                String weiboName = scanner.next();
+                importSearchResult(weiboName, busSender);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private static void importSearchResult(String weixinName) {
+    private static void importSearchResult(String weixinName, BusSender busSender) {
         WeixinSpider weixinSpider = new WeixinSpider();
-        MongoCollection<Document> collection = MongoUtils.instance.getCollection("uranus", "weixinMedia");
         Optional<List<GsData>> winxinMatchingByName = weixinSpider.getWinxinMatchingByName(weixinName, 1);
         if (winxinMatchingByName.isPresent()) {
             winxinMatchingByName.get().stream().filter(gsData -> gsData.getWechatname().equals(weixinName)).forEach(gsData -> {
-                SearchLibWxMedia searchLibWxMedia = ConvertGsDataToSearchLibMedia(gsData);
-                if (searchLibWxMedia == null) {
+                WeixinMediaStatic weixinMediaStatic = ConvertGsDataToWxMediaSender(gsData);
+                if (weixinMediaStatic == null) {
+                    System.out.println(String.format("媒体历史无发文,无法导入[%s]", weixinName));
                     return;
-                }else {
-                    collection.updateOne(Filters.eq("bid", searchLibWxMedia.getBid()), new Document("$set", Document.parse(JSON.toJSONString(searchLibWxMedia))), new UpdateOptions().upsert(true));
-                    System.out.println(String.format("导入微信媒体 name[%s] 成功", JSON.toJSONString(searchLibWxMedia)));
+                } else {
+                    busSender.sendMediaStatic(weixinMediaStatic);
+                    System.out.println(String.format("导入微信媒体 name[%s] 成功", weixinMediaStatic.getMediaName()));
                 }
             });
+        } else {
+            System.out.println(String.format("没有找到媒体名称[%s]", weixinName));
         }
-        System.out.println(String.format("没有找到媒体名称[%s]", weixinName));
+    }
 
+    private static WeixinMediaStatic ConvertGsDataToWxMediaSender(GsData gsData) {
+        if (gsData.getIncluded() == null) {
+            return null;
+        }
+        WeixinMediaStatic weixinMediaStatic = new WeixinMediaStatic();
+        weixinMediaStatic.setMediaName(gsData.getWechatname());
+        weixinMediaStatic.setAuthentication(gsData.getAuthenticationInfo().replaceAll(".*：", "").replace("暂未认证", ""));
+        weixinMediaStatic.setBiz(RegexUtils.sub(".*__biz=([^&]+)&*", gsData.getIncluded(), 0));
+        weixinMediaStatic.setHeadImg(gsData.getQrcodeurl());
+        weixinMediaStatic.setQrCode(gsData.getQrcodeurl());
+        weixinMediaStatic.setWeixinId(gsData.getWechatid());
+        weixinMediaStatic.setBrief(gsData.getFunctionintroduce());
+        weixinMediaStatic.setPlat(1);
+        return weixinMediaStatic;
     }
 
     private static SearchLibWxMedia ConvertGsDataToSearchLibMedia(GsData gsData) {
         SearchLibWxMedia searchLibWxMedia = new SearchLibWxMedia();
-        searchLibWxMedia.setAuthentication(gsData.getAuthenticationInfo().replaceAll(".*：","").replace("暂未认证",""));
+        searchLibWxMedia.setAuthentication(gsData.getAuthenticationInfo().replaceAll(".*：", "").replace("暂未认证", ""));
         searchLibWxMedia.setBid(RegexUtils.sub(".*__biz=([^&]+)&*", gsData.getIncluded(), 0));
         searchLibWxMedia.setHeadImage(gsData.getQrcodeurl());
         searchLibWxMedia.setQrcode(gsData.getQrcodeurl());

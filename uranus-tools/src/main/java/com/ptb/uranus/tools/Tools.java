@@ -1,19 +1,21 @@
 package com.ptb.uranus.tools;
 
 
+import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.common.entity.CollectType;
 import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.trigger.JustOneTrigger;
 import com.ptb.uranus.sdk.UranusSdk;
-import com.ptb.uranus.spider.weixin.WeixinUtil;
 import com.ptb.uranus.spider.weixin.mapping.WeixinLinkMap;
 import com.ptb.uranus.tools.wechat.WxTools;
 import com.ptb.uranus.tools.weibo.WeiboTools;
 import org.apache.commons.cli.*;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by eric on 16/2/25.
@@ -31,14 +33,15 @@ public class Tools {
         options.addOption("import_wx_hotArticle", true, "从SOGOU中抽取指定数量的文章并加入了数据库中");
         options.addOption("b", "import_wb", true, "参数为要导入的媒体文件,txt格式,每行一个微博号[10位的数字],从文件中加载微博媒体ID,并将对应的媒体添加到数据库中");
         options.addOption("c", false, "建立SOGOU到WEIXIN文章的CACHE关系");
-        options.addOption("sdk_tool",false, "sdk接口帮助文档");
-        options.addOption("sdk_url",true,"指定url参数如果输入列表形式请以,分割");
-        options.addOption("sdk_type",true,"采集类型： C_WX_M_D,C_WX_M_S,C_WX_A_D,C_WX_A_S,C_WB_A_S,C_WB_A_D,C_WB_M_D，C_WB_M_S，C_A_A_D，C_A_A_S，C_A_A_N，C_WB_A_N，C_WX_A_N");
-        options.addOption("sdk_time",true,"程序执行时间戳，如果需要立即执行请输入1；");
-        options.addOption("sdk_priority",true,"优先级：L1，L2，L3");
-        options.addOption("sync_wx_media",true,"参数为微信id");
-        options.addOption("i_wx_s",true,"参数为微信昵称");
-        options.addOption("i_wb_s",true,"参数为微博昵称");
+        options.addOption("sdk_tool", false, "sdk接口帮助文档");
+        options.addOption("sdk_url", true, "指定url参数如果输入列表形式请以,分割");
+        options.addOption("sdk_type", true, "采集类型： C_WX_M_D,C_WX_M_S,C_WX_A_D,C_WX_A_S,C_WB_A_S,C_WB_A_D,C_WB_M_D，C_WB_M_S，C_A_A_D，C_A_A_S，C_A_A_N，C_WB_A_N，C_WX_A_N");
+        options.addOption("sdk_time", true, "程序执行时间戳，如果需要立即执行请输入1；");
+        options.addOption("sdk_priority", true, "优先级：L1，L2，L3");
+        options.addOption("sync_wx_media", true, "参数为微信id");
+        options.addOption("i_wx_s", false, "参数为微信昵称");
+        options.addOption("i_wb_s", false, "参数为微博昵称");
+        options.addOption("send_msg", true, "发送BUS消息");
         CommandLine commandLine;
         HelpFormatter formatter = new HelpFormatter();
         try {
@@ -62,36 +65,45 @@ public class Tools {
             WeiboTools.importWbArticle(confPath);
         } else if (commandLine.hasOption("c")) {
             WeixinLinkMap.cacheSogouToWeixin();
-        }else if(commandLine.hasOption("sdk_tool")) {
-        	String sdk_url = commandLine.getOptionValue("sdk_url");
-        	String sdk_type = commandLine.getOptionValue("sdk_type");
-        	Long sdk_time = Long.parseLong(commandLine.getOptionValue("sdk_time"));
-        	String sdk_priority = commandLine.getOptionValue("sdk_priority");
-        	String[] sdkL = sdk_url.split(",");
-        	List<String> sdkList = new ArrayList<>();
-        	JustOneTrigger time = new JustOneTrigger(sdk_time);
-        	if(sdk_time==1){
-    			time=new JustOneTrigger(new Date().getTime()); 
-    		}
-        	if(sdkL.length>1){
-        		for(int i=0;i<sdkL.length;i++){
-        			sdkList.add(sdkL[i]);
-        		}
-        	List<String> listurl= UranusSdk.i().collect(sdkList, CollectType.valueOf(sdk_type), time,Priority.valueOf(sdk_priority));
-        	System.out.println(listurl);
-        	}else{
-                String name= UranusSdk.i().collect(sdk_url,  CollectType.valueOf(sdk_type), time, Priority.valueOf(sdk_priority));
-     	        System.out.println(name);
-        	}
-        }else if(commandLine.hasOption("sync_wx_media")){
+        } else if (commandLine.hasOption("sdk_tool")) {
+            String sdk_url = commandLine.getOptionValue("sdk_url");
+            String sdk_type = commandLine.getOptionValue("sdk_type");
+            Long sdk_time = Long.parseLong(commandLine.getOptionValue("sdk_time"));
+            String sdk_priority = commandLine.getOptionValue("sdk_priority");
+            String[] sdkL = sdk_url.split(",");
+            List<String> sdkList = new ArrayList<>();
+            JustOneTrigger time = new JustOneTrigger(sdk_time);
+            if (sdk_time == 1) {
+                time = new JustOneTrigger(new Date().getTime());
+            }
+            if (sdkL.length > 1) {
+                for (int i = 0; i < sdkL.length; i++) {
+                    sdkList.add(sdkL[i]);
+                }
+                List<String> listurl = UranusSdk.i().collect(sdkList, CollectType.valueOf(sdk_type), time, Priority.valueOf(sdk_priority));
+                System.out.println(listurl);
+            } else {
+                String name = UranusSdk.i().collect(sdk_url, CollectType.valueOf(sdk_type), time, Priority.valueOf(sdk_priority));
+                System.out.println(name);
+            }
+        } else if (commandLine.hasOption("sync_wx_media")) {
             String wxMedia = commandLine.getOptionValue("sync_wx_media");
             WxTools.syncWXMedia(wxMedia);
             System.exit(1);
-        }else if(commandLine.hasOption("i_wx_s")) {
+        } else if (commandLine.hasOption("i_wx_s")) {
             WxTools.importToWxSearch();
-        }else if(commandLine.hasOption("i_wb_s")) {
+        } else if (commandLine.hasOption("i_wb_s")) {
             WeiboTools.importToWbSearch();
-        }else {
+        } else if (commandLine.hasOption("send_msg")) {
+            String topic = commandLine.getOptionValue("send_msg");
+            KafkaBus bus = new KafkaBus();
+            bus.start(false,0);
+            Scanner scanner = new Scanner(System.in);
+            while (scanner.hasNextLine()) {
+                String message = scanner.nextLine();
+                bus.send(topic,message.getBytes(Charset.forName("utf8")));
+            }
+        }else{
             formatter.printHelp("usage:", options);
         }
 

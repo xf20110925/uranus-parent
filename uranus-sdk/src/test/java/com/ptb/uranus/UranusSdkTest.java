@@ -7,6 +7,7 @@ import com.ptb.uranus.schedule.trigger.PeriodicTrigger;
 import com.ptb.uranus.sdk.UranusSdk;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,8 +31,8 @@ public class UranusSdkTest {
     @Test
     public void getweixinArticleUrlByIdTest() {
         assertTrue(UranusSdk.i().collect(
-                "3897978039",
-                CollectType.C_WB_M_S,
+                Arrays.asList("1764222885"),
+                CollectType.C_WB_M_D,
                 new JustOneTrigger(new Date().getTime()), Priority.L1) != null);
     }
 

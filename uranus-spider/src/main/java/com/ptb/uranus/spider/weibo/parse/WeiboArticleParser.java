@@ -104,12 +104,27 @@ public class WeiboArticleParser {
      * @throws IOException the io exception
      */
     public WeiboArticle getWeiboArticleByArticleUrl(String articleUrl) throws Exception {
-        String s = articleUrl.replaceFirst("[w\\.]*weibo.com/", "m.weibo.cn/");
-        WeiboArticle weiboArticle = parseFromMobilePage(s);
+        String articleMobileUrl = articleUrl.replaceFirst("[w\\.]*weibo.com/", "m.weibo.cn/");
+        WeiboArticle weiboArticle = null;
+        try {
+            weiboArticle = parseFromPcPageByHttpClient(articleUrl.replace("m.weibo.cn", "weibo.com"));
+        } catch (Exception e) {
+
+        }
+
+        if (weiboArticle == null) {
+            try {
+                weiboArticle = parseFromMobilePage(articleMobileUrl);
+            } catch (Exception e) {
+
+            }
+        }
+
         if (weiboArticle == null) {
             weiboArticle = parseFromPcPageByWebDriver(articleUrl.replace("m.weibo.cn", "weibo.com"));
         }
-        weiboArticle.setArticleUrl(s);
+
+        weiboArticle.setArticleUrl(articleMobileUrl);
         return weiboArticle;
     }
 
@@ -120,11 +135,11 @@ public class WeiboArticleParser {
             int i = 5;
             String pageSource = "";
             while (i-- > 0) {
-                WebDriverPool webDriverFromPool = i > 0 ? WebDriverPoolUtils.instance().getWebDriverFromPool(false, true) : WebDriverPoolUtils.instance().getWebDriverFromPool(false, false);
+                WebDriverPool webDriverFromPool = i > 0 ? WebDriverPoolUtils.instance().getWebDriverFromPool(false, false) : WebDriverPoolUtils.instance().getWebDriverFromPool(false, false);
                 driver = webDriverFromPool.borrowObject();
                 try {
                     driver.manage().addCookie(new Cookie("SUB", UUID.randomUUID().toString(), ".weibo.com", "/", null, false));
-                    driver.get(aritcleUrl);
+                    driver.navigate().to(aritcleUrl);
                     Thread.sleep(1000);
                     pageSource = driver.getPageSource();
                     if (pageSource.contains("oid")) {
@@ -134,7 +149,9 @@ public class WeiboArticleParser {
                 } catch (Exception e) {
 
                 } finally {
-                    webDriverFromPool.returnObject(driver);
+                    if (driver != null) {
+                        webDriverFromPool.returnObject(driver);
+                    }
                 }
             }
             if (i < 0) {
@@ -195,6 +212,7 @@ public class WeiboArticleParser {
             return null;
         }
     }
+
 
     public WeiboArticle parseFromPcPageByHttpClient(String aritcleUrl) throws Exception {
         WeiboArticle weiboArticle = new WeiboArticle();
@@ -437,7 +455,8 @@ public class WeiboArticleParser {
 
     public static void main(String[] args) throws Exception {
         WeiboArticleParser weiboArticleParser = new WeiboArticleParser();
-        System.out.println(weiboArticleParser.parseFromPcPageByWebDriver("http://weibo.com/2165313080/Dov3pEU2d"));
+        WeiboArticle weiboArticle = weiboArticleParser.parseFromPcPageByHttpClient("http://weibo.com/2165313080/Dov3pEU2d");
+        System.out.println(weiboArticle);
 
     }
 }

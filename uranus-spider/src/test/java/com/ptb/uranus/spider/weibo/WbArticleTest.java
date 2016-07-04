@@ -47,7 +47,7 @@ public class WbArticleTest {
      */
     @Test
     public void testGetArticleVideoByUrlSuccess() {
-        Optional<WeiboArticle> weiboArticleOptional = weiboSpider.getWeiboArticleByArticleUrl("http://m.weibo.cn/5659237191/DsBPdb0xu?ref=home&rid=0_0_1_2669681800934230908&type=comment");
+        Optional<WeiboArticle> weiboArticleOptional = weiboSpider.getWeiboArticleByArticleUrl("http://m.weibo.cn/1750070171/DBIwat7Sr");
 
         assertEquals(weiboArticleOptional.isPresent(), true);
         WeiboArticle weiboArticle = weiboArticleOptional.get();
