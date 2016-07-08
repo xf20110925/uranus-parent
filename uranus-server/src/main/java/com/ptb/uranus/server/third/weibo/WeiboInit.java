@@ -9,32 +9,23 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Created by watson zhang on 16/6/15.
  */
 public class WeiboInit {
-    private static Logger logger = LoggerFactory.getLogger(ThirdEntry.class);
-    private PropertiesConfiguration conf;
+    ExecutorService executor = Executors.newFixedThreadPool(4);
     private Sender sender;
 
-
-    public WeiboInit(Sender sender){
-        try {
-            conf = new PropertiesConfiguration("uranus.properties");
-        } catch (ConfigurationException e) {
-            e.printStackTrace();
-        }
+    public WeiboInit(Sender sender) {
         this.sender = sender;
     }
 
-    public void startWeibo(){
-        try {
-            String lock = new String("lock");
-            new Thread((Runnable) new WeiboArticleToGaiaBus(this.sender)).start();
-            new Thread((Runnable) new WeiboMediaToGaiaBus(lock,this.sender)).start();
-        } catch (ConfigurationException e) {
-            e.printStackTrace();
-        }
+    public void startWeibo() {
+        executor.execute(new WeiboArticleToGaiaBus(this.sender));
+        executor.execute(new WeiboMediaToGaiaBus(this.sender));
     }
 
 }

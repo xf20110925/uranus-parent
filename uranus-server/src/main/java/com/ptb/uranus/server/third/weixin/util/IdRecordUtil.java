@@ -2,6 +2,7 @@ package com.ptb.uranus.server.third.weixin.util;
 
 import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.server.third.weixin.entity.IdRecord;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,7 +12,7 @@ import java.util.Optional;
 /**
  * Created by xuefeng on 2016/5/18.
  */
-public class IdRecordUtil{
+public class IdRecordUtil {
     public static final String SERIALIZEPATH = "idRecord.json";
 
     private static IdRecord idRecord;
@@ -60,6 +61,16 @@ public class IdRecordUtil{
 
     public synchronized static void syncStaticArticleId(long syncStaticArticleId) {
         idRecord.setStaticArticleId(syncStaticArticleId);
+        serialize(idRecord);
+    }
+
+    public synchronized static void syncWbArticleId(long wbArticleId) {
+        idRecord.setWbArticleId(wbArticleId);
+        serialize(idRecord);
+    }
+
+    public synchronized static void syncWbMediaId(long wbMediaId) {
+        idRecord.setWbMediaId(wbMediaId);
         serialize(idRecord);
     }
 
