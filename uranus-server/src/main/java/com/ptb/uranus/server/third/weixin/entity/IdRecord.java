@@ -1,5 +1,7 @@
 package com.ptb.uranus.server.third.weixin.entity;
 
+import com.alibaba.fastjson.JSON;
+
 import java.io.Serializable;
 
 /**
@@ -9,14 +11,18 @@ public class IdRecord implements Serializable {
     long mediaId = 0;
     long dynamicArticleId = 0;
     long staticArticleId = 0;
+    long wbMediaId = 0;
+    long wbArticleId = 0;
 
     public IdRecord() {
     }
 
-    public IdRecord(long mediaId, long dynamicArticleId, long staticArticleId) {
+    public IdRecord(long mediaId, long dynamicArticleId, long staticArticleId, long wbMediaId, long wbArticleId) {
         this.mediaId = mediaId;
         this.dynamicArticleId = dynamicArticleId;
         this.staticArticleId = staticArticleId;
+        this.wbMediaId = wbMediaId;
+        this.wbArticleId = wbArticleId;
     }
 
     public long getMediaId() {
@@ -43,12 +49,24 @@ public class IdRecord implements Serializable {
         this.staticArticleId = staticArticleId;
     }
 
+    public long getWbMediaId() {
+        return wbMediaId;
+    }
+
+    public void setWbMediaId(long wbMediaId) {
+        this.wbMediaId = wbMediaId;
+    }
+
+    public long getWbArticleId() {
+        return wbArticleId;
+    }
+
+    public void setWbArticleId(long wbArticleId) {
+        this.wbArticleId = wbArticleId;
+    }
+
     @Override
     public String toString() {
-        return "IdRecord{" +
-                "mediaId=" + mediaId +
-                ", dynamicArticleId=" + dynamicArticleId +
-                ", staticArticleId=" + staticArticleId +
-                '}';
+        return JSON.toJSONString(this);
     }
 }
