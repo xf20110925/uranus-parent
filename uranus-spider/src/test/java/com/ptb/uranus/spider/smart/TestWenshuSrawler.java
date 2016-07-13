@@ -4,7 +4,6 @@ import com.ptb.uranus.spider.smart.entity.Article;
 import com.ptb.uranus.spider.smart.utils.SmartSpiderConverter;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Optional;
 
@@ -31,7 +30,6 @@ public class TestWenshuSrawler {
     }
 
 
-    @Test
     public void testArtilceType1() {
         Optional<SpiderResult> articleResult = smartSpider.crawl("http://wenshu.court.gov.cn/content/content?DocID=8252121f-8260-4241-b707-018d52d151ca", "article");
         Article article = SmartSpiderConverter.convertToArticle(articleResult.get());

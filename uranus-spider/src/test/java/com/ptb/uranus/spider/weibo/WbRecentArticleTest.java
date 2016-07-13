@@ -1,6 +1,5 @@
 package com.ptb.uranus.spider.weibo;
 
-import com.ptb.uranus.spider.weibo.WeiboSpider;
 import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -22,7 +21,7 @@ public class WbRecentArticleTest {
      */
     @Test
     public void testGetRecentArticleByWeiboID() {
-        Optional<ImmutablePair<Long, List<WeiboArticle>>> articleList = weiboSpider.getRecentArticlesByWeiboID("2623254272", 0L);
+        Optional<ImmutablePair<Long, List<WeiboArticle>>> articleList = weiboSpider.getRecentArticlesByWeiboID("3974469906", 0L);
         assertTrue(articleList.isPresent());
         assertTrue(articleList.get().getRight().size() > 0);
         assertTrue(articleList.get().getLeft()>0);
