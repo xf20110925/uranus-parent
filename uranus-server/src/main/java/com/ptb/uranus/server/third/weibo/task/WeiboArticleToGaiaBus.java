@@ -12,6 +12,8 @@ import com.ptb.uranus.server.third.weixin.util.IdRecordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -86,8 +88,12 @@ public class WeiboArticleToGaiaBus implements Runnable {
 
         while (true) {
             String sql = "select * from fresh_data where id > ?  LIMIT ?";
-            try (ResultSet rs = MysqlClient.executeQuery(sql, startId, batch);) {
-                if (rs == null) {
+            try (Connection conn = MysqlClient.instance.getConn();) {
+                PreparedStatement pres = conn.prepareStatement(sql);
+                pres.setLong(1, startId);
+                pres.setInt(2, batch);
+                ResultSet rs = pres.executeQuery();
+                if (rs == null || !rs.next()) {
                     Thread.sleep(5000);
                     continue;
                 }
@@ -99,7 +105,7 @@ public class WeiboArticleToGaiaBus implements Runnable {
                     startId = startId < rs.getLong("id") ? rs.getLong("id") : startId;
                 }
                 IdRecordUtil.syncWbArticleId(startId);
-            } catch (SQLException | InterruptedException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage());
                 e.printStackTrace();
             }

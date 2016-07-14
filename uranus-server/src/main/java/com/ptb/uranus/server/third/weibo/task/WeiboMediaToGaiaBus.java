@@ -11,9 +11,7 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +53,12 @@ public class WeiboMediaToGaiaBus implements Runnable {
 
         String sql = "select * from user_profile where id > ?  LIMIT ?";
         while (true) {
-            try (ResultSet rs = MysqlClient.executeQuery(sql, startId, batch);){
-                if (rs == null) {
+            try (Connection conn = MysqlClient.instance.getConn();) {
+                PreparedStatement pres = conn.prepareStatement(sql);
+                pres.setLong(1, startId);
+                pres.setInt(2, batch);
+                ResultSet rs = pres.executeQuery();
+                if (rs == null || !rs.next()) {
                     Thread.sleep(10000);
                     continue;
                 }
