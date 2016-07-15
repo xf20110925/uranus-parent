@@ -36,14 +36,19 @@ public enum MysqlClient {
             instance.dataSource.setUsername(mysqlUser);
             instance.dataSource.setPassword(mysqlPwd);
             //初始化链接数
-            instance.dataSource.setInitialSize(10);
+            instance.dataSource.setInitialSize(5);
             //最大空闲链接
-            instance.dataSource.setMaxIdle(10);
+            instance.dataSource.setMaxIdle(2);
             //最小空闲链接
-            instance.dataSource.setMinIdle(5);
+            instance.dataSource.setMinIdle(0);
             //自动回收超时链接
-            instance.dataSource.setRemoveAbandoned(true);
-            instance.dataSource.setRemoveAbandonedTimeout(3600);
+            instance.dataSource.setRemoveAbandonedTimeout(180); // 超过时间限制，回收没有用(废弃)的连接
+            instance.dataSource.setRemoveAbandoned(true); // 超过removeAbandonedTimeout时间后，是否进 行没用连接（废弃）的回收
+            instance.dataSource.setTestOnBorrow(true);
+            instance.dataSource.setTestOnReturn(true);
+            instance.dataSource.setTestWhileIdle(true);
+            instance.dataSource.setValidationQuery("SELECT 1");
+            instance.dataSource.setTimeBetweenEvictionRunsMillis(1000 * 60 * 30); // 检查无效连接的时间间隔 设为30分
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
