@@ -73,6 +73,7 @@ public class WeiboMediaToGaiaBus implements Runnable {
                 startId = pair.getLeft();
                 IdRecordUtil.syncWbMediaId(startId);
             } catch (Exception e) {
+                MysqlClient.instance.reInit();
                 logger.error(e.getMessage(), e);
             }
         }

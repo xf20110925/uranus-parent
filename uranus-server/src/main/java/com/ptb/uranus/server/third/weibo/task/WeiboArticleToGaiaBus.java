@@ -106,6 +106,7 @@ public class WeiboArticleToGaiaBus implements Runnable {
                 }
                 IdRecordUtil.syncWbArticleId(startId);
             } catch (Exception e) {
+                MysqlClient.instance.reInit();
                 logger.error(e.getMessage());
                 e.printStackTrace();
             }
