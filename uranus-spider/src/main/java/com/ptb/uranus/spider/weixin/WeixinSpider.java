@@ -211,7 +211,8 @@ public class WeixinSpider {
             articleUrl = HttpUtil.updateArgument(articleUrl, "both_add", "1");
             articleUrl = HttpUtil.updateArgument(articleUrl, "reward_uin_count", "0");
 
-            String s = Request.Post(articleUrl).userAgent(HttpUtil.UA_IPHONE6_SAFARI).bodyString("is_only_read=1", ContentType.APPLICATION_FORM_URLENCODED).execute().returnContent().asString();
+//            String s = Request.Post(articleUrl).userAgent(HttpUtil.UA_IPHONE6_SAFARI).bodyString("is_only_read=1", ContentType.APPLICATION_FORM_URLENCODED).execute().returnContent().asString();
+            String s = HttpUtil.postByMobileClient(articleUrl, "is_only_read=1", ContentType.APPLICATION_FORM_URLENCODED);
             if (!s.contains("read_num")) {
                 return Optional.empty();
             }
@@ -461,7 +462,7 @@ public class WeixinSpider {
         return new ReadLikeNum(Integer.parseInt(readNum), Integer.parseInt(likeNum));
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
        /* WeixinSpider weixinSpider = new WeixinSpider();
         List<String> hotArticleFromSogou = weixinSpider.getHotArticleFromSogou();
         hotArticleFromSogou.forEach(k -> System.out.println(k));*/
