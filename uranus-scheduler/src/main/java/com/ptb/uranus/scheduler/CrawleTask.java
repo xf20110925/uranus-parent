@@ -50,7 +50,7 @@ public class CrawleTask extends TimerTask {
     }
 
     void loadConf() throws ConfigurationException {
-        conf = new PropertiesConfiguration("uranus.properties");
+        conf = new PropertiesConfiguration("ptb.properties");
         conf.setAutoSave(true);
     }
 

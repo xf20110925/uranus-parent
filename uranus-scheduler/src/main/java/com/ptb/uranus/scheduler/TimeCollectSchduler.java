@@ -27,7 +27,7 @@ public class TimeCollectSchduler {
     }
 
     void loadConf() throws ConfigurationException {
-        conf = new PropertiesConfiguration("uranus.properties");
+        conf = new PropertiesConfiguration("ptb.properties");
     }
 
     public void start(boolean isDaemon) throws Exception {
