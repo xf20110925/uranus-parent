@@ -64,7 +64,7 @@ public class WeixinUtil {
     public WeixinUtil() {
         PropertiesConfiguration pconf = null;
         try {
-            pconf = new PropertiesConfiguration("uranus.properties");
+            pconf = new PropertiesConfiguration("ptb.properties");
         } catch (ConfigurationException e) {
             throw new SpiderException("initing wx configuration error,check wx.properties file");
         }

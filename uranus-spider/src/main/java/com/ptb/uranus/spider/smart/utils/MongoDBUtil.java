@@ -29,7 +29,7 @@ public enum MongoDBUtil {
         CompositeConfiguration config = new CompositeConfiguration();
 
         try {
-            config.addConfiguration(new PropertiesConfiguration("uranus.properties"));
+            config.addConfiguration(new PropertiesConfiguration("ptb.properties"));
         } catch (ConfigurationException var4) {
             var4.printStackTrace();
         }

@@ -31,7 +31,7 @@ public class MongoSchedulerDao implements SchedulerDao {
     String finishCollName = "schedule_history";
 
     public MongoSchedulerDao() throws ConfigurationException {
-        Configuration conf = new PropertiesConfiguration("uranus.properties");
+        Configuration conf = new PropertiesConfiguration("ptb.properties");
         dbName = conf.getString("uranus.scheduler.mongo.db","uranus");
     }
 

@@ -49,7 +49,7 @@ public class WeixinScheduleService {
     public WeixinScheduleService() throws ConfigurationException {
         schedulerDao = new MongoSchedulerDao();
         cacheDao = new RedisCacheDao();
-        PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
+        PropertiesConfiguration conf = new PropertiesConfiguration("ptb.properties");
         dynamicDelayMill = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weixin.article.dynamic.delay.minute", 60 * 24));
         detectArticleDelayMin = conf.getLong("uranus.scheduler.weixin.article.detect.delay.minute", 60 * 24);
         dynamicFetchCount = conf.getInt("uranus.scheduler.weixin.article.dynamic.fetch.num", 7);

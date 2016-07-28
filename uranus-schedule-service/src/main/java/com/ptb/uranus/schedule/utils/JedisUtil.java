@@ -9,13 +9,14 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 public class JedisUtil {
 
@@ -42,9 +43,9 @@ public class JedisUtil {
 
         Configuration config = null;
         try {
-            config = new PropertiesConfiguration("uranus.properties");
+            config = new PropertiesConfiguration("ptb.properties");
         } catch (ConfigurationException e) {
-            throw new RuntimeException("uranus.properties not found", e);
+            throw new RuntimeException("ptb.properties not found", e);
         }
 
         // 从配置文件中获取属性值

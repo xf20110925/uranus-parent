@@ -17,7 +17,6 @@ import org.jsoup.helper.StringUtil;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +39,7 @@ public class HttpUtil {
 	static {
 		//读取爬虫相关的配置,其中包括手机调度器的地址和获取代理的地址
 		try {
-			Configuration conf = new PropertiesConfiguration("uranus.properties");
+			Configuration conf = new PropertiesConfiguration("ptb.properties");
 			proxyServerAddress = conf.getString("uranus.spider.proxy.server.address", "http://127.0.0.1:8080/proxy/get");
 		} catch (ConfigurationException e) {
 

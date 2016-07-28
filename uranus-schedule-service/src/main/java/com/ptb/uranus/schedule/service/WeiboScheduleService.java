@@ -52,7 +52,7 @@ public class WeiboScheduleService {
     public WeiboScheduleService() throws ConfigurationException {
         schedulerDao = new MongoSchedulerDao();
         cacheDao = new RedisCacheDao();
-        PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
+        PropertiesConfiguration conf = new PropertiesConfiguration("ptb.properties");
         dynamicDelayMill = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weibo.article.dynamic.delay.minute", 60 * 24));
         detectArticleDelayMin = conf.getLong("uranus.scheduler.weibo.article.detect.delay.minute", 60 * 24);
         dynamicFetchCount = conf.getInt("uranus.scheduler.weibo.article.dynamic.fetch.num", 7);

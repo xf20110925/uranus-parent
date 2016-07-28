@@ -29,7 +29,7 @@ public class CommonMediaScheduleService {
         schedulerDao = new MongoSchedulerDao();
         articlesEntryDao = new MongoArticlesEntryDao();
         cacheDao = new RedisCacheDao();
-        PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
+        PropertiesConfiguration conf = new PropertiesConfiguration("ptb.properties");
         dynamicDelayMill = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.common.article.dynamic.delay.minute", 60 * 24));
         newCommonArticleUrlCacheSecond = (int) TimeUnit.MINUTES.toSeconds(conf.getInt("uranus.scheduler.common.article.url.cache.minute", 60 * 240));
     }

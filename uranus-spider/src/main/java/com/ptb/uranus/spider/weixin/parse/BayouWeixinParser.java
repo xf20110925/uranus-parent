@@ -29,7 +29,7 @@ public class BayouWeixinParser {
 	private void loadConfig() {
 		PropertiesConfiguration conf = new PropertiesConfiguration();
 		try {
-			conf.load("uranus.properties");
+			conf.load("ptb.properties");
 		} catch (ConfigurationException e) {
 		}
 		RECENT_ARTILES_URL = conf.getString("uranus.spider.wx.bayou.recentarticles.url", "http://43.241.211.196:23333/history");

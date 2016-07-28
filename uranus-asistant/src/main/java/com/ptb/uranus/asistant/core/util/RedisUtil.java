@@ -40,7 +40,7 @@ public final class RedisUtil {
      */
     static {
         try {
-            PropertiesConfiguration pconf = new PropertiesConfiguration("uranus.properties");
+            PropertiesConfiguration pconf = new PropertiesConfiguration("ptb.properties");
             CompositeConfiguration conf = new CompositeConfiguration(pconf);
             ADDR = conf.getString("uranus.asistant.redis.host", "127.0.0.1");
             PORT = conf.getInt("uranus.asistant.redis.port", 6379);

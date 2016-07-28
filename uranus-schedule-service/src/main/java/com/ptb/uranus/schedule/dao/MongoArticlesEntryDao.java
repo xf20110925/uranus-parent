@@ -22,7 +22,7 @@ public class MongoArticlesEntryDao implements ArticlesEntryDao {
     private final String collName = "articlesEntry";
 
     public MongoArticlesEntryDao() throws ConfigurationException {
-        conf = new PropertiesConfiguration("uranus.properties");
+        conf = new PropertiesConfiguration("ptb.properties");
         db = conf.getString("uranus.scheduler.smart.spider.mongo.db", "uranus");
     }
 
