@@ -13,7 +13,7 @@ import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.server.third.weixin.entity.BayouWXArticleDynamic;
 import com.ptb.uranus.server.third.weixin.entity.BayouWXMedia;
 import com.ptb.uranus.server.third.weixin.entity.IdRecord;
-import com.ptb.uranus.server.third.weixin.exception.BayouException;
+import com.ptb.uranus.server.third.exception.BayouException;
 import com.ptb.uranus.server.third.weixin.util.ConvertUtils;
 import com.ptb.uranus.server.third.weixin.util.IdRecordUtil;
 import com.ptb.uranus.spider.common.utils.HttpUtil;

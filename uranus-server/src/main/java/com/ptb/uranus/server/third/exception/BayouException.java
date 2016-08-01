@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third.weixin.exception;
+package com.ptb.uranus.server.third.exception;
 
 import com.ptb.utils.exception.PTBException;
 

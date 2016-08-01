@@ -1,10 +1,15 @@
 package com.ptb.uranus.server.third.weibo.script;
 
+import com.alibaba.fastjson.JSON;
+import com.ptb.uranus.server.third.weibo.entity.FreshData;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import java.sql.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -13,77 +18,43 @@ import java.sql.*;
 public enum MysqlClient {
 	instance;
 
+	private String driverClassName = "com.mysql.jdbc.Driver";
+	private String mysqlHost;
+	private String mysqlUser;
+	private String mysqlPwd;
+	JdbcTemplate template;
+
 	MysqlClient() {
+		initConn();
 	}
 
-	BasicDataSource dataSource;
-
-	static {
-		initConfig();
-	}
-
-
-	private static void initConfig() {
+	private void initConn() {
 		try {
 			PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
-			String mysqlHost = conf.getString("uranus.bayou.mysqlHost", "43.241.214.85:3306/weibo");
-			String mysqlUser = conf.getString("uranus.bayou.mysqlUser", "pintuibao");
-			String mysqlPwd = conf.getString("uranus.bayou.mysqlPwd", "pintuibao");
-			instance.dataSource = new BasicDataSource();
-			instance.dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-			instance.dataSource.setUrl(String.format("jdbc:mysql://%s?useUnicode=true&characterEncoding=UTF8", mysqlHost));
-			instance.dataSource.setUsername(mysqlUser);
-			instance.dataSource.setPassword(mysqlPwd);
-			//初始化链接数
-			instance.dataSource.setInitialSize(5);
-			//最大空闲链接
-			instance.dataSource.setMaxIdle(2);
-			//最小空闲链接
-			instance.dataSource.setMinIdle(0);
-			//自动回收超时链接
-			instance.dataSource.setRemoveAbandonedTimeout(180); // 超过时间限制，回收没有用(废弃)的连接
-			instance.dataSource.setRemoveAbandoned(true); // 超过removeAbandonedTimeout时间后，是否进 行没用连接（废弃）的回收
-			instance.dataSource.setTestOnBorrow(true);
-			instance.dataSource.setTestOnReturn(true);
-			instance.dataSource.setTestWhileIdle(true);
-			instance.dataSource.setValidationQuery("SELECT 1");
-			instance.dataSource.setTimeBetweenEvictionRunsMillis(1000 * 60 * 30); // 检查无效连接的时间间隔 设为30分
+			mysqlHost = conf.getString("uranus.bayou.mysqlHost", String.format("jdbc:mysql://%s?useUnicode=true&characterEncoding=utf-8", "43.241.214.85:3306/weibo"));
+			mysqlUser = conf.getString("uranus.bayou.mysqlUser", "pintuibao");
+			mysqlPwd = conf.getString("uranus.bayou.mysqlPwd", "pintuibao");
+			DriverManagerDataSource dataSource = new DriverManagerDataSource();
+			dataSource.setDriverClassName(driverClassName);
+			dataSource.setUrl(mysqlHost);
+			dataSource.setUsername(mysqlUser);
+			dataSource.setPassword(mysqlPwd);
+			template = new JdbcTemplate(dataSource);
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public Connection getConn() {
-		try {
-			return instance.dataSource.getConnection();
-		} catch (SQLException e) {
-			throw new RuntimeException("get conn from dataSource error");
-		}
+	public <T> List<T> query(String sql, Class<T> clazz, Long... args){
+		List<T> ret = template.queryForList(sql, args).parallelStream().map(obj -> JSON.parseObject(JSON.toJSONString(obj), clazz)).collect(Collectors.toList());
+		return ret;
 	}
 
-	public void reInit() {
-		try {
-			if (instance.dataSource != null) {
-				instance.dataSource.close();
-				instance.dataSource = null;
-				initConfig();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public static void main(String[] args) {
+		String sql = "select * from fresh_data where id > ?  LIMIT ?";
+		List<FreshData> query = MysqlClient.instance.query(sql, FreshData.class, Long.valueOf(0), Long.valueOf(10));
+		query.forEach(x -> System.out.println(JSON.toJSONString(x)));
 	}
 
-/*    public ResultSet executeQuery(String sql, long startid, int batchSize) {
-        try (Connection conn = instance.dataSource.getConnection();) {
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setLong(1, startid);
-            preparedStatement.setInt(2, batchSize);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
 }
 

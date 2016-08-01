@@ -1,4 +1,4 @@
-package com.ptb.uranus.server;
+package com.ptb.uranus.server.third;
 
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
@@ -23,7 +23,7 @@ public class ThirdEntry {
 
     public ThirdEntry() {
         try {
-            conf = new PropertiesConfiguration("uranus.properties");
+            conf = new PropertiesConfiguration("ptb.properties");
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
@@ -40,6 +40,6 @@ public class ThirdEntry {
         //启动微博调度器
         weiboScheduler.startWeibo();
         //启动微信调度器
-        weixinScheduler.schedule();
+//        weixinScheduler.schedule();
     }
 }
