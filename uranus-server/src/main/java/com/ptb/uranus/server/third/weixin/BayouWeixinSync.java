@@ -43,7 +43,7 @@ public class BayouWeixinSync {
     Map<String, Long> mediaMap = null;
 
     private void loadConfig() throws ConfigurationException {
-        PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
+        PropertiesConfiguration conf = new PropertiesConfiguration("ptb.properties");
         RANGEURL = conf.getString("uranus.bayou.range.url", "http://weixindata.pullword.com:12345/%s/range?auth_usr=pintuibao");
         DATAURL = conf.getString("uranus.bayou.data.url", "http://weixindata.pullword.com:12345/%s/%d?auth_usr=pintuibao");
     }
