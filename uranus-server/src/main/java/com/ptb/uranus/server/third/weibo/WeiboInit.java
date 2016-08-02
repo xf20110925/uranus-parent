@@ -21,7 +21,7 @@ public class WeiboInit {
 
 	public void startWeibo() {
 		executor.scheduleAtFixedRate(new WeiboArticleToGaiaBus(this.sender), 0, 100, TimeUnit.SECONDS);
-		executor.scheduleAtFixedRate(new WeiboMediaToGaiaBus(this.sender), 0, 100, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(new WeiboMediaToGaiaBus(this.sender), 0, 60, TimeUnit.SECONDS);
 	}
 
 }
