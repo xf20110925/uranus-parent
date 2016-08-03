@@ -1,7 +1,7 @@
-package com.ptb.uranus.server.third.weixin.util;
+package com.ptb.uranus.server.third.util;
 
 import com.alibaba.fastjson.JSON;
-import com.ptb.uranus.server.third.weixin.entity.IdRecord;
+import com.ptb.uranus.server.third.entity.IdRecord;
 
 import java.io.*;
 import java.nio.file.Files;

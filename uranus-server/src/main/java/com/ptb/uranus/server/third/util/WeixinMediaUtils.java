@@ -1,14 +1,12 @@
-package com.ptb.uranus.server.third.weixin.util;
+package com.ptb.uranus.server.third.util;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 import com.ptb.uranus.schedule.utils.MongoUtils;
-import com.ptb.uranus.server.third.weixin.entity.BayouWXMedia;
+import com.ptb.uranus.server.third.entity.BayouWXMedia;
 import org.bson.Document;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by xuefeng on 2016/6/3.

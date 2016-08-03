@@ -1,12 +1,12 @@
-package com.ptb.uranus.server.third.weibo.task;
+package com.ptb.uranus.server.third.v1.weibo.task;
 
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.media.BasicMediaDynamic;
 import com.ptb.uranus.server.send.entity.media.WeiboMediaStatic;
-import com.ptb.uranus.server.third.weibo.entity.UserProfile;
-import com.ptb.uranus.server.third.weibo.script.ConvertUtils;
-import com.ptb.uranus.server.third.weibo.script.MysqlClient;
-import com.ptb.uranus.server.third.weixin.util.IdRecordUtil;
+import com.ptb.uranus.server.third.entity.MysqlClient;
+import com.ptb.uranus.server.third.entity.UserProfile;
+import com.ptb.uranus.server.third.util.ConvertUtils;
+import com.ptb.uranus.server.third.util.IdRecordUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

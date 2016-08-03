@@ -1,37 +1,75 @@
-package com.ptb.uranus.server.third.weibo.script;
+package com.ptb.uranus.server.third.util;
 
 import com.ptb.ourea.function.TextAnalyzeResult;
 import com.ptb.ourea.function.TextAnalyzer;
 import com.ptb.ourea.function.TextAnalyzerFactory;
-import com.ptb.ourea.function.TextAnalyzerFactory.AnalyzerType;
 import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeiboArticleStatic;
+import com.ptb.uranus.server.send.entity.article.WeixinArticleStatic;
+import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.server.send.entity.media.BasicMediaDynamic;
 import com.ptb.uranus.server.send.entity.media.WeiboMediaDynamic;
 import com.ptb.uranus.server.send.entity.media.WeiboMediaStatic;
+import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.server.third.exception.BayouException;
-import com.ptb.uranus.server.third.weibo.entity.FreshData;
-import com.ptb.uranus.server.third.weibo.entity.UserProfile;
+import com.ptb.uranus.server.third.entity.FreshData;
+import com.ptb.uranus.server.third.entity.UserProfile;
+import com.ptb.uranus.server.third.entity.BayouWXArticleDynamic;
+import com.ptb.uranus.server.third.entity.BayouWXMedia;
+import com.ptb.uranus.spider.weixin.bean.WxArticle;
+import com.ptb.uranus.spider.weixin.parse.WxArticleParser;
+import com.ptb.utils.web.UrlFormatUtil;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Map;
+
 /**
- * @DESC:
- * @VERSION:
- * @author: xuefeng
- * @Date: 2016/7/30
- * @Time: 20:57
+ * Created by xuefeng on 2016/5/17.
  */
 public class ConvertUtils {
 	private static TextAnalyzer textAnalyzer;
 
 	static {
 		try {
-			textAnalyzer = TextAnalyzerFactory.create(AnalyzerType.ANJS);
+			textAnalyzer = TextAnalyzerFactory.create(TextAnalyzerFactory.AnalyzerType.ANJS);
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 		}
+	}
+
+	static WxArticleParser wxArticleParser = new WxArticleParser();
+
+	public static WeixinMediaStatic convertWXMedia(BayouWXMedia wxMedia) {
+		WeixinMediaStatic weixinMediaStatic = new WeixinMediaStatic();
+		weixinMediaStatic.setPlat(1);
+		weixinMediaStatic.setMediaName(wxMedia.getName());
+		weixinMediaStatic.setBiz(wxMedia.getBid());
+		weixinMediaStatic.setOriginal(false);
+		weixinMediaStatic.setAuthentication(wxMedia.getAuthentication());
+		weixinMediaStatic.setBrief(wxMedia.getInfo());
+		weixinMediaStatic.setHeadImg(wxMedia.getHeadimage());
+		weixinMediaStatic.setQrCode(wxMedia.getQrcode());
+		weixinMediaStatic.setWeixinId(wxMedia.getCode());
+		return weixinMediaStatic;
+	}
+
+	public static WeixinArticleStatic convertWXArticleStatic(Map<String, String> articleMap) {
+		String pageSource = articleMap.get("content");
+		WxArticle wxArticle = wxArticleParser.parseArticlByPageSource(pageSource);
+		wxArticle.setArticleUrl(UrlFormatUtil.format(articleMap.get("url")));
+		return SendObjectConvertUtil.weixinArticleStaticConvert(wxArticle);
+	}
+
+	public static BasicArticleDynamic convertWXArticleDynamic(BayouWXArticleDynamic bayouDynamic) {
+		BasicArticleDynamic wxAritcleDynamic = new BasicArticleDynamic();
+		wxAritcleDynamic.setReads(bayouDynamic.getRead_num());
+		wxAritcleDynamic.setLikes(bayouDynamic.getLike_num());
+		wxAritcleDynamic.setPlat(1);
+		wxAritcleDynamic.setTime(bayouDynamic.getTs() * 1000);
+		wxAritcleDynamic.setUrl(UrlFormatUtil.format(bayouDynamic.getUrl()));
+		return wxAritcleDynamic;
 	}
 
 	public static WeiboArticleStatic weiboArticleStaticConvert(FreshData freshData) {
@@ -82,8 +120,8 @@ public class ConvertUtils {
 			weiboArticleStatic.setSplitwords(textAnalyzeResult.getSplitword());
 			weiboArticleStatic.setOriginal(freshData.getIs_retweet() == 1);
 
+			String url = String.format("http://m.weibo.cn/%s/%s",freshData.getUser_id(),freshData.getUrl());
 			//			String url = String.format("http://m.weibo.cn/%s/%s", .getString("user_id"), WeiboUtil.mid2url(rs.getString("weibo_id")));
-			String url = freshData.getUrl();
 			weiboArticleStatic.setUrl(url);
 
 		} catch (Exception e) {
@@ -97,7 +135,7 @@ public class ConvertUtils {
 		BasicArticleDynamic wbArticleDynamic = new BasicArticleDynamic();
 		try {
 			//            String url = String.format("http://m.weibo.cn/%s/%s", rs.getString("user_id"), WeiboUtil.mid2url(rs.getString("weibo_id")));
-			String url = freshData.getUrl();
+			String url = String.format("http://m.weibo.cn/%s/%s",freshData.getUser_id(),freshData.getUrl());
 			wbArticleDynamic.setUrl(url);
 			wbArticleDynamic.setComments(freshData.getPing());
 			wbArticleDynamic.setLikes(freshData.getZhan());

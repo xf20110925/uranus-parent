@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third.weibo.entity;
+package com.ptb.uranus.server.third.entity;
 
 /**
  * @DESC:

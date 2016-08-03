@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third.weibo.entity;
+package com.ptb.uranus.server.third.entity;
 
 /**
  * @DESC:
@@ -12,6 +12,7 @@ public class FreshData {
 	String crawler_time;
 	long crawler_time_stamp;
 	int is_retweet;
+	String user_id;
 	String nick_name;
 	String gtou_xiang;
 	String user_type;
@@ -74,6 +75,14 @@ public class FreshData {
 
 	public void setIs_retweet(int is_retweet) {
 		this.is_retweet = is_retweet;
+	}
+
+	public String getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
 	}
 
 	public String getNick_name() {

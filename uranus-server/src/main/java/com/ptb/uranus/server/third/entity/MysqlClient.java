@@ -1,7 +1,6 @@
-package com.ptb.uranus.server.third.weibo.script;
+package com.ptb.uranus.server.third.entity;
 
 import com.alibaba.fastjson.JSON;
-import com.ptb.uranus.server.third.weibo.entity.FreshData;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;

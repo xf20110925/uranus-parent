@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third.weixin.entity;
+package com.ptb.uranus.server.third.entity;
 
 /**
  * Created by xuefeng on 2016/5/19.
