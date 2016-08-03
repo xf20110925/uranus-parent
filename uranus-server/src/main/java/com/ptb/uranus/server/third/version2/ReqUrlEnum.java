@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third.v2;
+package com.ptb.uranus.server.third.version2;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;

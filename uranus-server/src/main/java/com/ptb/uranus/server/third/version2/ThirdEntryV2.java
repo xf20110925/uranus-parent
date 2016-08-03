@@ -1,14 +1,14 @@
-package com.ptb.uranus.server.third.v2;
+package com.ptb.uranus.server.third.version2;
 
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.v2.article.WeiboArticleHandle;
-import com.ptb.uranus.server.third.v2.article.WeixinArticleDynamicHandle;
-import com.ptb.uranus.server.third.v2.article.WeixinArticleStaticHandle;
-import com.ptb.uranus.server.third.v2.media.WeiboMediaHandle;
-import com.ptb.uranus.server.third.v2.media.WeixinMediaHandle;
+import com.ptb.uranus.server.third.version2.article.WeiboArticleHandle;
+import com.ptb.uranus.server.third.version2.article.WeixinArticleDynamicHandle;
+import com.ptb.uranus.server.third.version2.article.WeixinArticleStaticHandle;
+import com.ptb.uranus.server.third.version2.media.WeiboMediaHandle;
+import com.ptb.uranus.server.third.version2.media.WeixinMediaHandle;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

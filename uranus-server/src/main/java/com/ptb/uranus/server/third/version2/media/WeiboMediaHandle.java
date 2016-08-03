@@ -1,10 +1,10 @@
-package com.ptb.uranus.server.third.v2.media;
+package com.ptb.uranus.server.third.version2.media;
 
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.v2.DataHandle;
-import com.ptb.uranus.server.third.v2.ReqUrlEnum;
+import com.ptb.uranus.server.third.version2.DataHandle;
+import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.server.third.entity.UserProfile;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
