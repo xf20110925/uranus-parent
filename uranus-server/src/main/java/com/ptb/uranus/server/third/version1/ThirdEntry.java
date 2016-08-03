@@ -1,11 +1,11 @@
-package com.ptb.uranus.server.third.v1;
+package com.ptb.uranus.server.third.version1;
 
 import com.ptb.gaia.bus.Bus;
 import com.ptb.gaia.bus.kafka.KafkaBus;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.v1.weibo.WeiboInit;
-import com.ptb.uranus.server.third.v1.weixin.Scheduler;
+import com.ptb.uranus.server.third.version1.weibo.WeiboInit;
+import com.ptb.uranus.server.third.version1.weixin.Scheduler;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 

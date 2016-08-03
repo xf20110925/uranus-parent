@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third.v1.weixin;
+package com.ptb.uranus.server.third.version1.weixin;
 
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.DocumentContext;

@@ -1,8 +1,8 @@
-package com.ptb.uranus.server.third.v1.weibo;
+package com.ptb.uranus.server.third.version1.weibo;
 
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.v1.weibo.task.WeiboArticleToGaiaBus;
-import com.ptb.uranus.server.third.v1.weibo.task.WeiboMediaToGaiaBus;
+import com.ptb.uranus.server.third.version1.weibo.task.WeiboArticleToGaiaBus;
+import com.ptb.uranus.server.third.version1.weibo.task.WeiboMediaToGaiaBus;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
