@@ -27,7 +27,7 @@ import javax.script.ScriptException;
  * @Date: 2016/8/5
  * @Time: 17:01
  */
-public class WeiboHotTopics {
+public class WeiboHotTopicsParser {
 
 	private String getTargetElement(String url) throws IOException, ScriptException {
 		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, null, "utf-8", null);
@@ -68,7 +68,7 @@ public class WeiboHotTopics {
 	}
 
 	public static void main(String[] args) throws IOException, ScriptException {
-		WeiboHotTopics weiboTagParser = new WeiboHotTopics();
+		WeiboHotTopicsParser weiboTagParser = new WeiboHotTopicsParser();
 		List<JSONObject> hotTopics = weiboTagParser.getHotTopics("http://s.weibo.com/top/summary");
 		System.out.println(hotTopics);
 	}
