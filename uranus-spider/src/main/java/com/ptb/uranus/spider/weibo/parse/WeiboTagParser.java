@@ -132,7 +132,7 @@ public class WeiboTagParser {
 		});
 	}*/
 
-	class MediaTag {
+	public static class MediaTag {
 		private String pmid;
 		private String tag;
 
