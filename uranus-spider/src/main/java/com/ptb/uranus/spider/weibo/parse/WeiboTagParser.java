@@ -73,12 +73,12 @@ public class WeiboTagParser {
 		return links;
 	}
 
-	public List<MediaTag> getAccounts(String url, String tag) {
+	public List<String> getAccounts(String url) {
 		try {
 			String targetElement = getTargetElement(url);
 			Document doc = Jsoup.parse(targetElement);
 			Elements elements = doc.select("ul.follow_list > li");
-			List<MediaTag> mediaTags = elements.stream().map(ele -> parseAccount(ele, tag)).collect(Collectors.toList());
+			List<String> mediaTags = elements.stream().map(ele -> getWeiboId(ele)).collect(Collectors.toList());
 			return mediaTags;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,16 +86,13 @@ public class WeiboTagParser {
 		return Collections.emptyList();
 	}
 
-	private MediaTag parseAccount(Element ele, String firstTag) {
-		MediaTag mediaTag = null;
+	private String getWeiboId(Element ele) {
 		Elements persionNalEle = ele.select("div.info_name.W_fb.W_f14");
 		Matcher matcher = Pattern.compile("id=(\\d+).*").matcher(persionNalEle.select("a.S_txt1").attr("usercard"));
 		if (matcher.find()) {
-			mediaTag = new MediaTag();
-			mediaTag.setPmid(matcher.group(1));
-			mediaTag.setTag(firstTag);
+			return matcher.group(1);
 		}
-		return mediaTag;
+		return null;
 	}
 
 	private static CookieStore getVaildWeiboCookieStore() {
@@ -106,65 +103,24 @@ public class WeiboTagParser {
 		return cookieStore;
 	}
 
-	public List<MediaTag> run(String url, String tag) throws IOException, ScriptException {
+	public List<String> run(String url) throws IOException, ScriptException {
 		List<String> allLinks = getAllLinks(url);
-		List<MediaTag> rets = allLinks.stream().flatMap(link -> {
+		List<String> rets = allLinks.stream().flatMap(link -> {
 			try {
 				Thread.sleep(new Random().nextInt(4));
-				return getAccounts(link, tag).stream();
+				return getAccounts(link).stream();
 			} catch (Exception e) {
 				System.out.println(String.format("crawle %s fail and retry", link));
-				return getAccounts(link, tag).stream();
+				return getAccounts(link).stream();
 			}
 		}).collect(Collectors.toList());
 		return rets;
 
 	}
 
-	/*private void write(List<JSONObject> weiboAccounts, String path) {
-		Path savePath = Paths.get(path);
-		weiboAccounts.stream().forEach(weiboAccount -> {
-			try {
-				Files.write(savePath, (String.join(",", weiboAccount.getString("pmid"), weiboAccount.getString("tag")) + "\r\n").getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.SYNC);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-	}*/
-
-	public static class MediaTag {
-		private String pmid;
-		private String tag;
-
-		public MediaTag() {
-		}
-
-		public MediaTag(String pmid, String tag) {
-			this.pmid = pmid;
-			this.tag = tag;
-		}
-
-		public String getPmid() {
-			return pmid;
-		}
-
-		public void setPmid(String pmid) {
-			this.pmid = pmid;
-		}
-
-		public String getTag() {
-			return tag;
-		}
-
-		public void setTag(String tag) {
-			this.tag = tag;
-		}
-	}
-
 	public static void main(String[] args) throws IOException, ScriptException {
 		WeiboTagParser weiboTagParser = new WeiboTagParser();
-		String tag = "作家";
-		List<MediaTag> ret = weiboTagParser.run("http://d.weibo.com/1087030002_2975_2003_0?page=1", tag);
+		List<String> ret = weiboTagParser.getAccounts("http://d.weibo.com/1087030002_2975_2003_0?page=1");
 		System.out.println(ret.size());
 	}
 }
