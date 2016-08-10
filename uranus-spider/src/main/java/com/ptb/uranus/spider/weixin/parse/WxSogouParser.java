@@ -122,7 +122,7 @@ public class WxSogouParser {
 		return ret;
 	}
 
-	class RealTimeArticle{
+	public class RealTimeArticle{
 		private String url;
 		private int readNum;
 		private long pubTime;
