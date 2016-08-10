@@ -63,8 +63,9 @@ public class WeiboTagParser {
 		return lastPageNum;
 	}
 
-	private List<String> getAllLinks(int pageNum, String link) {
-		//http://d.weibo.com/1087030002_2975_1003_0?page=2
+	public List<String> getAllLinks(String link) throws IOException, ScriptException {
+		String targetElement = getTargetElement(link);
+		int pageNum = getPageNum(targetElement);
 		List<String> links = new ArrayList<>();
 		for (int i = 1; i <= pageNum; i++) {
 			links.add(link.replaceAll("page=\\d+", String.format("page=%d", i)));
@@ -106,11 +107,7 @@ public class WeiboTagParser {
 	}
 
 	public List<MediaTag> run(String url, String tag) throws IOException, ScriptException {
-
-		String targetEle = getTargetElement(url);
-		int pageNum = getPageNum(targetEle);
-		System.out.println(String.format("共%d页", pageNum));
-		List<String> allLinks = getAllLinks(pageNum, url);
+		List<String> allLinks = getAllLinks(url);
 		List<MediaTag> rets = allLinks.stream().flatMap(link -> {
 			try {
 				Thread.sleep(new Random().nextInt(4));
