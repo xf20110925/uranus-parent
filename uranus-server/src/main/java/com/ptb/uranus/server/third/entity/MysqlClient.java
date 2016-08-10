@@ -29,8 +29,8 @@ public enum MysqlClient {
 
 	private void initConn() {
 		try {
-			PropertiesConfiguration conf = new PropertiesConfiguration("uranus.properties");
-			mysqlHost = conf.getString("uranus.bayou.mysqlHost", String.format("jdbc:mysql://%s?useUnicode=true&characterEncoding=utf-8", "43.241.214.85:3306/weibo"));
+			PropertiesConfiguration conf = new PropertiesConfiguration("ptb.properties");
+			mysqlHost =  String.format("jdbc:mysql://%s?useUnicode=true&characterEncoding=utf-8", conf.getString("uranus.bayou.mysqlHost", "43.241.214.85:3306/weibo"));
 			mysqlUser = conf.getString("uranus.bayou.mysqlUser", "pintuibao");
 			mysqlPwd = conf.getString("uranus.bayou.mysqlPwd", "pintuibao");
 			DriverManagerDataSource dataSource = new DriverManagerDataSource();
