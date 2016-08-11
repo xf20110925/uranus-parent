@@ -5,6 +5,7 @@ import com.ptb.uranus.spider.common.exception.SpiderException;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.common.webDriver.WebDriverProvider;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
+import com.ptb.uranus.spider.weixin.bean.WxArticle;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -24,6 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -113,8 +115,8 @@ public class WxSogouParser {
 				int readNum = Integer.parseInt(readText);
 				long pubTime = Long.parseLong(readNumAndTimeStatmp.select("bb[v]").attr("v"));
 				String href = ele.select("a[href^=\"http://mp.weixin.qq.com/s\"]").attr("href");
-				href = weixinSpider.convertSogouWeixinUrlToRealUrl(href);
-				return new RealTimeArticle(href, readNum, pubTime);
+				Optional<WxArticle> wxArticleOpt = weixinSpider.getArticleByUrl(href);
+				return new RealTimeArticle(readNum, pubTime, wxArticleOpt.get());
 			} catch (Exception e) {
 				return null;
 			}
@@ -123,26 +125,18 @@ public class WxSogouParser {
 	}
 
 	public class RealTimeArticle{
-		private String url;
 		private int readNum;
 		private long pubTime;
-		private String tag;
+		private WxArticle article;
 
 		public RealTimeArticle() {
 		}
 
-		public RealTimeArticle(String url, int readNum, long pubTime) {
-			this.url = url;
+		public RealTimeArticle(
+				int readNum, long pubTime, WxArticle article) {
 			this.readNum = readNum;
 			this.pubTime = pubTime;
-		}
-
-		public String getUrl() {
-			return url;
-		}
-
-		public void setUrl(String url) {
-			this.url = url;
+			this.article = article;
 		}
 
 		public int getReadNum() {
@@ -161,12 +155,12 @@ public class WxSogouParser {
 			this.pubTime = pubTime;
 		}
 
-		public String getTag() {
-			return tag;
+		public WxArticle getArticle() {
+			return article;
 		}
 
-		public void setTag(String tag) {
-			this.tag = tag;
+		public void setArticle(WxArticle article) {
+			this.article = article;
 		}
 
 		@Override
