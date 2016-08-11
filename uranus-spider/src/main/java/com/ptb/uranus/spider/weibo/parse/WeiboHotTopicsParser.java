@@ -49,7 +49,7 @@ public class WeiboHotTopicsParser {
 	}
 
 	public List<Topic> getHotTopics() throws IOException, ScriptException {
-		String url = "http://s.weibo.com/";
+		String url = "http://s.weibo.com/top/summary";
 		String targetElement = getTargetElement(url);
 		Document doc = Jsoup.parse(targetElement);
 		Elements elements = doc.getElementsByTag("tr");
