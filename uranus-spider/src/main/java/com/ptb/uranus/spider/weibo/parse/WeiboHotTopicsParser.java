@@ -1,6 +1,6 @@
 package com.ptb.uranus.spider.weibo.parse;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 
 import org.jsoup.Jsoup;
@@ -48,28 +48,75 @@ public class WeiboHotTopicsParser {
 		throw new NullPointerException(String.format("数据抓取失败 -> %s", url));
 	}
 
-	public List<JSONObject> getHotTopics(String url) throws IOException, ScriptException {
+	public List<Topic> getHotTopics() throws IOException, ScriptException {
+		String url = "http://s.weibo.com/";
 		String targetElement = getTargetElement(url);
 		Document doc = Jsoup.parse(targetElement);
 		Elements elements = doc.getElementsByTag("tr");
-		List<JSONObject> rets = elements.stream().map(ele -> {
+		List<Topic> rets = elements.stream().map(ele -> {
 			try {
-				String topic = ele.select("td.td_02").text();
+				Element topicEle = ele.select("td.td_02").first();
+				String topicName = topicEle.text();
 				long searchNum = Long.parseLong(ele.select("td.td_03").text());
-				JSONObject retJson = new JSONObject();
-				retJson.put("topic", topic);
-				retJson.put("searchNum", searchNum);
-				return retJson;
+				String link = String.format("http://s.weibo.com%s",topicEle.getElementsByTag("a").attr("href"));
+				Topic topic = new Topic();
+				topic.setName(topicName);
+				topic.setSearchNum(searchNum);
+				topic.setLink(link);
+				return topic;
 			} catch (Exception e) {
 				return null;
 			}
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 		return rets;
 	}
+	public class Topic{
+		private String name;
+		private String link;
+		private long searchNum;
+
+		public Topic() {
+		}
+
+		public Topic(String name, String link, int searchNum) {
+			this.name = name;
+			this.link = link;
+			this.searchNum = searchNum;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getLink() {
+			return link;
+		}
+
+		public void setLink(String link) {
+			this.link = link;
+		}
+
+		public long getSearchNum() {
+			return searchNum;
+		}
+
+		public void setSearchNum(long searchNum) {
+			this.searchNum = searchNum;
+		}
+
+		@Override
+		public String toString() {
+			return JSON.toJSONString(this);
+		}
+	}
 
 	public static void main(String[] args) throws IOException, ScriptException {
 		WeiboHotTopicsParser weiboTagParser = new WeiboHotTopicsParser();
-		List<JSONObject> hotTopics = weiboTagParser.getHotTopics("http://s.weibo.com/top/summary");
+		List<Topic> hotTopics = weiboTagParser.getHotTopics();
 		System.out.println(hotTopics);
 	}
 }
