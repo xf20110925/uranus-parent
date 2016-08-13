@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third.weixin;
+package com.ptb.uranus.server.third.version1.weixin;
 
 import com.ptb.uranus.server.send.Sender;
 import org.apache.commons.configuration.ConfigurationException;

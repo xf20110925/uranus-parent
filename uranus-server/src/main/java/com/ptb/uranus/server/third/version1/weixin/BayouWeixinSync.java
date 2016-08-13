@@ -1,4 +1,4 @@
-package com.ptb.uranus.server.third.weixin;
+package com.ptb.uranus.server.third.version1.weixin;
 
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.DocumentContext;
@@ -10,12 +10,12 @@ import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeixinArticleStatic;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
-import com.ptb.uranus.server.third.weixin.entity.BayouWXArticleDynamic;
-import com.ptb.uranus.server.third.weixin.entity.BayouWXMedia;
-import com.ptb.uranus.server.third.weixin.entity.IdRecord;
+import com.ptb.uranus.server.third.entity.BayouWXArticleDynamic;
+import com.ptb.uranus.server.third.entity.BayouWXMedia;
+import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.exception.BayouException;
-import com.ptb.uranus.server.third.weixin.util.ConvertUtils;
-import com.ptb.uranus.server.third.weixin.util.IdRecordUtil;
+import com.ptb.uranus.server.third.util.ConvertUtils;
+import com.ptb.uranus.server.third.util.IdRecordUtil;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;

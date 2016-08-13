@@ -1,9 +1,9 @@
 package com.ptb.uranus.server.bayou;
 
 import com.ptb.gaia.bus.kafka.KafkaBus;
-import com.ptb.uranus.server.third.weixin.BayouWeixinSync;
-import com.ptb.uranus.server.third.weixin.entity.IdRecord;
-import com.ptb.uranus.server.third.weixin.util.IdRecordUtil;
+import com.ptb.uranus.server.third.version1.weixin.BayouWeixinSync;
+import com.ptb.uranus.server.third.entity.IdRecord;
+import com.ptb.uranus.server.third.util.IdRecordUtil;
 import com.ptb.uranus.server.send.BusSender;
 import org.junit.Assert;
 import org.junit.Test;
