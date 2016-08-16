@@ -56,7 +56,7 @@ public class WeiboHotTopicsParser {
 		List<Topic> rets = elements.stream().map(ele -> {
 			try {
 				Element topicEle = ele.select("td.td_02").first();
-				String topicName = topicEle.text();
+				String topicName = topicEle.getElementsByTag("a").text();
 				long searchNum = Long.parseLong(ele.select("td.td_03").text());
 				String link = String.format("http://s.weibo.com%s",topicEle.getElementsByTag("a").attr("href"));
 				Topic topic = new Topic();
