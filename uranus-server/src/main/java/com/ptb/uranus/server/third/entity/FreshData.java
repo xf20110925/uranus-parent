@@ -16,7 +16,6 @@ public class FreshData {
 	String nick_name;
 	String gtou_xiang;
 	String user_type;
-	String weibo_id;
 	String weibo_content;
 	int zhuan;
 	int ping;
@@ -107,14 +106,6 @@ public class FreshData {
 
 	public void setUser_type(String user_type) {
 		this.user_type = user_type;
-	}
-
-	public String getWeibo_id() {
-		return weibo_id;
-	}
-
-	public void setWeibo_id(String weibo_id) {
-		this.weibo_id = weibo_id;
 	}
 
 	public String getWeibo_content() {

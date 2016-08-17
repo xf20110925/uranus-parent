@@ -78,7 +78,7 @@ public class ConvertUtils {
 		try {
 			textAnalyzeResult = textAnalyzer.ArticleAnalyze(freshData.getWeibo_content());
 			weiboArticleStatic = new WeiboArticleStatic();
-			weiboArticleStatic.setWeiboId(freshData.getWeibo_id());
+			weiboArticleStatic.setWeiboId(freshData.getUser_id());
 			weiboArticleStatic.setKeywords(textAnalyzeResult.getAbstracts());
 			weiboArticleStatic.setTitle(textAnalyzeResult.getArticle());
 			weiboArticleStatic.setAuthor(freshData.getNick_name());
