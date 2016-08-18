@@ -231,7 +231,7 @@ public class HttpUtil {
 
 	public static String getPageSourceByClient(
 			String url, String ua, CookieStore cookieStore, String charset, String nessaryString) {
-		return getPageSourceByClient(url, ua, cookieStore, charset, nessaryString, true);
+		return getPageSourceByClient(url, ua, cookieStore, charset, nessaryString, false);
 	}
 
 

@@ -35,7 +35,7 @@ import javax.script.ScriptException;
 public class WeiboTagParser {
 
 	private String getTargetElement(String url) throws IOException, ScriptException {
-		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, getVaildWeiboCookieStore(), "utf-8", null);
+		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, getVaildWeiboCookieStore(), "utf-8", null, true);
 		Document doc = Jsoup.parse(pageSource);
 		Elements scripts = doc.getElementsByTag("script");
 		Optional<Element> retOpt = scripts.stream().filter(element -> element.toString().contains("pl.content.signInPeople.index")).findFirst();

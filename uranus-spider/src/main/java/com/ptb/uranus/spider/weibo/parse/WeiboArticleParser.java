@@ -42,7 +42,7 @@ public class WeiboArticleParser {
             String weiboID = RegexUtils.sub("http://.*/([\\d]*)/[^\\?]*", articleUrl, 0);
             String url = String.format("http://m.weibo.cn/%s/%s", weiboID, articleID);
 
-            String pageSouce = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_IPHONE6_SAFARI, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "created_timestamp");
+            String pageSouce = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_IPHONE6_SAFARI, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "created_timestamp", true);
             DocumentContext parse = JsonPath.parse(RegexUtils.sub(".*window\\.\\$render_data = (\\{.*);</script>", pageSouce, 0));
 
             int repostCount = Integer.parseInt(JsonPathUtil.parse(parse, "$.stage.single[1].mblog.reposts_count", null));
@@ -219,7 +219,7 @@ public class WeiboArticleParser {
             int i = 3;
             String pageSource = null;
             while (i-- > 0) {
-                pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null);
+                pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null, true);
                 if (pageSource != null) {
                     break;
                 }
@@ -295,7 +295,7 @@ public class WeiboArticleParser {
      */
     public ImmutablePair<Long, List<WeiboArticle>> getWeiboRecentArticlesByContainerID(String containerID, long startTime) throws IOException {
         String url = String.format(String.format("http://m.weibo.cn/page/json?containerid=%s_-_WEIBO_SECOND_PROFILE_WEIBO", containerID));
-        String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_IPHONE6_SAFARI, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "mblog");
+        String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_IPHONE6_SAFARI, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "mblog", true);
         DocumentContext parse = JsonPath.parse(pageSource);
         List<WeiboArticle> weiboArticles = new ArrayList<>();
 
@@ -368,7 +368,7 @@ public class WeiboArticleParser {
             String aritcleUrl = String.format("http://weibo.com/u/%s?is_all=1", weiboID);
             String pageSource = null;
             while (i-- > 0) {
-                pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null);
+                pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null, true);
                 if (pageSource != null) {
                     break;
                 }

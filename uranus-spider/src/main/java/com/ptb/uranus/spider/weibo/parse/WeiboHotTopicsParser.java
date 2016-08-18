@@ -30,7 +30,7 @@ import javax.script.ScriptException;
 public class WeiboHotTopicsParser {
 
 	private String getTargetElement(String url) throws IOException, ScriptException {
-		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, null, "utf-8", null);
+		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, null, "utf-8", null, true);
 		Document doc = Jsoup.parse(pageSource);
 		Elements scripts = doc.getElementsByTag("script");
 		Optional<Element> retOpt = scripts.stream().filter(element -> element.toString().contains("pl_Srank_swf")).findFirst();
