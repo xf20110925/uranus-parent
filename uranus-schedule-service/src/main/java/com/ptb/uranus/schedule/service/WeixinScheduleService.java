@@ -127,9 +127,11 @@ public class WeixinScheduleService {
     }
 
     public void addArticleDynamicScheduler(long postTime, String url) {
-
+        Optional<ScheduleObject> schedulerByField = schedulerDao.getSchedulerByField("obj.conditon", url);
+        if(!schedulerByField.isPresent()) {
         schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(dynamicFetchInterval, TimeUnit.MINUTES, new Date(postTime * 1000 + dynamicDelayMill), dynamicFetchCount),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WX_A_D, url)));
+        };
     }
 
     public void addWeixinDetectNewArticlesScheduleByArticleUrl(String url) {
