@@ -139,7 +139,7 @@ public class WeiboScheduleService {
     }
 
     public void addArticleDynamicScheduler(long postTime, String url) {
-        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(dynamicFetchInterval, TimeUnit.MINUTES, new Date(postTime + dynamicDelayMill), dynamicFetchCount),
+        schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(dynamicFetchInterval, TimeUnit.MINUTES, new Date(), dynamicFetchCount),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WB_A_D, url)));
     }
 

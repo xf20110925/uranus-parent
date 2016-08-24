@@ -6,6 +6,7 @@ import com.ptb.gaia.bus.message.Message;
 import com.ptb.uranus.common.entity.CollectCondition;
 import com.ptb.uranus.schedule.service.WeiboScheduleService;
 import com.ptb.uranus.server.send.Sender;
+import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeiboArticleStatic;
 import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
@@ -82,6 +83,8 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                     LogUtils.logInfo("uranus-server", "C_WB_A_N add", LogUtils.ActionResult.success, "");
                     WeiboArticleStatic weiboArticleStatic = SendObjectConvertUtil.weiboArticleStaticConvert(recentArticles.get(i));
                     sender.sendArticleStatic(weiboArticleStatic);
+                    BasicArticleDynamic wbArticleDynamic = SendObjectConvertUtil.weiboArticleDynamicConvert(recentArticles.get(i));
+                    sender.sendArticleDynamic(wbArticleDynamic);
                     wbScheduleService.addArticleDynamicScheduler(recentArticles.get(i).getPostTime(), recentArticles.get(i).getArticleUrl());
                     LogUtils.logInfo("uranus-server", "C_WB_A_N send", LogUtils.ActionResult.success, "");
                 }
