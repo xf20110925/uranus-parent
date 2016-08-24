@@ -64,7 +64,9 @@ public class WeiboSearchAccountParser {
                 String focus = em.select(".person_detail .person_num span:nth-child(1) a").text().trim();//关注
                 focus = focus.replace("万", "0000");
                 String info = em.select(".person_detail .person_info").text();//简介
+                List<String> collect = em.select(".person_lable a").stream().map(e -> e.text().toString().trim()).collect(Collectors.toList());
                 String vertifyType = em.select(".person_detail .person_name a:nth-child(2)").attr("title");
+
                 weAccount.setHeadportrait(headportrait);
                 weAccount.setGender(gender);
                 weAccount.setAccount(account);
@@ -77,6 +79,7 @@ public class WeiboSearchAccountParser {
                 weAccount.setIntroduction(info);
                 weAccount.setVertifyType(vertifyType);
                 weAccount.setWeiboId(userid);
+                weAccount.setItags(collect);
                 return result.add(weAccount);
             }).collect(Collectors.toList());
             return Optional.of(result);

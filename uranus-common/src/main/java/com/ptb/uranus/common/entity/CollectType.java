@@ -1,6 +1,7 @@
 package com.ptb.uranus.common.entity;
 
 public enum CollectType {
+
     C_WX_M_D {
         public int getCode() {
             return 0x10000001;

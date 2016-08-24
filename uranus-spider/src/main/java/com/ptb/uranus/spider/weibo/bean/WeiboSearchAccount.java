@@ -1,5 +1,7 @@
 package com.ptb.uranus.spider.weibo.bean;
 
+import java.util.List;
+
 /**
  * 微博搜索对象
  *
@@ -19,6 +21,7 @@ public class WeiboSearchAccount {
     private String headportrait;//头像
     private String vertifyType;
     private String weiboId;
+    private List<String> itags;
 
     public String getAccount() {
         return account;
@@ -115,4 +118,14 @@ public class WeiboSearchAccount {
     public String getWeiboId() {
         return weiboId;
     }
+
+    public void setItags(List<String> itags) {
+        this.itags = itags;
+    }
+
+    public List<String> getItags() {
+        return itags;
+    }
+
+
 }

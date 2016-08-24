@@ -37,10 +37,10 @@ public class JedisUtil {
     public static Map<String, Integer> msgId;
 
 
+
     private static JedisPool jedisPool;
 
     static {
-
         Configuration config = null;
         try {
             config = new PropertiesConfiguration("ptb.properties");

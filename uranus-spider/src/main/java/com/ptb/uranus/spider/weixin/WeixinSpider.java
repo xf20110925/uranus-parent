@@ -5,15 +5,23 @@ import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
-import com.ptb.uranus.spider.weixin.bean.*;
-import com.ptb.uranus.spider.weixin.parse.*;
+import com.ptb.uranus.spider.weixin.bean.GsData;
+import com.ptb.uranus.spider.weixin.bean.PushMessage;
+import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
+import com.ptb.uranus.spider.weixin.bean.WxAccount;
+import com.ptb.uranus.spider.weixin.bean.WxArticle;
+import com.ptb.uranus.spider.weixin.parse.BayouWeixinParser;
+import com.ptb.uranus.spider.weixin.parse.GsDataWeixinParser;
+import com.ptb.uranus.spider.weixin.parse.WxArticleParser;
+import com.ptb.uranus.spider.weixin.parse.WxPushMessageParser;
+import com.ptb.uranus.spider.weixin.parse.WxSogouParser;
 import com.ptb.utils.log.LogUtils;
 import com.ptb.utils.string.RegexUtils;
 import com.ptb.utils.web.UrlFormatUtil;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,7 +31,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -212,7 +224,7 @@ public class WeixinSpider {
             articleUrl = HttpUtil.updateArgument(articleUrl, "reward_uin_count", "0");
 
 //            String s = Request.Post(articleUrl).userAgent(HttpUtil.UA_IPHONE6_SAFARI).bodyString("is_only_read=1", ContentType.APPLICATION_FORM_URLENCODED).execute().returnContent().asString();
-            String s = HttpUtil.postByMobileClient(articleUrl, "is_only_read=1", ContentType.APPLICATION_FORM_URLENCODED);
+            String s = HttpUtil.postByMobileClient(articleUrl, "is_only_read=1&req_id=3016hKWFzcVzSiDSY0wlArSv", ContentType.APPLICATION_FORM_URLENCODED);
             if (!s.contains("read_num")) {
                 return Optional.empty();
             }
@@ -462,12 +474,29 @@ public class WeixinSpider {
         return new ReadLikeNum(Integer.parseInt(readNum), Integer.parseInt(likeNum));
     }
 
-    public static void main(String[] args) throws IOException {
-       /* WeixinSpider weixinSpider = new WeixinSpider();
-        List<String> hotArticleFromSogou = weixinSpider.getHotArticleFromSogou();
-        hotArticleFromSogou.forEach(k -> System.out.println(k));*/
-        Optional<String> mediaIdentifyByArticleUrl = new WeixinSpider().getMediaIdentifyByArticleUrl("https://mp.weixin.qq.com/s?__biz=MjM5Njc5OTk1Mg==&mid=2650613234&idx=1&sn=a007c7bab263273ff364132fc7451087&scene=0&key=b28b03434249256ba9370ea951ac91532b66ed7d018fc6cb265cc311a461e5d10f48ca5c6ea86406914b6f99dadd451f&ascene=0&uin=ODg4NTkwODQw&devicetype=iMac+MacBookPro11%2C5+OSX+OSX+10.11.4+build(15E65)&version=11020201&pass_ticket=UCigJz8%2Bakcvdw4BHiVx7iLw%2BbuH3ECYenT7deosRsJhvrD%2FmoDJIGeSbPfthJ12");
-        System.out.println(mediaIdentifyByArticleUrl.get());
+
+
+    public static void main(String[] args) {
+        String keyUrl = "https://mp.weixin.qq.com/s?__biz=MTk5NDQ2Nzc2MQ==&mid=2650292756&idx=1&sn=907794028174c34eb252c8275436848b&scene=1&srcid=0730A7cSwpdcYFiQipJvKYEb&key=8dcebf9e179c9f3a30c8bdc17cf77a46a90d70e75db852a7679dbf7f199176baa71188918486e7d5023caf5915efdaf2&ascene=0&uin=ODg4NTkwODQw&devicetype=iMac+MacBookPro11%2C5+OSX+OSX+10.11.5+build(15F34)&version=11020201&pass_ticket=Hif5lv76kwjHbHiuDL%2F5pIS%2BewKB4ecij1SogmoXKmOY%2FyE5bos5PD%2FbEx1dT6rI";
+        //String keyUrl = "https://mp.weixin.qq.com/mp/getappmsgext?__biz=MTk5NDQ2Nzc2MQ==&appmsg_type=9&mid=2650292756&sn=907794028174c34eb252c8275436848b&idx=1&scene=1&title=%E8%81%94%E6%83%B3%E9%87%8A%E6%94%BE%E8%B6%85%E8%9E%8D%E5%90%88&ct=1469839236&devicetype=iMac&nbsp;MacBookPro11,5&nbsp;OSX&nbsp;OSX&nbsp;10.11.5&nbsp;build(15F34)&version=/mmbizwap/zh_CN/htmledition/js/appmsg/index2f67f1.js&f=json&r=0.08227999929250518&is_need_ad=0&comment_id=3168543664&is_need_reward=0&both_ad=1&reward_uin_count=0&uin=ODg4NTkwODQw&key=8dcebf9e179c9f3a30c8bdc17cf77a46a90d70e75db852a7679dbf7f199176baa71188918486e7d5023caf5915efdaf2&pass_ticket=Hif5lv76kwjHbHiuDL%25252F5pIS%25252BewKB4ecij1SogmoXKmOY%25252FyE5bos5PD%25252FbEx1dT6rI&wxtoken=3632109178&devicetype=iMac%26amp%3Bnbsp%3BMacBookPro11%2C5%26amp%3Bnbsp%3BOSX%26amp%3Bnbsp%3BOSX%26amp%3Bnbsp%3B10.11.5%26amp%3Bnbsp%3Bbuild(15F34)&clientversion=11020201&x5=0";
+        String key = RegexUtils.sub(".*key=([^#&]*).*", keyUrl, 0);
+        String uin = RegexUtils.sub(".*uin=([^#&]*).*", keyUrl, 0);
+        String articleUrl = HttpUtil.updateArgument(keyUrl, "key", key);
+        articleUrl = HttpUtil.updateArgument(articleUrl, "uin", uin);
+        articleUrl = articleUrl.replace("/s", "/mp/getappmsgext");
+        articleUrl = HttpUtil.updateArgument(articleUrl, "f", "json");
+        articleUrl = HttpUtil.updateArgument(articleUrl, "is_need_ad", "0");
+        articleUrl = HttpUtil.updateArgument(articleUrl, "is_need_reward", "0");
+        articleUrl = HttpUtil.updateArgument(articleUrl, "both_add", "1");
+        articleUrl = HttpUtil.updateArgument(articleUrl, "reward_uin_count", "0");
+
+        //            String s = Request.Post(articleUrl).userAgent(HttpUtil.UA_IPHONE6_SAFARI).bodyString("is_only_read=1", ContentType.APPLICATION_FORM_URLENCODED).execute().returnContent().asString();
+        String s = HttpUtil.postByMobileClient(articleUrl, "is_only_read=1", ContentType.APPLICATION_FORM_URLENCODED);
+        if (!s.contains("read_num")) {
+            System.out.println("xxx");
+        }else{
+            System.out.println("ok");
+        }
     }
 
 }
