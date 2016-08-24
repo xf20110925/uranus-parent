@@ -368,7 +368,7 @@ public class WeiboArticleParser {
             String aritcleUrl = String.format("http://weibo.com/u/%s?is_all=1", weiboID);
             String pageSource = null;
             while (i-- > 0) {
-                pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null);
+                pageSource = HttpUtil.getPageSourceByClient(aritcleUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", null, true);
                 if (pageSource != null) {
                     break;
                 }

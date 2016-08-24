@@ -34,7 +34,7 @@ public class WeiboSearchAccountParser {
      */
     public static Optional<List<WeiboSearchAccount>> getWeiboSerachAccountByName(String name) {
         try {
-            String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/user/" + name + "&Refer=SUer_box", HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "pl_user_feedList");
+            String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/user/" + name + "&Refer=SUer_box", HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "pl_user_feedList", true);
             String regex = "view.*(.\"pid\":\"pl_user_feedList\".*}).*</script>";
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(html);
