@@ -41,7 +41,6 @@ public class WeixinArticleDynamicHandle implements CollectHandler {
             if (readLikeNum.isPresent()) {
                 BasicArticleDynamic wxArticleDynamic = SendObjectConvertUtil.wxArticleDynamicConvert(readLikeNum.get());
                 wxArticleDynamic.setUrl(message.getBody().getConditon());
-//                wxSchedule.checkAndAddToMediaStaticSchedule(wxArticleDynamic.getUrl());
                 sender.sendArticleDynamic(wxArticleDynamic);
                 LogUtils.logInfo("uranus-server", "C_WX_A_D send", LogUtils.ActionResult.success, "");
             } else {

@@ -76,12 +76,13 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                 if (!StringUtils.isBlank(weiboID)) {
                     wbScheduleService.updateMediaCondition(message.getBody(), weiboID, lastestTime);
                 }
+
                 for (int i = 0; i < recentArticles.size(); i++) {
                     logger.info("wb new article: {}", JSON.toJSONString(recentArticles.get(i)));
-                    wbScheduleService.addArticleDynamicScheduler(recentArticles.get(i).getPostTime(), recentArticles.get(i).getArticleUrl());
                     LogUtils.logInfo("uranus-server", "C_WB_A_N add", LogUtils.ActionResult.success, "");
                     WeiboArticleStatic weiboArticleStatic = SendObjectConvertUtil.weiboArticleStaticConvert(recentArticles.get(i));
                     sender.sendArticleStatic(weiboArticleStatic);
+                    wbScheduleService.addArticleDynamicScheduler(recentArticles.get(i).getPostTime(), recentArticles.get(i).getArticleUrl());
                     LogUtils.logInfo("uranus-server", "C_WB_A_N send", LogUtils.ActionResult.success, "");
                 }
             } else {

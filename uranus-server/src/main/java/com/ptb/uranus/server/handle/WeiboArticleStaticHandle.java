@@ -5,6 +5,7 @@ import com.ptb.gaia.bus.message.Message;
 import com.ptb.uranus.common.entity.CollectCondition;
 import com.ptb.uranus.schedule.service.WeiboScheduleService;
 import com.ptb.uranus.server.send.Sender;
+import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.article.WeiboArticleStatic;
 import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.spider.weibo.WeiboSpider;
@@ -37,8 +38,9 @@ public class WeiboArticleStaticHandle implements CollectHandler {
             Optional<WeiboArticle> weiboArticle = weiboSpider.getWeiboArticleByArticleUrl(message.getBody().getConditon());
             if (weiboArticle.isPresent()) {
                 WeiboArticleStatic weiboArticleStatic = SendObjectConvertUtil.weiboArticleStaticConvert(weiboArticle.get());
-                weiboScheduleService.addArticleDynamicScheduler(weiboArticle.get().getPostTime(), weiboArticle.get().getArticleUrl());
                 sender.sendArticleStatic(weiboArticleStatic);
+                BasicArticleDynamic wbArticleDynamic = SendObjectConvertUtil.weiboArticleDynamicConvert(weiboArticle.get());
+                sender.sendArticleDynamic(wbArticleDynamic);
                 LogUtils.logInfo("uranus","C_WB_A_S send",LogUtils.ActionResult.success,"");
             }
         } catch (Exception e) {
