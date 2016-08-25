@@ -3,13 +3,16 @@ package com.ptb.uranus.server.third.version2.media;
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.version2.DataHandle;
-import com.ptb.uranus.server.third.version2.ReqUrlEnum;
-import com.ptb.uranus.server.third.entity.UserProfile;
 import com.ptb.uranus.server.third.entity.IdRecord;
+import com.ptb.uranus.server.third.entity.UserProfile;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
+import com.ptb.uranus.server.third.version2.DataHandle;
+import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
  * @Time: 15:10
  */
 public class WeiboMediaHandle implements DataHandle {
+	static Logger logger = LoggerFactory.getLogger(WeiboMediaHandle.class);
 	private Sender sender;
 
 	public WeiboMediaHandle(Sender sender) {
@@ -32,6 +36,7 @@ public class WeiboMediaHandle implements DataHandle {
 	@Override
 	public void handleBusEntities(String dataUrl) {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
+		logger.info(String.format("[%d] [wb:all] pull media from url [%s]",System.currentTimeMillis(),dataUrl));
 		List<UserProfile> wbMedias = JSON.parseArray(JsonPath.parse(pageSource).read("$.profile").toString(), UserProfile.class);
 		wbMedias.stream().forEach(meida -> {
 			sender.sendMediaStatic(ConvertUtils.weiboMediaStaticConvert(meida));

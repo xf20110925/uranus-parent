@@ -1,6 +1,7 @@
 package com.ptb.uranus.server.third.version2.article;
 
 import com.jayway.jsonpath.JsonPath;
+import com.ptb.uranus.server.handle.WeiboArticleDynamicHandle;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
@@ -8,6 +9,9 @@ import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +26,7 @@ import java.util.stream.Collectors;
  * @Time: 15:10
  */
 public class WeixinArticleStaticHandle implements DataHandle {
+	static Logger logger = LoggerFactory.getLogger(WeiboArticleDynamicHandle.class);
 
 	private Sender sender;
 
@@ -32,6 +37,7 @@ public class WeixinArticleStaticHandle implements DataHandle {
 	@Override
 	public void handleBusEntities(String dataUrl) {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
+		logger.info(String.format("[%d] [wx:static] pull from url [%s]",System.currentTimeMillis(),dataUrl));
 		List<Map<String, String>> wxStaticAtricles = JsonPath.parse(pageSource).read("$.pages", List.class);
 		wxStaticAtricles.stream().map(ConvertUtils::convertWXArticleStatic).forEach(sender::sendArticleStatic);
 	}

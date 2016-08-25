@@ -11,6 +11,9 @@ import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
  * @Time: 15:10
  */
 public class WeixinMediaHandle implements DataHandle {
+	static Logger logger = LoggerFactory.getLogger(WeixinMediaHandle.class);
 
 	private Sender sender;
 
@@ -33,6 +37,7 @@ public class WeixinMediaHandle implements DataHandle {
 	@Override
 	public void handleBusEntities(String dataUrl) {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
+		logger.info(String.format("[%d] [wx:all] pull media from url [%s]",System.currentTimeMillis(),dataUrl));
 		List<BayouWXMedia> wxMedias = JSON.parseArray(JsonPath.parse(pageSource).read("$.bizs").toString(), BayouWXMedia.class);
 		wxMedias.stream().map(ConvertUtils::convertWXMedia).forEach(sender::sendMediaStatic);
 	}
