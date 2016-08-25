@@ -10,6 +10,10 @@ import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
+import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +27,7 @@ import java.util.stream.Collectors;
  * @Time: 15:10
  */
 public class WeiboArticleHandle implements DataHandle{
+	static Logger logger = LoggerFactory.getLogger(WeiboArticle.class);
 
 	private Sender sender;
 
@@ -33,6 +38,7 @@ public class WeiboArticleHandle implements DataHandle{
 	@Override
 	public void handleBusEntities(String dataUrl) {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
+		logger.info(String.format("[%d] [wb:all] pull article data from url [%s]",System.currentTimeMillis(), dataUrl));
 		List<FreshData> wxArticles = JSON.parseArray(JsonPath.parse(pageSource).read("$.weibo").toString(), FreshData.class);
 		wxArticles.forEach(article -> {
 			sender.sendArticleStatic(ConvertUtils.weiboArticleStaticConvert(article));

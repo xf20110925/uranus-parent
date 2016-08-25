@@ -59,36 +59,10 @@ public class CrawleTask extends TimerTask {
     final String InitSendConfigTemplate = "uranus.scheduler.type.%s.send.init.num";
 
     public int calScheduleNum(CollectType collectType) {
-
+/*
         int changeRangeRate = conf.getInt(String.format(ChangeRateConfigTemplate, collectType), 10);
-        int maxSendNum = conf.getInt(String.format(MaxSendConfigTemplate, collectType), 10000);
-
-        if (sendNumsMap.get(collectType) == null) {
-            int sendNum = conf.getInt(String.format(InitSendConfigTemplate, collectType), 100);
-            sendNumsMap.put(collectType, sendNum);
-            return conf.getInt(String.format(InitSendConfigTemplate, collectType));
-        }
-
-        Integer sendNum = sendNumsMap.get(collectType);
-
-        try {
-            long blockNUM = uranusClient.getBusBlockNum(collectType);
-            if (blockNUM > 0) {
-                sendNum = sendNum < MIN_SEND_NUM ? MIN_SEND_NUM : sendNum * (100 - changeRangeRate) / 100;
-                logger.warn("collectType [{}] is block ,block num [{}]", collectType, blockNUM);
-            } else {
-                sendNum = sendNum > maxSendNum ? maxSendNum : sendNum * (100 + changeRangeRate) / 100;
-            }
-            sendNumsMap.put(collectType, sendNum);
-        } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
-        }
-
-        int schedNum = sendNumsMap.get(collectType);
-
-        logger.info("collectType [{}] 's scheduleLogger num [{}]", collectType, schedNum);
-
-        return schedNum;
+        int maxSendNum = conf.getInt(String.format(MaxSendConfigTemplate, collectType), 10000);*/
+        return conf.getInt(String.format(InitSendConfigTemplate, collectType), 100);
     }
 
     @Override
