@@ -2,6 +2,7 @@ package com.ptb.uranus.spider.weibo.parse;
 
 import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
+import com.ptb.uranus.spider.common.utils.WeiboUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,8 +10,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.script.ScriptException;
@@ -92,9 +97,39 @@ public class WeiboHotTopicsParser implements BaseWeiboParser {
 		}
 	}
 
+	public List<Topic> weiBoHotWords() {
+		try {
+			String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/top/summary?cate=total&key=all", HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "S_Srankhot", true);
+			String regex = "<p class=\\\\\"star_name\\\\\"><a href=\\\\.\\\\/weibo\\\\(?<url>.+?)\\\\\".+?list_all\\\\\">(?<name>.+?)<\\\\/a>.+?<p class=\\\\\"star_num\\\\\"><span>(?<num>.+?)<\\\\/span>";
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(html);
+			List<Topic> list = new ArrayList<>();
+			while (matcher.find()) {
+				Topic wbSerachHot = new Topic();
+				String name = matcher.group("name");
+				String[] strs = name.split("\\\\u");
+				String returnStr = "";
+				for (int i = 1; i < strs.length; i++) {
+					returnStr += (char) Integer.valueOf(strs[i].substring(0, 4), 16).intValue() + strs[i].substring(4, strs[i].length());
+				}
+				wbSerachHot.setName(returnStr);
+				wbSerachHot.setLink("http://s.weibo.com/weibo" + matcher.group("url"));
+				wbSerachHot.setSearchNum(Integer.parseInt(matcher.group("num")));
+				list.add(wbSerachHot);
+
+			}
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
+
+
 	public static void main(String[] args) throws IOException, ScriptException {
 		WeiboHotTopicsParser weiboTagParser = new WeiboHotTopicsParser();
-		List<Topic> hotTopics = weiboTagParser.getHotTopics();
+//		List<Topic> hotTopics = weiboTagParser.getHotTopics();
+		List<Topic> hotTopics = weiboTagParser.weiBoHotWords();
 		System.out.println(hotTopics);
 	}
 }
