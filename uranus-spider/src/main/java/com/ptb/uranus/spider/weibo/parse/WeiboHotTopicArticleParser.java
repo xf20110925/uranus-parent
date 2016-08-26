@@ -104,38 +104,32 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		System.out.println(ret);
 	}
 
-	public static class WbTopicArticle {
-		private long topic_id;
-		private String article_url;
-		private long zpz_num;
+	static class WbTopicArticle {
+		private String articleUrl;
+		private long zpzNum;
 
-		public WbTopicArticle(String article_url, long zpz_num) {
-			this.article_url = article_url;
-			this.zpz_num = zpz_num;
+		public WbTopicArticle() {
 		}
 
-		public long getTopic_id() {
-			return topic_id;
+		public WbTopicArticle(String articleUrl, long zpzNum) {
+			this.articleUrl = articleUrl;
+			this.zpzNum = zpzNum;
 		}
 
-		public void setTopic_id(long topic_id) {
-			this.topic_id = topic_id;
+		public String getArticleUrl() {
+			return articleUrl;
 		}
 
-		public String getArticle_url() {
-			return article_url;
+		public void setArticleUrl(String articleUrl) {
+			this.articleUrl = articleUrl;
 		}
 
-		public void setArticle_url(String article_url) {
-			this.article_url = article_url;
+		public long getZpzNum() {
+			return zpzNum;
 		}
 
-		public long getZpz_num() {
-			return zpz_num;
-		}
-
-		public void setZpz_num(long zpz_num) {
-			this.zpz_num = zpz_num;
+		public void setZpzNum(long zpzNum) {
+			this.zpzNum = zpzNum;
 		}
 
 		@Override
