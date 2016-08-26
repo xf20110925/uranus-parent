@@ -104,7 +104,7 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		System.out.println(ret);
 	}
 
-	static class WbTopicArticle {
+	public static class WbTopicArticle {
 		private String articleUrl;
 		private long zpzNum;
 
