@@ -11,13 +11,8 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 /**
@@ -27,30 +22,12 @@ import javax.script.ScriptException;
  * @Date: 2016/8/5
  * @Time: 17:01
  */
-public class WeiboHotTopicsParser {
-
-	private String getTargetElement(String url) throws IOException, ScriptException {
-		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, null, "utf-8", null, true);
-		Document doc = Jsoup.parse(pageSource);
-		Elements scripts = doc.getElementsByTag("script");
-		Optional<Element> retOpt = scripts.stream().filter(element -> element.toString().contains("pl_Srank_swf")).findFirst();
-		if (retOpt.isPresent()) {
-			String element = retOpt.get().toString();
-			Pattern pattern = Pattern.compile(".*\"html\":(.*)}\\)</script>");
-			Matcher matcher = pattern.matcher(element);
-			if (matcher.find()) {
-				String ret = matcher.group(1);
-				ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
-				String retsult = engine.eval(ret).toString();
-				return retsult;
-			}
-		}
-		throw new NullPointerException(String.format("数据抓取失败 -> %s", url));
-	}
+public class WeiboHotTopicsParser implements BaseWeiboParser {
 
 	public List<Topic> getHotTopics() throws IOException, ScriptException {
 		String url = "http://s.weibo.com/top/summary";
-		String targetElement = getTargetElement(url);
+		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, null, "utf-8", null, true);
+		String targetElement = getTargetElement(pageSource, "pl_Srank_swf");
 		Document doc = Jsoup.parse(targetElement);
 		Elements elements = doc.getElementsByTag("tr");
 		List<Topic> rets = elements.stream().map(ele -> {
@@ -58,7 +35,7 @@ public class WeiboHotTopicsParser {
 				Element topicEle = ele.select("td.td_02").first();
 				String topicName = topicEle.getElementsByTag("a").text();
 				long searchNum = Long.parseLong(ele.select("td.td_03").text());
-				String link = String.format("http://s.weibo.com%s",topicEle.getElementsByTag("a").attr("href"));
+				String link = String.format("http://s.weibo.com%s", topicEle.getElementsByTag("a").attr("href"));
 				Topic topic = new Topic();
 				topic.setName(topicName);
 				topic.setSearchNum(searchNum);
@@ -70,7 +47,8 @@ public class WeiboHotTopicsParser {
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 		return rets;
 	}
-	public class Topic{
+
+	public class Topic {
 		private String name;
 		private String link;
 		private long searchNum;

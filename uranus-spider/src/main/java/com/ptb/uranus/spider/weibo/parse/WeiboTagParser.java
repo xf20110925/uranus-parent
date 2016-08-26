@@ -14,15 +14,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 /**
@@ -32,39 +29,13 @@ import javax.script.ScriptException;
  * @Date: 2016/8/4
  * @Time: 10:01
  */
-public class WeiboTagParser {
+public class WeiboTagParser implements BaseWeiboParser {
 
-	private String getTargetElement(String url) throws IOException, ScriptException {
-		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, getVaildWeiboCookieStore(), "utf-8", null, true);
-		Document doc = Jsoup.parse(pageSource);
-		Elements scripts = doc.getElementsByTag("script");
-		Optional<Element> retOpt = scripts.stream().filter(element -> element.toString().contains("pl.content.signInPeople.index")).findFirst();
-		if (retOpt.isPresent()) {
-			String element = retOpt.get().toString();
-			Pattern pattern = Pattern.compile(".*\"html\":(.*)}\\)</script>");
-			Matcher matcher = pattern.matcher(element);
-			if (matcher.find()) {
-				String ret = matcher.group(1);
-				ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
-				String retsult = engine.eval(ret).toString();
-				return retsult;
-			}
-		}
-		throw new NullPointerException(String.format("数据抓取失败 -> %s", url));
-	}
 
-	private int getPageNum(String tagElement) throws IOException, ScriptException {
-		Document doc = Jsoup.parse(tagElement);
-		Element pageEle = doc.select("div.W_pages").first();
-		Elements pageNumEles = pageEle.select("a.page.S_txt1");
-		List<Integer> pageNums = pageNumEles.stream().filter(ele -> ele.text().matches("\\d+")).map(ele -> Integer.parseInt(ele.text())).collect(Collectors.toList());
-		Collections.reverse(pageNums);
-		int lastPageNum = pageNums.get(0);
-		return lastPageNum;
-	}
 
 	public List<String> getAllLinks(String link) throws IOException, ScriptException {
-		String targetElement = getTargetElement(link);
+		String pageSource = HttpUtil.getPageSourceByClient(link, HttpUtil.UA_PC_CHROME, getVaildWeiboCookieStore(), "utf-8", null, true);
+		String targetElement = getTargetElement(pageSource, "pl.content.signInPeople.index");
 		int pageNum = getPageNum(targetElement);
 		List<String> links = new ArrayList<>();
 		for (int i = 1; i <= pageNum; i++) {
@@ -75,7 +46,8 @@ public class WeiboTagParser {
 
 	public List<String> getAccounts(String url) {
 		try {
-			String targetElement = getTargetElement(url);
+			String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, getVaildWeiboCookieStore(), "utf-8", null, true);
+			String targetElement = getTargetElement(pageSource, "pl.content.signInPeople.index");
 			Document doc = Jsoup.parse(targetElement);
 			Elements elements = doc.select("ul.follow_list > li");
 			List<String> mediaTags = elements.stream().map(ele -> getWeiboId(ele)).collect(Collectors.toList());

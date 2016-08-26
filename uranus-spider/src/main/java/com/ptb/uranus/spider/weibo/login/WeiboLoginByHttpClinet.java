@@ -39,13 +39,12 @@ public class WeiboLoginByHttpClinet {
 
 	public static void main(String[] args) {
 		WeiboLoginByHttpClinet loginClinet = new WeiboLoginByHttpClinet();
-		String username = "15010911620";
-		String password = "man2803797315";
+		String username = "17182617024";
+		String password = "vdkqyf4667o";
 		WeiboLoginByHttpClinet weiboLoginByHttpClinet = new WeiboLoginByHttpClinet();
-		weiboLoginByHttpClinet.login(username, password);
-		String url = "http://s.weibo.com/weibo/%25E9%25A9%25AC%25E8%2593%2589%25E5%25BE%25AE%25E4%25BF%25A1%25E6%259C%258B%25E5%258F%258B%25E5%259C%2588%25E6%2588%25AA%25E5%259B%25BE&page=2";
-		String html = new WeiboLoginByHttpClinet().getHtml(loginClinet.httpClient, url, loginClinet.getCookiesString());
-		System.out.println(html);
+		BasicCookieStore cookie = weiboLoginByHttpClinet.login(username, password);
+		System.out.println(cookie);
+
 	}
 
 
