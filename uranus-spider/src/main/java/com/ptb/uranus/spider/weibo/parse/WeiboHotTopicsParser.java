@@ -118,12 +118,46 @@ public class WeiboHotTopicsParser implements BaseWeiboParser {
 				list.add(wbSerachHot);
 
 			}
+			List<Topic> topics = weiBoStarHotSerach();
+			list.addAll(topics);
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return Collections.emptyList();
 	}
+
+	public List<Topic> weiBoStarHotSerach(){
+		try {
+			String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/top/summary?cate=total&key=person", HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "S_Srankhot", true);
+			String regex = "<p class=\\\\\"star_name\\\\\"><a href=\\\\\"\\\\/weibo\\\\/(?<url>.+?)\\\\.+?list_person\\\\\">(?<name>.+?)<\\\\/a>.+?star_num\\\\\"><span>(?<num>.+?)<\\\\/span>";
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(html);
+			List<Topic> list = new ArrayList<>();
+			while (matcher.find()){
+				Topic wbSerachHot = new Topic();
+				int num = Integer.parseInt(matcher.group("num"));
+				if (num>1000000){
+					String name = matcher.group("name");
+					String[] strs = name.split("\\\\u");
+					String returnStr = "";
+					for (int i = 1; i < strs.length; i++) {
+						returnStr += (char) Integer.valueOf(strs[i].substring(0, 4), 16).intValue() + strs[i].substring(4, strs[i].length());
+					}
+					wbSerachHot.setName(returnStr);
+					wbSerachHot.setLink("http://s.weibo.com/weibo" + matcher.group("url"));
+					wbSerachHot.setSearchNum(Integer.parseInt(matcher.group("num")));
+					list.add(wbSerachHot);
+				}
+			}
+			return list;
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
+
+
 
 
 	public static void main(String[] args) throws IOException, ScriptException {
