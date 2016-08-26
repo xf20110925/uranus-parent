@@ -42,6 +42,7 @@ public class Tools {
         options.addOption("i_wx_s", false, "参数为微信昵称");
         options.addOption("i_wb_s", false, "参数为微博昵称");
         options.addOption("send_msg", true, "发送BUS消息");
+        options.addOption("wxcmha",false,"爬取媒体历史文章");
         CommandLine commandLine;
         HelpFormatter formatter = new HelpFormatter();
         try {
@@ -103,6 +104,8 @@ public class Tools {
                 String message = scanner.nextLine();
                 bus.send(topic,message.getBytes(Charset.forName("utf8")));
             }
+        }else if(commandLine.hasOption("wxcmha")) {
+            WxTools.crawleWeixinArticle();
         }else{
             formatter.printHelp("usage:", options);
         }
