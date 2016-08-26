@@ -2,6 +2,7 @@ package com.ptb.uranus.spider.weibo.parse;
 
 import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
+import com.ptb.uranus.spider.common.utils.WeiboUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,15 +10,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 /**
@@ -27,30 +27,12 @@ import javax.script.ScriptException;
  * @Date: 2016/8/5
  * @Time: 17:01
  */
-public class WeiboHotTopicsParser {
-
-	private String getTargetElement(String url) throws IOException, ScriptException {
-		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, null, "utf-8", null, true);
-		Document doc = Jsoup.parse(pageSource);
-		Elements scripts = doc.getElementsByTag("script");
-		Optional<Element> retOpt = scripts.stream().filter(element -> element.toString().contains("pl_Srank_swf")).findFirst();
-		if (retOpt.isPresent()) {
-			String element = retOpt.get().toString();
-			Pattern pattern = Pattern.compile(".*\"html\":(.*)}\\)</script>");
-			Matcher matcher = pattern.matcher(element);
-			if (matcher.find()) {
-				String ret = matcher.group(1);
-				ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
-				String retsult = engine.eval(ret).toString();
-				return retsult;
-			}
-		}
-		throw new NullPointerException(String.format("数据抓取失败 -> %s", url));
-	}
+public class WeiboHotTopicsParser implements BaseWeiboParser {
 
 	public List<Topic> getHotTopics() throws IOException, ScriptException {
 		String url = "http://s.weibo.com/top/summary";
-		String targetElement = getTargetElement(url);
+		String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, null, "utf-8", null, true);
+		String targetElement = getTargetElement(pageSource, "pl_Srank_swf");
 		Document doc = Jsoup.parse(targetElement);
 		Elements elements = doc.getElementsByTag("tr");
 		List<Topic> rets = elements.stream().map(ele -> {
@@ -58,7 +40,7 @@ public class WeiboHotTopicsParser {
 				Element topicEle = ele.select("td.td_02").first();
 				String topicName = topicEle.getElementsByTag("a").text();
 				long searchNum = Long.parseLong(ele.select("td.td_03").text());
-				String link = String.format("http://s.weibo.com%s",topicEle.getElementsByTag("a").attr("href"));
+				String link = String.format("http://s.weibo.com%s", topicEle.getElementsByTag("a").attr("href"));
 				Topic topic = new Topic();
 				topic.setName(topicName);
 				topic.setSearchNum(searchNum);
@@ -70,7 +52,8 @@ public class WeiboHotTopicsParser {
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 		return rets;
 	}
-	public class Topic{
+
+	public class Topic {
 		private String name;
 		private String link;
 		private long searchNum;
@@ -114,9 +97,39 @@ public class WeiboHotTopicsParser {
 		}
 	}
 
+	public List<Topic> weiBoHotWords() {
+		try {
+			String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/top/summary?cate=total&key=all", HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "S_Srankhot", true);
+			String regex = "<p class=\\\\\"star_name\\\\\"><a href=\\\\.\\\\/weibo\\\\(?<url>.+?)\\\\\".+?list_all\\\\\">(?<name>.+?)<\\\\/a>.+?<p class=\\\\\"star_num\\\\\"><span>(?<num>.+?)<\\\\/span>";
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(html);
+			List<Topic> list = new ArrayList<>();
+			while (matcher.find()) {
+				Topic wbSerachHot = new Topic();
+				String name = matcher.group("name");
+				String[] strs = name.split("\\\\u");
+				String returnStr = "";
+				for (int i = 1; i < strs.length; i++) {
+					returnStr += (char) Integer.valueOf(strs[i].substring(0, 4), 16).intValue() + strs[i].substring(4, strs[i].length());
+				}
+				wbSerachHot.setName(returnStr);
+				wbSerachHot.setLink("http://s.weibo.com/weibo" + matcher.group("url"));
+				wbSerachHot.setSearchNum(Integer.parseInt(matcher.group("num")));
+				list.add(wbSerachHot);
+
+			}
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
+
+
 	public static void main(String[] args) throws IOException, ScriptException {
 		WeiboHotTopicsParser weiboTagParser = new WeiboHotTopicsParser();
-		List<Topic> hotTopics = weiboTagParser.getHotTopics();
+//		List<Topic> hotTopics = weiboTagParser.getHotTopics();
+		List<Topic> hotTopics = weiboTagParser.weiBoHotWords();
 		System.out.println(hotTopics);
 	}
 }

@@ -1,10 +1,12 @@
 package com.ptb.uranus.spider.weibo.parse;
 
 import com.google.common.collect.Lists;
+
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.common.utils.WeiboUtil;
 import com.ptb.uranus.spider.weibo.bean.WeiboSearchAccount;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -88,5 +90,7 @@ public class WeiboSearchAccountParser {
         }
         return Optional.empty();
     }
+
+
 
 }
