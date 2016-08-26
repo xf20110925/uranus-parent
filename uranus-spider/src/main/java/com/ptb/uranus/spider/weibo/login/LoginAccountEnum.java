@@ -10,10 +10,10 @@ import org.apache.http.impl.client.BasicCookieStore;
  * @Time: 15:16
  */
 public enum LoginAccountEnum {
-	ACCOUNT1("17182616764", "ptbptb"),
+/*	ACCOUNT1("17182616764", "ptbptb"),
 	ACCOUNT2("17182617024", "vdkqyf4667o"),
 	ACCOUNT3("17182617060", "vcipvc2688k"),
-	ACCOUNT4("17183150469", "ovciqw0637n"),
+	ACCOUNT4("17183150469", "ovciqw0637n"),*/
 	ACCOUNT5("17184651305", "udlrah5206s");
 	private String account;
 	private String password;

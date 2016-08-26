@@ -77,9 +77,8 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		CookieStore cookieStore = cookieQueue.poll();
 		try {
 			List<String> urls = getAllPageLink(url);
-			CookieStore finalCookieStore = cookieStore;
 			List<WbTopicArticle> wbTopicArticles = urls.stream().flatMap(wbHotArticleUrl -> {
-				String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, finalCookieStore, "utf-8", null, false);
+				String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, cookieStore, "utf-8", null, false);
 				try {
 					String targetEle = getTargetElement(pageSource, "feed_list_newBar");
 					return parseArticle(targetEle).stream();
@@ -92,14 +91,15 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			cookieQueue.add(cookieStore);
+			if (cookieStore != null)
+				cookieQueue.add(cookieStore);
 		}
 		return Collections.emptyList();
 	}
 
 	public static void main(String[] args) {
 		WeiboHotTopicArticleParser parser = new WeiboHotTopicArticleParser();
-		String url = "http://s.weibo.com/weibo/%25E9%25A9%25AC%25E8%2593%2589%25E5%25AD%25A6%25E7%25B1%258D%25E6%25A1%25A3%25E6%25A1%2588%25E6%259B%259D%25E5%2585%2589&Refer=top";
+		String url = "http://s.weibo.com/weibo/%25E5%259C%259F%25E8%25B1%25AA%25E4%25B8%2588%25E6%25AF%258D%25E5%25A8%2598%25E6%2594%25B6%25E6%258B%25BE%25E6%259C%25AA%25E6%259D%25A5%25E5%25A5%25B3%25E5%25A9%25BF&Refer=top";
 		List<WbTopicArticle> ret = parser.getHotArticles(url);
 		System.out.println(ret);
 	}

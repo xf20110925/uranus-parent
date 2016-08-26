@@ -40,7 +40,7 @@ public interface BaseWeiboParser {
 				return retsult;
 			}
 		}
-		throw new NullPointerException(String.format("数据解析失败 -> %s", pageSource));
+		throw new NullPointerException("数据解析失败");
 	}
 
 	default int getPageNum(String tagElement) throws IOException, ScriptException {
