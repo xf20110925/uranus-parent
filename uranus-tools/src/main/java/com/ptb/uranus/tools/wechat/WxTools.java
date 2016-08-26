@@ -239,10 +239,11 @@ public final class WxTools {
 					if (articleReadLikeNumByUrl.isPresent()) {
 						busSender.sendArticleDynamic(SendObjectConvertUtil.wxArticleDynamicConvert(articleReadLikeNumByUrl.get()));
 						success[1]++;
+						break;
 					}
 				}
 			});
-			System.out.printf("run total [%d] static success [%d] dynamic success [%d]\n",total,success[0],success[1]);
+			System.out.printf("run total [%d] static success [%d] dynamic success [%d] [%s]\n",total,success[0],success[1],url);
 		}
 	}
 
