@@ -158,4 +158,10 @@ public class WeixinScheduleService {
             }
         });
     }
+
+    public static void main(String[] args) throws ConfigurationException {
+        SchedulerDao schedulerDao = new MongoSchedulerDao();
+        Optional<ScheduleObject> schedulerByField = schedulerDao.getSchedulerByField("obj.conditon", "http://mp.weixin.qq.com/s?__biz=MjM225Nzg0MTQ3OQ==&mid=2660575418&idx=2&sn=47b8a7aea73580f5c3b50bb088b9c3ef#rd");
+        schedulerByField.ifPresent(scheduleObject -> System.out.println(scheduleObject.getObj().getC()));
+    }
 }

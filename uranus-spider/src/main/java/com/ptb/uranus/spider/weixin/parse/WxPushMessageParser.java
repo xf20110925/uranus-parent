@@ -128,5 +128,19 @@ public class WxPushMessageParser {
         }
     }
 
+    public List<PushMessage> getRecentPushList(String biz, long beginId,String key,String uin) throws SpiderException {
+        try {
+            String reqUrl = HttpUtil.updateArgument(HttpUtil.updateArgument(String.format("http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=%s&uin=%s&key=%s&devicetype=android-17&version=26030b31&lang=zh_CN&nettype=WIFI&pass_ticket=pxH8Kwigmr1DlWNbUWkZn1EO83oPE3ATCHIp8juI5mM42u787kppzAsp4dTwBUpy&wx_header=1", biz, uin, key)
+                    ,  "count", "10"), "f", "json");
+            if(beginId != 0) {
+                reqUrl = HttpUtil.updateArgument(reqUrl,"frommsgid", String.valueOf(beginId));
+            }
+            return getPushedList(reqUrl);
+        } catch (Exception e) {
+            logger.warn(e.getLocalizedMessage());
+            throw new SpiderException(String.format("get recent message biz [%s] ", biz));
+        }
+    }
+
 
 }
