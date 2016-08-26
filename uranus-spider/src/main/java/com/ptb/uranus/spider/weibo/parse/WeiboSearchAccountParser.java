@@ -1,22 +1,22 @@
 package com.ptb.uranus.spider.weibo.parse;
 
 import com.google.common.collect.Lists;
+
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.common.utils.WeiboUtil;
 import com.ptb.uranus.spider.weibo.bean.WbSerachHot;
 import com.ptb.uranus.spider.weibo.bean.WeiboSearchAccount;
-import org.apache.commons.collections.map.HashedMap;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -122,8 +122,11 @@ public class WeiboSearchAccountParser {
             e.printStackTrace();
             logger.warn("Class weiBoHotWords error", e);
         }
-        return null;
+        return Collections.emptyList();
     }
 
-
+    public static void main(String[] args) {
+        List<WbSerachHot> wbSerachHots = weiBoHotWords();
+        System.out.println(wbSerachHots);
+    }
 }
