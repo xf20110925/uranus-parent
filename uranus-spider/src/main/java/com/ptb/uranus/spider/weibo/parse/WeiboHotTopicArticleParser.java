@@ -77,9 +77,8 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		CookieStore cookieStore = cookieQueue.poll();
 		try {
 			List<String> urls = getAllPageLink(url);
-			CookieStore finalCookieStore = cookieStore;
 			List<WbTopicArticle> wbTopicArticles = urls.stream().flatMap(wbHotArticleUrl -> {
-				String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, finalCookieStore, "utf-8", null, false);
+				String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, cookieStore, "utf-8", null, true);
 				try {
 					String targetEle = getTargetElement(pageSource, "feed_list_newBar");
 					return parseArticle(targetEle).stream();
@@ -92,50 +91,45 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			cookieQueue.add(cookieStore);
+			if (cookieStore != null)
+				cookieQueue.add(cookieStore);
 		}
 		return Collections.emptyList();
 	}
 
 	public static void main(String[] args) {
 		WeiboHotTopicArticleParser parser = new WeiboHotTopicArticleParser();
-		String url = "http://s.weibo.com/weibo/%25E9%25A9%25AC%25E8%2593%2589%25E5%25AD%25A6%25E7%25B1%258D%25E6%25A1%25A3%25E6%25A1%2588%25E6%259B%259D%25E5%2585%2589&Refer=top";
+		String url = "http://s.weibo.com/weibo/%25E5%259C%259F%25E8%25B1%25AA%25E4%25B8%2588%25E6%25AF%258D%25E5%25A8%2598%25E6%2594%25B6%25E6%258B%25BE%25E6%259C%25AA%25E6%259D%25A5%25E5%25A5%25B3%25E5%25A9%25BF&Refer=top";
 		List<WbTopicArticle> ret = parser.getHotArticles(url);
 		System.out.println(ret);
 	}
 
 	public static class WbTopicArticle {
-		private long topic_id;
-		private String article_url;
-		private long zpz_num;
+		private String articleUrl;
+		private long zpzNum;
 
-		public WbTopicArticle(String article_url, long zpz_num) {
-			this.article_url = article_url;
-			this.zpz_num = zpz_num;
+		public WbTopicArticle() {
 		}
 
-		public long getTopic_id() {
-			return topic_id;
+		public WbTopicArticle(String articleUrl, long zpzNum) {
+			this.articleUrl = articleUrl;
+			this.zpzNum = zpzNum;
 		}
 
-		public void setTopic_id(long topic_id) {
-			this.topic_id = topic_id;
+		public String getArticleUrl() {
+			return articleUrl;
 		}
 
-		public String getArticle_url() {
-			return article_url;
+		public void setArticleUrl(String articleUrl) {
+			this.articleUrl = articleUrl;
 		}
 
-		public void setArticle_url(String article_url) {
-			this.article_url = article_url;
+		public long getZpzNum() {
+			return zpzNum;
 		}
 
-		public long getZpz_num() {
-			return zpz_num;
-		}
-
-		public void setZpz_num(long zpz_num) {
-			this.zpz_num = zpz_num;
+		public void setZpzNum(long zpzNum) {
+			this.zpzNum = zpzNum;
 		}
 
 		@Override
