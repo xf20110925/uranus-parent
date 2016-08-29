@@ -60,8 +60,8 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		Document doc = Jsoup.parse(tagElement);
 		Element pageEle = doc.select("div.layer_menu_list.W_scroll > ul").first();
 		String pageNum = pageEle.getElementsByTag("li").last().text();
-		int lastPageNum = 5;
-		Matcher matcher = Pattern.compile(".*(\\d+).*").matcher(pageNum);
+		int lastPageNum = 2;
+		Matcher matcher = Pattern.compile("第(\\d+)页").matcher(pageNum);
 		if (matcher.find()) lastPageNum = Integer.parseInt(matcher.group(1));
 		return lastPageNum;
 	}
