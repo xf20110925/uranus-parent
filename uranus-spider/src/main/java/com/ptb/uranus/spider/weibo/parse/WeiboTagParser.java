@@ -32,7 +32,6 @@ import javax.script.ScriptException;
 public class WeiboTagParser implements BaseWeiboParser {
 
 
-
 	public List<String> getAllLinks(String link) throws IOException, ScriptException {
 		String pageSource = HttpUtil.getPageSourceByClient(link, HttpUtil.UA_PC_CHROME, getVaildWeiboCookieStore(), "utf-8", null, true);
 		String targetElement = getTargetElement(pageSource, "pl.content.signInPeople.index");
@@ -56,6 +55,16 @@ public class WeiboTagParser implements BaseWeiboParser {
 			e.printStackTrace();
 		}
 		return Collections.emptyList();
+	}
+
+	private int getPageNum(String tagElement) throws IOException, ScriptException {
+		Document doc = Jsoup.parse(tagElement);
+		Element pageEle = doc.select("div.W_pages").first();
+		Elements pageNumEles = pageEle.select("a.page.S_txt1");
+		List<Integer> pageNums = pageNumEles.stream().filter(ele -> ele.text().matches("\\d+")).map(ele -> Integer.parseInt(ele.text())).collect(Collectors.toList());
+		Collections.reverse(pageNums);
+		int lastPageNum = pageNums.get(0);
+		return lastPageNum;
 	}
 
 	private String getWeiboId(Element ele) {
@@ -94,5 +103,7 @@ public class WeiboTagParser implements BaseWeiboParser {
 		WeiboTagParser weiboTagParser = new WeiboTagParser();
 		List<String> ret = weiboTagParser.getAccounts("http://d.weibo.com/1087030002_2975_2003_0?page=1");
 		System.out.println(ret.size());
+		List<String> urls = weiboTagParser.getAllLinks("http://d.weibo.com/1087030002_2975_1003_0?page=1");
+		System.out.println(urls);
 	}
 }

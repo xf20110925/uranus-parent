@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.CookieStore;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.ptb.uranus.spider.weibo.login.WeiboLoginByHttpClinet.cookieStore;
@@ -42,7 +45,7 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		List<String> urls = new ArrayList<>();
 		try {
 			urls.add(url);
-			String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, cookieStore, "utf-8", null, false);
+			String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, cookieStore, "utf-8", null, true);
 			String targetEle = getTargetElement(pageSource, "feed_list_newBar");
 			int pageNum = getPageNum(targetEle);
 			for (int i = 2; i <= pageNum; i++)
@@ -51,6 +54,16 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 			e.printStackTrace();
 		}
 		return urls;
+	}
+
+	private int getPageNum(String tagElement) {
+		Document doc = Jsoup.parse(tagElement);
+		Element pageEle = doc.select("div.layer_menu_list.W_scroll > ul").first();
+		String pageNum = pageEle.getElementsByTag("li").last().text();
+		int lastPageNum = 5;
+		Matcher matcher = Pattern.compile(".*(\\d+).*").matcher(pageNum);
+		if (matcher.find()) lastPageNum = Integer.parseInt(matcher.group(1));
+		return lastPageNum;
 	}
 
 	private List<WbTopicArticle> parseArticle(String targetEle) {
