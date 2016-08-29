@@ -90,6 +90,7 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 		CookieStore cookieStore = cookieQueue.poll();
 		try {
 			List<String> urls = getAllPageLink(url);
+			sleep(5);
 			List<WbTopicArticle> wbTopicArticles = urls.stream().flatMap(wbHotArticleUrl -> {
 				String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, cookieStore, "utf-8", null, true);
 				sleep(5);
