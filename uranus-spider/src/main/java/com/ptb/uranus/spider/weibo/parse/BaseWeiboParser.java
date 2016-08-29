@@ -7,6 +7,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,5 +41,13 @@ public interface BaseWeiboParser {
 		throw new NullPointerException("数据解析失败");
 	}
 
+	default void sleep(int second) {
+		Random random = new Random();
+		int sleepSecond = random.nextInt(second);
+		try {
+			Thread.sleep(sleepSecond * 1000);
+		} catch (InterruptedException e) {
+		}
+	}
 
 }
