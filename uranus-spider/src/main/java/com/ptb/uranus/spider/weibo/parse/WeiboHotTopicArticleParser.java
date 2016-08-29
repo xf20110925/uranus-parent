@@ -63,7 +63,7 @@ public class WeiboHotTopicArticleParser {
 				Pattern pattern = Pattern.compile("mid=(.*)&uid=(\\d+)");
 				Matcher matcher = pattern.matcher(actionData);
 				if (matcher.find()) {
-					href = String.format("http://weibo.com/%s/%s", matcher.group(2), matcher.group(1));
+					href = String.format("http://m.weibo.cn/%s/%s", matcher.group(2), matcher.group(1));
 				}
 				if (StringUtils.isBlank(href)) return null;
 				Elements zpzNums = ele.select("div.feeds.clearfix > span");
