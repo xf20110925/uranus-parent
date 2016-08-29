@@ -92,8 +92,8 @@ public class WeiboHotTopicArticleParser implements BaseWeiboParser {
 			List<String> urls = getAllPageLink(url);
 			sleep(5);
 			List<WbTopicArticle> wbTopicArticles = urls.stream().flatMap(wbHotArticleUrl -> {
+				sleep(4);
 				String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, cookieStore, "utf-8", null, true);
-				sleep(5);
 				try {
 					String targetEle = getTargetElement(pageSource, "feed_list_newBar");
 					return parseArticle(targetEle).stream();
