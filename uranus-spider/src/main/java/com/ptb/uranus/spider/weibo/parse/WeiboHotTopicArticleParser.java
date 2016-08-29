@@ -44,7 +44,7 @@ public class WeiboHotTopicArticleParser {
 		String url = "http://s.weibo.com/ajax/morestatus?page=%d&key=%s&xsort=hot";
 		List<String> urls = new ArrayList<>();
 		try {
-			int pageNum = 50;
+			int pageNum = 1;
 			for (int i = 1; i <= pageNum; i++)
 				urls.add(String.format(url, i, keyword));
 		} catch (Exception e) {
