@@ -9,6 +9,7 @@ import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.trigger.JustOneTrigger;
 import com.ptb.uranus.sdk.UranusSdk;
 import com.ptb.uranus.server.send.BusSender;
+import com.ptb.uranus.server.send.entity.article.BasicArticleDynamic;
 import com.ptb.uranus.server.send.entity.convert.SendObjectConvertUtil;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
@@ -237,7 +238,9 @@ public final class WxTools {
 				while(retryNum++ < 3) {
 					Optional<ReadLikeNum> articleReadLikeNumByUrl = weixinSpider.getArticleReadLikeNumByUrl(wxArticle.getArticleUrl(), 15);
 					if (articleReadLikeNumByUrl.isPresent()) {
-						busSender.sendArticleDynamic(SendObjectConvertUtil.wxArticleDynamicConvert(articleReadLikeNumByUrl.get()));
+						BasicArticleDynamic basicArticleDynamic = SendObjectConvertUtil.wxArticleDynamicConvert(articleReadLikeNumByUrl.get());
+						basicArticleDynamic.setUrl(wxArticle.getArticleUrl());
+						busSender.sendArticleDynamic(basicArticleDynamic);
 						success[1]++;
 						break;
 					}
