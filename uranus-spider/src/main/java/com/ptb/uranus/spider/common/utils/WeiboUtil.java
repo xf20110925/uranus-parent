@@ -35,6 +35,10 @@ public class WeiboUtil {
         BasicClientCookie2 pc = new BasicClientCookie2("SUB", UUID.randomUUID().toString());
         pc.setDomain(".weibo.com");
         cookieStore.addCookie(pc);
+
+        BasicClientCookie2 pc1 = new BasicClientCookie2("SUB", UUID.randomUUID().toString());
+        pc.setDomain("s.weibo.com");
+        cookieStore.addCookie(pc1);
         return cookieStore;
     }
 

@@ -231,6 +231,7 @@ public final class WxTools {
 			String url = scanner.nextLine().trim();
 			total ++;
 			Optional<WxArticle> articleByUrl = weixinSpider.getArticleByUrl(url);
+			int finalTotal = total;
 			articleByUrl.ifPresent(wxArticle -> {
 				success[0]++;
 				busSender.sendArticleStatic(SendObjectConvertUtil.weixinArticleStaticConvert(wxArticle));
@@ -245,8 +246,9 @@ public final class WxTools {
 						break;
 					}
 				}
+				System.out.printf("run total [%d] static success [%d] dynamic success [%d] [%s]\n", finalTotal, success[0], success[1], articleByUrl.get().getArticleUrl());
 			});
-			System.out.printf("run total [%d] static success [%d] dynamic success [%d] [%s]\n",total,success[0],success[1],url);
+
 		}
 	}
 
