@@ -14,7 +14,7 @@ public enum LoginAccountEnum {
 	ACCOUNT2("17182617024", "vdkqyf4667o"),
 	ACCOUNT3("17182617060", "vcipvc2688k"),
 	ACCOUNT4("17183150469", "ovciqw0637n"),*/
-	ACCOUNT5("17184651305", "udlrah5206s");
+	ACCOUNT5("", "", null);
 	private String account;
 	private String password;
 	private BasicCookieStore cookie;
@@ -29,6 +29,12 @@ public enum LoginAccountEnum {
 		} catch (Exception e) {
 			System.out.println(String.format("%s登录失败", account));
 		}
+	}
+
+	LoginAccountEnum(String account, String password, BasicCookieStore cookie) {
+		this.account = account;
+		this.password = password;
+		this.cookie = cookie;
 	}
 
 	public String getAccount() {
