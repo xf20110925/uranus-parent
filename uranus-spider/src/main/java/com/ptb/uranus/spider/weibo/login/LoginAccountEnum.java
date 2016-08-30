@@ -1,6 +1,6 @@
 package com.ptb.uranus.spider.weibo.login;
 
-import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.client.CookieStore;
 
 /**
  * @DESC:
@@ -10,31 +10,27 @@ import org.apache.http.impl.client.BasicCookieStore;
  * @Time: 15:16
  */
 public enum LoginAccountEnum {
-/*	ACCOUNT1("17182616764", "ptbptb"),
+	ACCOUNT1("17182616764", "ptbptb"),
 	ACCOUNT2("17182617024", "vdkqyf4667o"),
 	ACCOUNT3("17182617060", "vcipvc2688k"),
-	ACCOUNT4("17183150469", "ovciqw0637n"),*/
-	ACCOUNT5("", "", null);
+	ACCOUNT4("17183150469", "ovciqw0637n"),
+	ACCOUNT5("17184651305", "udlrah5206s"),
+	ACCOUNT6("18666409787", "dvjobq2206y"),
+	ACCOUNT7("18666409887", "uurnkl5384d"),
+	ACCOUNT8("18666437921", "dcjncv1307w"),
+	ACCOUNT9("18666447338", "hthzoi4527u"),
+	ACCOUNT10("18666470193", "ccyvkn8336v"),
+	ACCOUNT11("18666470194", "wthqmo3367k"),
+	ACCOUNT12("18676049373", "kknwur4026x"),
+	ACCOUNT13("18676280895", "skhdrn2338i"),
+	ACCOUNT14("18676332881", "gmobje0310y");
 	private String account;
 	private String password;
-	private BasicCookieStore cookie;
+	private CookieStore cookie;
 
 	LoginAccountEnum(String account, String password) {
-		WeiboLoginByHttpClinet weiboLoginByHttpClinet = new WeiboLoginByHttpClinet();
 		this.account = account;
 		this.password = password;
-		try {
-			BasicCookieStore cookie = weiboLoginByHttpClinet.login(account, password);
-			this.cookie = cookie;
-		} catch (Exception e) {
-			System.out.println(String.format("%s登录失败", account));
-		}
-	}
-
-	LoginAccountEnum(String account, String password, BasicCookieStore cookie) {
-		this.account = account;
-		this.password = password;
-		this.cookie = cookie;
 	}
 
 	public String getAccount() {
@@ -53,11 +49,11 @@ public enum LoginAccountEnum {
 		this.password = password;
 	}
 
-	public BasicCookieStore getCookie() {
+	public CookieStore getCookie() {
 		return cookie;
 	}
 
-	public void setCookie(BasicCookieStore cookie) {
+	public void setCookie(CookieStore cookie) {
 		this.cookie = cookie;
 	}
 }
