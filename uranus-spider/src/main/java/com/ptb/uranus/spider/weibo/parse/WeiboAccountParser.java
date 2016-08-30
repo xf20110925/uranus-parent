@@ -91,7 +91,7 @@ public class WeiboAccountParser {
      * @throws IOException the io exception
      */
     public WeiboAccount getWeiboAccount(String weiboHomeUrl) throws IOException {
-        String wbMobilePageSource = HttpUtil.getPageSourceByClient(weiboHomeUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(),"utf-8", "fansNum");
+        String wbMobilePageSource = HttpUtil.getPageSourceByClient(weiboHomeUrl, HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(),"utf-8", "fansNum", true);
         return this.parseWeiboBaseFromMPageDoc(wbMobilePageSource);
     }
 
