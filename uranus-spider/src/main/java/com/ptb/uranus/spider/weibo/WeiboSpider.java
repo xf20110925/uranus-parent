@@ -312,12 +312,12 @@ public class WeiboSpider {
 		sub.setDomain("s.weibo.com");
 		sub.setPath("/");
 		BasicClientCookie2 sub1 = new BasicClientCookie2(cookie.getName(), cookie.getValue());
-		sub.setDomain(".weibo.com");
-		sub.setPath("/");
+		sub1.setDomain(".weibo.com");
+		sub1.setPath("/");
 		BasicClientCookie2 sub2 = new BasicClientCookie2(cookie.getName(), cookie.getValue());
-		sub.setDomain(".weibo.cn");
-		sub.setPath("/");
-		sub.setExpiryDate(cookie.getExpiry());
+		sub2.setDomain(".weibo.cn");
+		sub2.setPath("/");
+		sub2.setExpiryDate(cookie.getExpiry());
 		cookieStore.addCookie(sub);
 		cookieStore.addCookie(sub1);
 		cookieStore.addCookie(sub2);

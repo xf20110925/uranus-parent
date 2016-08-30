@@ -3,6 +3,7 @@ package com.ptb.uranus.spider.weibo.parse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
+import com.ptb.uranus.spider.weibo.WeiboSpider;
 import com.ptb.uranus.spider.weibo.login.LoginAccountEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +13,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -31,12 +31,20 @@ import static java.util.Collections.emptyList;
  * @Time: 11:48
  */
 public class WeiboHotTopicArticleParser {
-	Queue<CookieStore> cookieQueue = new LinkedList<>();
+
+	private WeiboSpider wbSpider = new WeiboSpider();
+	private Queue<CookieStore> cookieQueue = new LinkedList<>();
 
 	public WeiboHotTopicArticleParser() {
 		for (LoginAccountEnum loginAccountEnum : LoginAccountEnum.values()) {
-			if (loginAccountEnum.getCookie() != null)
+			try {
+				CookieStore cookie = wbSpider.login(loginAccountEnum.getAccount(), loginAccountEnum.getPassword());
+				loginAccountEnum.setCookie(cookie);
 				cookieQueue.add(loginAccountEnum.getCookie());
+				break;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -44,7 +52,7 @@ public class WeiboHotTopicArticleParser {
 		String url = "http://s.weibo.com/ajax/morestatus?page=%d&key=%s&xsort=hot";
 		List<String> urls = new ArrayList<>();
 		try {
-			int pageNum = 1;
+			int pageNum = 50;
 			for (int i = 1; i <= pageNum; i++)
 				urls.add(String.format(url, i, keyword));
 		} catch (Exception e) {
@@ -81,28 +89,29 @@ public class WeiboHotTopicArticleParser {
 
 	public List<WbTopicArticle> getHotArticles(String keyword) {
 		CookieStore cookieStore = cookieQueue.poll();
+		List<WbTopicArticle> rets = new ArrayList<>();
 		try {
 			List<String> urls = getAllPageLink(keyword);
-			List<WbTopicArticle> wbTopicArticles = urls.stream().flatMap(wbHotArticleUrl -> {
-				String pageSource = HttpUtil.getPageSourceByClient(wbHotArticleUrl, HttpUtil.UA_PC_CHROME, cookieStore, "utf-8", null, true);
+			for (String url : urls) {
 				try {
+					String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_PC_CHROME, cookieStore, "utf-8", null, true);
 					JSONObject json = JSON.parseObject(pageSource);
 					String data = json.getString("data");
-					if (StringUtils.isNotBlank(data))
-						return parseArticle(data).stream();
+					if (data.contains("action-data"))
+						rets.addAll(parseArticle(data));
+					else
+						break;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return null;
-			}).collect(Collectors.toList());
-			return wbTopicArticles;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (cookieStore != null)
 				cookieQueue.add(cookieStore);
 		}
-		return Collections.emptyList();
+		return rets;
 	}
 
 	public static void main(String[] args) {
