@@ -12,6 +12,7 @@ import com.ptb.uranus.spider.common.webDriver.WebDriverPoolUtils;
 import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
 import com.ptb.utils.exception.PTBException;
 import com.ptb.utils.string.RegexUtils;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,7 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -63,8 +68,10 @@ public class WeiboArticleParser {
             String objectType;
             if (isRetweeted != null) {
                 objectType = JsonPathUtil.parse(parse, "$.stage.single[1].mblog.retweeted_status.page_info.object_type", null);
+                weiboArticle.setOriginality(true);
             } else {
                 objectType = JsonPathUtil.parse(parse, "$.stage.single[1].mblog.page_info.object_type", null);
+                weiboArticle.setOriginality(false);
             }
             if (objectType == "") {
                 objectType = "common";
@@ -204,6 +211,8 @@ public class WeiboArticleParser {
                 ).collect(Collectors.toList()));
             }
             weiboArticle.setArticleUrl(aritcleUrl);
+            //是否原创
+            weiboArticle.setOriginality(doc.select("div.WB_feed_expand").isEmpty());
             return weiboArticle;
 
         } catch (Exception e) {
@@ -276,6 +285,8 @@ public class WeiboArticleParser {
                 weiboArticle.setImgs(select.stream().map(e -> e.attr("src")).collect(Collectors.toList()));
             }
             weiboArticle.setArticleUrl(aritcleUrl);
+            //是否原创
+            weiboArticle.setOriginality(doc.select("div.WB_feed_expand").isEmpty());
             return weiboArticle;
 
         } catch (Exception e) {
@@ -353,6 +364,8 @@ public class WeiboArticleParser {
             weiboArticle.setArticleUrl(String.format("http://m.weibo.cn/%s/%s", mediaId, hashMap.get("bid")));
             if (hashMap.get("retweeted_status") == null) {
                 weiboArticle.setOriginality(true);
+            }else {
+                weiboArticle.setOriginality(false);
             }
 
             weiboArticles.add(weiboArticle);
@@ -440,6 +453,8 @@ public class WeiboArticleParser {
                 String articleUrl = String.format("http://weibo.com/%s/%s", weiboID, articleId);
                 if (ele.select("WB_feed_expand") == null) {
                     weiboArticle.setOriginality(true);
+                }else {
+                    weiboArticle.setOriginality(false);
                 }
                 weiboArticle.setArticleUrl(articleUrl);
                 weiboArticles.add(weiboArticle);
@@ -454,8 +469,8 @@ public class WeiboArticleParser {
 
     public static void main(String[] args) throws Exception {
         WeiboArticleParser weiboArticleParser = new WeiboArticleParser();
-        WeiboArticle weiboArticle = weiboArticleParser.parseFromPcPageByHttpClient("http://weibo.com/2165313080/Dov3pEU2d");
-        System.out.println(weiboArticle);
+        WeiboArticle weiboArticle = weiboArticleParser.parseFromPcPageByWebDriver("http://weibo.com/2165313080/Dov3pEU2d");
+        System.out.println(JSON.toJSONString(weiboArticle));
 
     }
 }
