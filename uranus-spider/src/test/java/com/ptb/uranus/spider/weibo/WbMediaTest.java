@@ -37,7 +37,7 @@ public class WbMediaTest {
 
     @Test
     public void testGetMediaStaticByHomePage() {
-        Optional<WeiboAccount> weiboAccountOptional = weiboSpider.getWeiboAccountByHomePage("http://weibo.com/dengchao");
+        Optional<WeiboAccount> weiboAccountOptional = weiboSpider.getWeiboAccountByHomePage("http://m.weibo.cn/u/1712686623");
         assertTrue(weiboAccountOptional.isPresent());
         WeiboAccount weiboAccount = weiboAccountOptional.get();
         assertTrue(weiboAccount.getContainerID().length() > 0);

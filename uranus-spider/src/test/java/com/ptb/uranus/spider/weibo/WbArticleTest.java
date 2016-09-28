@@ -27,7 +27,7 @@ public class WbArticleTest {
     @Test
     public void testGetArticleImgByUrlSuccess() {
 
-        Optional<WeiboArticle> weiboArticleOptional = weiboSpider.getWeiboArticleByArticleUrl("http://m.weibo.cn/3974469906/D8pNEnAWG");
+        Optional<WeiboArticle> weiboArticleOptional = weiboSpider.getWeiboArticleByArticleUrl("http://weibo.com/2140151063/E66KIFiik");
 
         assertEquals(weiboArticleOptional.isPresent(), true);
         WeiboArticle weiboArticle = weiboArticleOptional.get();
@@ -40,6 +40,7 @@ public class WbArticleTest {
         assertTrue(weiboArticle.getRepostCount() >= 0);
         assertTrue(weiboArticle.getCommentCount() >= 0);
         assertTrue(weiboArticle.getImgs().size() > 0);
+        assertTrue(weiboArticle.isOriginality() == true ? weiboArticle.isOriginality() == false : false);
     }
 
     /**

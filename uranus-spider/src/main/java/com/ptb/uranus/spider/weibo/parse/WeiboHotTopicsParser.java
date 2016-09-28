@@ -2,7 +2,6 @@ package com.ptb.uranus.spider.weibo.parse;
 
 import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
-import com.ptb.uranus.spider.common.utils.WeiboUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -99,7 +98,7 @@ public class WeiboHotTopicsParser implements BaseWeiboParser {
 
 	public List<Topic> weiBoHotWords() {
 		try {
-			String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/top/summary?cate=total&key=all", HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "S_Srankhot", true);
+			String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/top/summary?cate=total&key=all", HttpUtil.UA_PC_CHROME, null, "utf-8", "S_Srankhot", true);
 			String regex = "<p class=\\\\\"star_name\\\\\"><a href=\\\\.\\\\/weibo\\\\(?<url>.+?)\\\\\".+?list_all\\\\\">(?<name>.+?)<\\\\/a>.+?<p class=\\\\\"star_num\\\\\"><span>(?<num>.+?)<\\\\/span>";
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(html);
@@ -129,7 +128,7 @@ public class WeiboHotTopicsParser implements BaseWeiboParser {
 
 	public List<Topic> weiBoStarHotSerach(){
 		try {
-			String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/top/summary?cate=total&key=person", HttpUtil.UA_PC_CHROME, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "S_Srankhot", true);
+			String html = HttpUtil.getPageSourceByClient("http://s.weibo.com/top/summary?cate=total&key=person", HttpUtil.UA_PC_CHROME, null, "utf-8", "S_Srankhot", true);
 			String regex = "<p class=\\\\\"star_name\\\\\"><a href=\\\\\"\\\\/weibo\\\\/(?<url>.+?)\\\\.+?list_person\\\\\">(?<name>.+?)<\\\\/a>.+?star_num\\\\\"><span>(?<num>.+?)<\\\\/span>";
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(html);
