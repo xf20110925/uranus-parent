@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -212,6 +213,10 @@ public class WeixinSpider {
                 return Optional.empty();
             }
 
+            BasicCookieStore basicCookieStore = new BasicCookieStore();
+            HttpUtil.getPageSourceByClient(keyUrl.replace("f=json",""),HttpUtil.UA_IPHONE6_SAFARI,basicCookieStore,"utf-8","l");
+
+
             String key = RegexUtils.sub(".*key=([^#&]*).*", keyUrl, 0);
             String uin = RegexUtils.sub(".*uin=([^#&]*).*", keyUrl, 0);
             String articleUrl = HttpUtil.updateArgument(url, "key", key);
@@ -224,7 +229,7 @@ public class WeixinSpider {
             articleUrl = HttpUtil.updateArgument(articleUrl, "reward_uin_count", "0");
 
 //            String s = Request.Post(articleUrl).userAgent(HttpUtil.UA_IPHONE6_SAFARI).bodyString("is_only_read=1", ContentType.APPLICATION_FORM_URLENCODED).execute().returnContent().asString();
-            String s = HttpUtil.postByMobileClient(articleUrl, "is_only_read=1&req_id=3016hKWFzcVzSiDSY0wlArSv", ContentType.APPLICATION_FORM_URLENCODED);
+            String s = HttpUtil.postByPageClient(articleUrl, "is_only_read=1&req_id=3016hKWFzcVzSiDSY0wlArSv", ContentType.APPLICATION_FORM_URLENCODED,HttpUtil.UA_IPHONE6_SAFARI,basicCookieStore);
             if (!s.contains("read_num")) {
                 return Optional.empty();
             }
