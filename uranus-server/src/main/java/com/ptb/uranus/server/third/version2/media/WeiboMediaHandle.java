@@ -11,6 +11,9 @@ import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +31,16 @@ import java.util.stream.Collectors;
 public class WeiboMediaHandle implements DataHandle {
 	static Logger logger = LoggerFactory.getLogger(WeiboMediaHandle.class);
 	private Sender sender;
+	private int filterFansNum = 10000;
 
 	public WeiboMediaHandle(Sender sender) {
 		this.sender = sender;
+		try {
+			Configuration conf = new PropertiesConfiguration("ptb.properties");
+			filterFansNum= conf.getInt("uranus.bayou.wb.media.filter.fansnum");
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -39,6 +49,8 @@ public class WeiboMediaHandle implements DataHandle {
 		logger.info(String.format("[%d] [wb:all] pull media from url [%s]",System.currentTimeMillis(),dataUrl));
 		List<UserProfile> wbMedias = JSON.parseArray(JsonPath.parse(pageSource).read("$.profile").toString(), UserProfile.class);
 		wbMedias.stream().forEach(meida -> {
+			//过滤掉微博粉丝小于1w的媒体
+			if (meida.getFans_number() < filterFansNum) return;
 			sender.sendMediaStatic(ConvertUtils.weiboMediaStaticConvert(meida));
 			sender.sendMediaDynamic(ConvertUtils.weiboMediaDynamicConvert(meida));
 		});
