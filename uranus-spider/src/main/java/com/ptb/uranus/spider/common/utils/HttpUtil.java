@@ -267,9 +267,9 @@ public class HttpUtil {
 	}
 
 	public static String postByPageClient(
-			String url, String params, ContentType paramsType, String ua) {
+			String url, String params, ContentType paramsType, String ua,CookieStore cookieStore) {
 		try {
-			String content = Executor.newInstance().execute(Request.Post(url).bodyString(params, paramsType).userAgent(ua).connectTimeout(ConnectTimeout).socketTimeout(SocketTimeout)).returnContent().asString();
+			String content = Executor.newInstance().use(cookieStore).execute(Request.Post(url).bodyString(params, paramsType).userAgent(ua).connectTimeout(ConnectTimeout).socketTimeout(SocketTimeout)).returnContent().asString();
 			return content;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -277,11 +277,12 @@ public class HttpUtil {
 		return null;
 	}
 
+
 	public static String postByPcClient(String url, String params, ContentType paramsType) {
-		return postByPageClient(url, params, paramsType, UA_PC_CHROME);
+		return postByPageClient(url, params, paramsType, UA_PC_CHROME,null);
 	}
 
 	public static String postByMobileClient(String url, String params, ContentType paramsType) {
-		return postByPageClient(url, params, paramsType, UA_IPHONE6_SAFARI);
+		return postByPageClient(url, params, paramsType, UA_IPHONE6_SAFARI,null);
 	}
 }

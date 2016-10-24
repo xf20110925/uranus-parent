@@ -9,6 +9,7 @@ import com.ptb.uranus.spider.weixin.WeixinUtil;
 import com.ptb.uranus.spider.weixin.bean.PushMessage;
 import com.ptb.utils.string.RegexUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,10 @@ public class WxPushMessageParser {
     }
 
     private List<PushMessage> getPushedList(String url) throws IOException {
-        String pagesource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_IPHONE6_SAFARI, null, "utf-8", "general", true);
+        BasicCookieStore basicCookieStore = new BasicCookieStore();
+
+        String pagesource = HttpUtil.getPageSourceByClient(url.replace("f=json",""), HttpUtil.UA_IPHONE6_SAFARI, basicCookieStore, "utf-8", "ok", true);
+        pagesource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_IPHONE6_SAFARI, basicCookieStore, "utf-8", "ok", true);
 
         JSONArray msgsJsonArray = JSON.parseObject(
                 JsonPath.parse(pagesource).

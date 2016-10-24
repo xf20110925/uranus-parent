@@ -326,8 +326,6 @@ public class WeiboSpider {
 
 	public static void main(String[] args) {
 	/*	PhantomJSDriver phantomJSDriver = weiboSpider.login("18676049373", "kknwur4026x");
-
-
 		String pageSourceByClient = HttpUtil.getPageSourceByClient("http://s.weibo.com/ajax/morestatus?page=2&key=222&type=shishi&_t=0&__rnd=1472475845538", HttpUtil.UA_IPHONE6_SAFARI, cookieStore, "utf-8", "{", false);
 		System.out.println(pageSourceByClient);
 		try {
