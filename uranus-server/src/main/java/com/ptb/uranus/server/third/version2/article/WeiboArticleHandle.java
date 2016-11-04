@@ -18,9 +18,10 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +35,7 @@ public class WeiboArticleHandle implements DataHandle{
 	static Logger logger = LoggerFactory.getLogger(WeiboArticle.class);
 
 	private Sender sender;
-	private List<String> pmids;
+	private Set<String> pmids;
 
 	public WeiboArticleHandle(Sender sender) {
 		pmids = getWBPmids();
@@ -75,8 +76,8 @@ public class WeiboArticleHandle implements DataHandle{
 		weiboArticleHandle.handle();
 	}
 
-	public List<String> getWBPmids(){
-		List<String> pmids = new ArrayList<>();
+	public Set<String> getWBPmids(){
+		Set<String> pmids = new HashSet<>();
 		FindIterable<Document> docs = MongoUtils.instance.getDatabase("gaia2").getCollection("wbMediaTest").find().projection(new Document().append("_id", 1));
 		for (Document doc : docs) {
 			pmids.add(doc.getString("_id"));
