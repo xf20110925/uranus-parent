@@ -2,19 +2,23 @@ package com.ptb.uranus.server.third.version2.article;
 
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.JsonPath;
+import com.mongodb.client.FindIterable;
+import com.ptb.uranus.schedule.utils.MongoUtils;
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.version2.DataHandle;
-import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.server.third.entity.FreshData;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
+import com.ptb.uranus.server.third.version2.DataHandle;
+import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
 
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,8 +34,10 @@ public class WeiboArticleHandle implements DataHandle{
 	static Logger logger = LoggerFactory.getLogger(WeiboArticle.class);
 
 	private Sender sender;
+	private List<String> pmids;
 
 	public WeiboArticleHandle(Sender sender) {
+		pmids = getWBPmids();
 		this.sender = sender;
 	}
 
@@ -41,6 +47,7 @@ public class WeiboArticleHandle implements DataHandle{
 		logger.info(String.format("[%d] [wb:all] pull article data from url [%s]",System.currentTimeMillis(), dataUrl));
 		List<FreshData> wxArticles = JSON.parseArray(JsonPath.parse(pageSource).read("$.weibo").toString(), FreshData.class);
 		wxArticles.forEach(article -> {
+			if (!pmids.contains(article.getR_user_id())) return;
 			sender.sendArticleStatic(ConvertUtils.weiboArticleStaticConvert(article));
 			sender.sendArticleDynamic(ConvertUtils.weiboArticleDynamicConvert(article));
 		});
@@ -66,5 +73,14 @@ public class WeiboArticleHandle implements DataHandle{
 	public static void main(String[] args) {
 		WeiboArticleHandle weiboArticleHandle = new WeiboArticleHandle(null);
 		weiboArticleHandle.handle();
+	}
+
+	public List<String> getWBPmids(){
+		List<String> pmids = new ArrayList<>();
+		FindIterable<Document> docs = MongoUtils.instance.getDatabase("gaia2").getCollection("wbMediaTest").find().projection(new Document().append("_id", 1));
+		for (Document doc : docs) {
+			pmids.add(doc.getString("_id"));
+		}
+		return pmids;
 	}
 }
