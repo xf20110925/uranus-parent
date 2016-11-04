@@ -77,7 +77,7 @@ public class WeiboArticleHandle implements DataHandle{
 	}
 
 	public Set<String> getWBPmids(){
-		Set<String> pmids = new HashSet<>();
+		Set<String> pmids = new HashSet<>(400000);
 		FindIterable<Document> docs = MongoUtils.instance.getDatabase("gaia2").getCollection("wbMediaTest").find().projection(new Document().append("_id", 1));
 		for (Document doc : docs) {
 			pmids.add(doc.getString("_id"));
