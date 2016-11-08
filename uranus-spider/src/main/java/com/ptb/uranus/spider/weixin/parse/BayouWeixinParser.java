@@ -1,5 +1,6 @@
 package com.ptb.uranus.spider.weixin.parse;
 
+import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
@@ -7,11 +8,15 @@ import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -23,6 +28,7 @@ public class BayouWeixinParser {
 	static Logger logger = Logger.getLogger(BayouWeixinParser.class);
 	private String RECENT_ARTILES_URL = null;
 	private String READ_LIKE_URL = null;
+	private String ASSITANT_READLIKE_URL = null;
 	static AtomicLong requestNum = new AtomicLong(0);
 	static AtomicLong requestErrorNum = new AtomicLong(0);
 
@@ -34,6 +40,7 @@ public class BayouWeixinParser {
 		}
 		RECENT_ARTILES_URL = conf.getString("uranus.spider.wx.bayou.recentarticles.url", "http://43.241.211.196:23333/history");
 		READ_LIKE_URL = conf.getString("uranus.spider.wx.bayou.readlike.url", "http://43.241.211.196:23333/readlike");
+		ASSITANT_READLIKE_URL = conf.getString("uranus.spider.wx.readlike");
 	}
 
 	public BayouWeixinParser() {
@@ -62,7 +69,7 @@ public class BayouWeixinParser {
 	}
 
 	public Optional<ImmutablePair<Long, List<String>>> getRecentArticlesByBiz(
-			String biz, long lastArticlePostTime) {
+		String biz, long lastArticlePostTime) {
 		String result = null;
 		try {
 			result = HttpUtil.postByPcClient(RECENT_ARTILES_URL, biz, null);
@@ -91,6 +98,18 @@ public class BayouWeixinParser {
 			}
 		} catch (Exception e) {
 			logger.error(e);
+		}
+		return Optional.empty();
+	}
+
+	public Optional<ReadLikeNum> getReadLikeByAssitant(String articleUrl) {
+		String reqUrl = ASSITANT_READLIKE_URL + "?url=" + articleUrl;
+		try {
+			String readLike = HttpUtil.getPageSourceByClient(reqUrl);
+			if (StringUtils.isNotBlank(readLike))
+				return Optional.of(JSON.parseObject(readLike, ReadLikeNum.class));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return Optional.empty();
 	}

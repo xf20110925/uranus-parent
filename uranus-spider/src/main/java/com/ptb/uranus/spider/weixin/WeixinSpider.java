@@ -151,7 +151,7 @@ public class WeixinSpider {
                 return Optional.of(getSogouWxReadLikeNum(articleUrl));
             } else {
                 //首先通过八友微信接口获取数据
-                Optional<ReadLikeNum> bayouWxReadLike = bayouWeixinParser.getReadLikeNumByArticleUrl(articleUrl);
+                Optional<ReadLikeNum> bayouWxReadLike = bayouWeixinParser.getReadLikeByAssitant(articleUrl);
                 if (bayouWxReadLike.isPresent()){
                     return bayouWxReadLike;
                 }
