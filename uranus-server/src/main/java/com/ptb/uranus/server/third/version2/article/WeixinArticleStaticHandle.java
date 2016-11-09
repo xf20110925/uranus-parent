@@ -1,13 +1,16 @@
 package com.ptb.uranus.server.third.version2.article;
 
 import com.jayway.jsonpath.JsonPath;
+import com.ptb.gaia.bus.kafka.KafkaBus;
+import com.ptb.uranus.schedule.utils.JedisUtil;
 import com.ptb.uranus.server.handle.WeiboArticleDynamicHandle;
+import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.version2.DataHandle;
-import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
+import com.ptb.uranus.server.third.version2.DataHandle;
+import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 
 import org.slf4j.Logger;
@@ -37,9 +40,13 @@ public class WeixinArticleStaticHandle implements DataHandle {
 	@Override
 	public void handleBusEntities(String dataUrl) {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
-		logger.info(String.format("[%d] [wx:static] pull from url [%s]",System.currentTimeMillis(),dataUrl));
+		logger.info(String.format("[%d] [wx:static] pull from url [%s]", System.currentTimeMillis(), dataUrl));
 		List<Map<String, String>> wxStaticAtricles = JsonPath.parse(pageSource).read("$.pages", List.class);
-		wxStaticAtricles.stream().map(ConvertUtils::convertWXArticleStatic).forEach(sender::sendArticleStatic);
+		wxStaticAtricles.stream().map(ConvertUtils::convertWXArticleStatic).filter(wxArticle -> {
+			String pmid = wxArticle.getBiz();
+			String isExist = JedisUtil.get(pmid);
+			return "1".equals(isExist);
+		}).forEach(sender::sendArticleStatic);
 	}
 
 	@Override
@@ -60,6 +67,9 @@ public class WeixinArticleStaticHandle implements DataHandle {
 	}
 
 	public static void main(String[] args) {
-		new WeixinArticleStaticHandle(null).handle();
+		KafkaBus bus = new KafkaBus();
+		Sender sender = new BusSender(bus);
+		bus.start(false, 5);
+		new WeixinArticleStaticHandle(sender).handle();
 	}
 }

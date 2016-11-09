@@ -2,7 +2,10 @@ package com.ptb.uranus.server.third.version2.article;
 
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.JsonPath;
+import com.ptb.gaia.bus.kafka.KafkaBus;
+import com.ptb.uranus.schedule.utils.JedisUtil;
 import com.ptb.uranus.server.handle.WeiboArticleDynamicHandle;
+import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.third.entity.BayouWXArticleDynamic;
 import com.ptb.uranus.server.third.entity.IdRecord;
@@ -17,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -37,9 +42,19 @@ public class WeixinArticleDynamicHandle implements DataHandle {
 	@Override
 	public void handleBusEntities(String dataUrl) {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
+		Pattern pattern = Pattern.compile(".*biz=([^&]*).*");
 		logger.info(String.format("[%d] [wx:dynamic]  pull  from url [%s]",System.currentTimeMillis(),dataUrl));
 		List<BayouWXArticleDynamic> wxArticleDynamics = JSON.parseArray(JsonPath.parse(pageSource).read("$.clicks").toString(), BayouWXArticleDynamic.class);
-		wxArticleDynamics.stream().map(ConvertUtils::convertWXArticleDynamic).forEach(sender::sendArticleDynamic);
+		wxArticleDynamics.stream().map(ConvertUtils::convertWXArticleDynamic).filter(wxArticle -> {
+			String wxArticleUrl = wxArticle.getUrl();
+			Matcher matcher = pattern.matcher(wxArticleUrl);
+			if (matcher.find()){
+				String biz = matcher.group(1);
+				String isExist = JedisUtil.get(biz);
+				return "1".equals(isExist);
+			}
+			return false;
+		}).forEach(sender::sendArticleDynamic);
 	}
 
 	@Override
@@ -60,6 +75,9 @@ public class WeixinArticleDynamicHandle implements DataHandle {
 	}
 
 	public static void main(String[] args) {
-		new WeixinArticleDynamicHandle(null).handle();
+		KafkaBus bus = new KafkaBus();
+		Sender sender = new BusSender(bus);
+		bus.start(false, 5);
+		new WeixinArticleDynamicHandle(sender).handle();
 	}
 }
