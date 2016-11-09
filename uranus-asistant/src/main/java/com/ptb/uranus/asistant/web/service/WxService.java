@@ -12,8 +12,9 @@ import com.ptb.utils.exception.PTBException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import redis.clients.jedis.Jedis;
 
@@ -150,24 +151,26 @@ public class WxService {
 	}
 
 	//控制访问频率锁
-	private static ReentrantLock lock = new ReentrantLock();
+	private static ConcurrentLinkedQueue<Integer> queue = new ConcurrentLinkedQueue<>(Arrays.asList(1));
 	private BayouWeixinParser parser = new BayouWeixinParser();
 	static Logger requestLogger = Logger.getLogger("bayou.request");
 
 	public String getReadLikeByBaYou(String url) {
+		Integer first = queue.poll();
 		try {
-			lock.lock();
-			Thread.sleep(500);
+			if (first == null) return "";
+			Thread.sleep(1000);
 			Optional<com.ptb.uranus.spider.weixin.bean.ReadLikeNum> readLikeOpt = parser.getReadLikeNumByArticleUrl(url);
 			if (readLikeOpt.isPresent()) {
-				requestLogger.error(String.format("request success url-> %s, time->%s", url, System.currentTimeMillis()/1000));
+				requestLogger.error(String.format("request success url-> %s, time->%s", url, System.currentTimeMillis() / 1000));
 				return readLikeOpt.get().toString();
 			}
-			requestLogger.error(String.format("request failed url->%s, time->%s", url, System.currentTimeMillis()/1000));
+			requestLogger.error(String.format("request failed url->%s, time->%s", url, System.currentTimeMillis() / 1000));
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			lock.unlock();
+			if (first != null)
+				queue.add(first);
 		}
 		return "";
 	}

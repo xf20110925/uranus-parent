@@ -1,6 +1,7 @@
 package com.ptb.uranus.spider.weixin.parse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
@@ -10,6 +11,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.http.entity.ContentType;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -103,9 +105,11 @@ public class BayouWeixinParser {
 	}
 
 	public Optional<ReadLikeNum> getReadLikeByAssitant(String articleUrl) {
-		String reqUrl = ASSITANT_READLIKE_URL + "?url=" + articleUrl;
+		String reqUrl = ASSITANT_READLIKE_URL;
 		try {
-			String readLike = HttpUtil.getPageSourceByClient(reqUrl);
+			JSONObject req = new JSONObject();
+			req.put("url", articleUrl);
+			String readLike = HttpUtil.postByPcClient(reqUrl, JSON.toJSONString(req), ContentType.APPLICATION_JSON);
 			if (StringUtils.isNotBlank(readLike))
 				return Optional.of(JSON.parseObject(readLike, ReadLikeNum.class));
 		} catch (Exception e) {

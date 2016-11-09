@@ -11,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -169,12 +171,32 @@ public class WxController {
 	}
 
 
-	@RequestMapping(value = "wx/readLike")
+	@RequestMapping(value = "wx/readLike", method = RequestMethod.POST)
 	@ResponseBody
-	public String getReadLikeByBaYou(@RequestParam("url") String url) {
+	public String getReadLikeByBaYou(@RequestBody ReadLikeRequest requestBody) {
+		String url = requestBody.getUrl();
 		if (StringUtils.isNotBlank(url)) {
 			return wxService.getReadLikeByBaYou(url);
 		}
 		return null;
+	}
+
+	static class ReadLikeRequest {
+		private String url;
+
+		public ReadLikeRequest() {
+		}
+
+		public ReadLikeRequest(String url) {
+			this.url = url;
+		}
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
 	}
 }
