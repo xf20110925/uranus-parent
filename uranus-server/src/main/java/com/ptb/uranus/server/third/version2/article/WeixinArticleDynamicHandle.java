@@ -51,7 +51,8 @@ public class WeixinArticleDynamicHandle implements DataHandle {
 			if (matcher.find()){
 				String biz = matcher.group(1);
 				String isExist = JedisUtil.get(biz);
-				return "1".equals(isExist);
+				//黑名单中存在，此媒体发文过滤掉
+				return isExist == null;
 			}
 			return false;
 		}).forEach(sender::sendArticleDynamic);

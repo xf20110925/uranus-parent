@@ -45,7 +45,8 @@ public class WeixinArticleStaticHandle implements DataHandle {
 		wxStaticAtricles.stream().map(ConvertUtils::convertWXArticleStatic).filter(wxArticle -> {
 			String pmid = wxArticle.getBiz();
 			String isExist = JedisUtil.get(pmid);
-			return "1".equals(isExist);
+			//黑名单中存在，此媒体发文过滤掉
+			return isExist == null;
 		}).forEach(sender::sendArticleStatic);
 	}
 
