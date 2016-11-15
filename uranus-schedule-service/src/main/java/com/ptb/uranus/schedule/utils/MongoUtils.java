@@ -17,12 +17,15 @@ public enum MongoUtils {
     }
 
     public MongoDatabase getDatabase(String dbName) {
-        if (dbName != null && !"".equals(dbName)) {
-            MongoDatabase database = com.ptb.utils.gaiatools.MongoUtils.instance().getDatabase(dbName);
-            return database;
-        } else {
-            return null;
+        try {
+            if (dbName != null && !"".equals(dbName)) {
+                MongoDatabase database = com.ptb.utils.gaiatools.MongoUtils.instance().getDatabase(dbName);
+                return database;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        throw new IllegalArgumentException("连接mongo失败！");
     }
 
 
