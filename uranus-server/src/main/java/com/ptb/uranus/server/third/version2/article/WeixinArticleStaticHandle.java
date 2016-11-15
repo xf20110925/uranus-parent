@@ -2,7 +2,6 @@ package com.ptb.uranus.server.third.version2.article;
 
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.gaia.bus.kafka.KafkaBus;
-import com.ptb.uranus.schedule.utils.JedisUtil;
 import com.ptb.uranus.server.handle.WeiboArticleDynamicHandle;
 import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
@@ -19,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,9 +32,11 @@ public class WeixinArticleStaticHandle implements DataHandle {
 	static Logger logger = LoggerFactory.getLogger(WeiboArticleDynamicHandle.class);
 
 	private Sender sender;
+	private Set<String> pmids;
 
 	public WeixinArticleStaticHandle(Sender sender) {
 		this.sender = sender;
+		this.pmids = getPmids("gaia2", "wxMedia");
 	}
 
 	@Override
@@ -44,9 +46,9 @@ public class WeixinArticleStaticHandle implements DataHandle {
 		List<Map<String, String>> wxStaticAtricles = JsonPath.parse(pageSource).read("$.pages", List.class);
 		wxStaticAtricles.stream().map(ConvertUtils::convertWXArticleStatic).filter(wxArticle -> {
 			String pmid = wxArticle.getBiz();
-			String isExist = JedisUtil.get(pmid);
-			//黑名单中存在，此媒体发文过滤掉
-			return isExist == null;
+			//白名单中存在，保留媒体发文
+			boolean isExist = pmids.contains(pmid);
+			return isExist;
 		}).forEach(sender::sendArticleStatic);
 	}
 
