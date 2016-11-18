@@ -23,7 +23,7 @@ public enum JedisUtil {
 			throw new RuntimeException("ptb.properties not found", e);
 		}
 		// 从配置文件中获取属性值
-		String host = config.getString("uranus.bayou.redis.host", "192.168.40.12");
+		String host = config.getString("uranus.bayou.redis.host", "172.16.0.105");
 		int port = config.getInt("uranus.bayou.redis.port", 6379);
 		JedisPoolConfig jdsConfig = new JedisPoolConfig();
 		jdsConfig.setMaxIdle(200);
