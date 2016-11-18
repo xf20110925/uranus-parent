@@ -3,18 +3,13 @@ package com.ptb.uranus.server.third.version2;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import com.mongodb.client.FindIterable;
-import com.ptb.uranus.schedule.utils.MongoUtils;
 import com.ptb.uranus.server.third.exception.BayouException;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 
 import org.apache.log4j.Logger;
-import org.bson.Document;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @DESC:
@@ -82,13 +77,13 @@ public interface DataHandle {
 	 * 获取媒体白名单或者黑名单
 	 * @return
 	 */
-	default Set<String> getPmids(String dataBase, String colletName){
+	/*default Set<String> getPmids(String dataBase, String colletName){
 		Set<String> pmids = new HashSet<>();
 		FindIterable<Document> docs = MongoUtils.instance.getDatabase(dataBase).getCollection(colletName).find().projection(new Document().append("_id", 1));
 		for (Document doc : docs) {
 			pmids.add(doc.getString("_id"));
 		}
 		return pmids;
-	};
+	};*/
 
 }

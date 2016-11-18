@@ -7,6 +7,7 @@ import com.ptb.uranus.server.third.entity.FreshData;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
+import com.ptb.uranus.server.third.util.JedisUtil;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,10 +31,8 @@ public class WeiboArticleHandle implements DataHandle{
 	static Logger logger = LoggerFactory.getLogger(WeiboArticle.class);
 
 	private Sender sender;
-	private Set<String> pmids;
 
 	public WeiboArticleHandle(Sender sender) {
-		pmids = getPmids("gaia2", "wbMedia");
 		this.sender = sender;
 	}
 
@@ -44,7 +42,7 @@ public class WeiboArticleHandle implements DataHandle{
 		logger.info(String.format("[%d] [wb:all] pull article data from url [%s]",System.currentTimeMillis(), dataUrl));
 		List<FreshData> wxArticles = JSON.parseArray(JsonPath.parse(pageSource).read("$.weibo").toString(), FreshData.class);
 		wxArticles.forEach(article -> {
-			if (!pmids.contains(article.getR_user_id())) return;
+			if (!JedisUtil.instance.exists(article.getR_user_id())) return;
 			sender.sendArticleStatic(ConvertUtils.weiboArticleStaticConvert(article));
 			sender.sendArticleDynamic(ConvertUtils.weiboArticleDynamicConvert(article));
 		});

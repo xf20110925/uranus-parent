@@ -8,6 +8,7 @@ import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
+import com.ptb.uranus.server.third.util.JedisUtil;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
@@ -18,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,11 +32,9 @@ public class WeixinArticleStaticHandle implements DataHandle {
 	static Logger logger = LoggerFactory.getLogger(WeiboArticleDynamicHandle.class);
 
 	private Sender sender;
-	private Set<String> pmids;
 
 	public WeixinArticleStaticHandle(Sender sender) {
 		this.sender = sender;
-		this.pmids = getPmids("gaia2", "wxMedia");
 	}
 
 	@Override
@@ -44,10 +42,10 @@ public class WeixinArticleStaticHandle implements DataHandle {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
 		logger.info(String.format("[%d] [wx:static] pull from url [%s]", System.currentTimeMillis(), dataUrl));
 		List<Map<String, String>> wxStaticAtricles = JsonPath.parse(pageSource).read("$.pages", List.class);
-		wxStaticAtricles.stream().map(ConvertUtils::convertWXArticleStatic).filter(wxArticle -> {
+		wxStaticAtricles.parallelStream().map(ConvertUtils::convertWXArticleStatic).filter(wxArticle -> {
 			String pmid = wxArticle.getBiz();
 			//白名单中存在，保留媒体发文
-			boolean isExist = pmids.contains(pmid);
+			boolean isExist = JedisUtil.instance.exists(pmid);
 			return isExist;
 		}).forEach(sender::sendArticleStatic);
 	}

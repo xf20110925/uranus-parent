@@ -10,6 +10,7 @@ import com.ptb.uranus.server.third.entity.BayouWXArticleDynamic;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
+import com.ptb.uranus.server.third.util.JedisUtil;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
@@ -19,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -34,11 +34,9 @@ import java.util.stream.Collectors;
 public class WeixinArticleDynamicHandle implements DataHandle {
 	static Logger logger = LoggerFactory.getLogger(WeiboArticleDynamicHandle.class);
 	private Sender sender;
-	private Set<String> pmids;
 
 	public WeixinArticleDynamicHandle(Sender sender) {
 		this.sender = sender;
-		pmids = getPmids("gaia2", "wxMedia");
 	}
 
 	@Override
@@ -52,7 +50,7 @@ public class WeixinArticleDynamicHandle implements DataHandle {
 			Matcher matcher = pattern.matcher(wxArticleUrl);
 			if (matcher.find()){
 				String biz = matcher.group(1);
-				boolean isExist = pmids.contains(biz);
+				boolean isExist = JedisUtil.instance.exists(biz);
 				//白名单中存在，保留媒体发文
 				return isExist;
 			}
