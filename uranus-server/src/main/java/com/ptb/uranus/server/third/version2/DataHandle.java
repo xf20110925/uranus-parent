@@ -28,7 +28,7 @@ public interface DataHandle {
 		} catch (Exception e) {
 			requestLogger.error(String.format("get rangeUrls error -> %s", e));
 		}
-		rangeUrls.stream().forEach(url -> {
+		rangeUrls.parallelStream().forEach(url -> {
 			try {
 				handleBusEntities(url);
 			} catch (Exception e) {
