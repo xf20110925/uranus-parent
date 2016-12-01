@@ -3,16 +3,13 @@ package com.ptb.uranus.server.third.version2.media;
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.server.send.Sender;
-import com.ptb.uranus.server.third.version2.DataHandle;
-import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.server.third.entity.BayouWXMedia;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
+import com.ptb.uranus.server.third.version2.DataHandle;
+import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +23,6 @@ import java.util.stream.Collectors;
  * @Time: 15:10
  */
 public class WeixinMediaHandle implements DataHandle {
-	static Logger logger = LoggerFactory.getLogger(WeixinMediaHandle.class);
 
 	private Sender sender;
 

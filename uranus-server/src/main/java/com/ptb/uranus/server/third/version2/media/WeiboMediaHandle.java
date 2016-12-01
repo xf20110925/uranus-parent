@@ -14,8 +14,6 @@ import com.ptb.uranus.spider.common.utils.HttpUtil;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +27,6 @@ import java.util.stream.Collectors;
  * @Time: 15:10
  */
 public class WeiboMediaHandle implements DataHandle {
-	static Logger logger = LoggerFactory.getLogger(WeiboMediaHandle.class);
 	private Sender sender;
 	private int filterFansNum = 10000;
 

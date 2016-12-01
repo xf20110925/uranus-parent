@@ -11,10 +11,6 @@ import com.ptb.uranus.server.third.util.JedisUtil;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
-import com.ptb.uranus.spider.weibo.bean.WeiboArticle;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +24,6 @@ import java.util.stream.Collectors;
  * @Time: 15:10
  */
 public class WeiboArticleHandle implements DataHandle{
-	static Logger logger = LoggerFactory.getLogger(WeiboArticle.class);
-
 	private Sender sender;
 
 	public WeiboArticleHandle(Sender sender) {

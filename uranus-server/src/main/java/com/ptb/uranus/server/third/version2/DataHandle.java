@@ -24,20 +24,20 @@ import java.util.regex.Pattern;
  * @Time: 14:26
  */
 public interface DataHandle {
-	Logger requestLogger = Logger.getLogger("bayou.request");
+	Logger logger = Logger.getLogger("bayou.request");
 
 	default void handle() {
 		List<String> rangeUrls = null;
 		try {
 			rangeUrls = getRangeUrls();
 		} catch (Exception e) {
-			requestLogger.error(String.format("get rangeUrls error -> %s", e));
+			logger.error(String.format("get rangeUrls error -> %s", e));
 		}
 		rangeUrls.parallelStream().forEach(url -> {
 			try {
 				handleBusEntities(url);
 			} catch (Exception e) {
-				requestLogger.error(String.format("handle data error -> %s", e));
+				logger.error(String.format("handle data error -> %s", e));
 			}
 		});
 	}
