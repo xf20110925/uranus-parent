@@ -4,12 +4,17 @@ package com.ptb.uranus.server.third.version2;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.server.third.exception.BayouException;
+import com.ptb.uranus.server.third.util.JedisUtil;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @DESC:
@@ -73,6 +78,21 @@ public interface DataHandle {
 	 */
 	void handleBusEntities(String dataUrl);
 
+	default Optional<String> getByRegex(String text, Pattern pattern, int index) {
+		Matcher matcher = pattern.matcher(text);
+		if (matcher.find()) return Optional.of(matcher.group(index));
+		return Optional.empty();
+	}
+
+	default boolean isExists(String text, Pattern pattern, int index) {
+		String pmid = getByRegex(text, pattern, index).orElse("");
+		if (StringUtils.isNotBlank(pmid)) {
+			//白名单中存在，保留媒体发文
+			boolean isExist = JedisUtil.instance.exists(pmid);
+			return isExist;
+		}
+		return false;
+	}
 	/**
 	 * 获取媒体白名单或者黑名单
 	 * @return

@@ -10,7 +10,6 @@ import com.ptb.uranus.server.third.entity.BayouWXArticleDynamic;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
-import com.ptb.uranus.server.third.util.JedisUtil;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -33,6 +31,7 @@ import java.util.stream.Collectors;
  */
 public class WeixinArticleDynamicHandle implements DataHandle {
 	static Logger logger = LoggerFactory.getLogger(WeiboArticleDynamicHandle.class);
+	static Pattern bizRegex = Pattern.compile(".*_biz=([^&]*).*");
 	private Sender sender;
 
 	public WeixinArticleDynamicHandle(Sender sender) {
@@ -42,20 +41,9 @@ public class WeixinArticleDynamicHandle implements DataHandle {
 	@Override
 	public void handleBusEntities(String dataUrl) {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
-		Pattern pattern = Pattern.compile(".*biz=([^&]*).*");
-		logger.info(String.format("[%d] [wx:dynamic]  pull  from url [%s]",System.currentTimeMillis(),dataUrl));
+		logger.info(String.format("[%d] [wx:dynamic]  pull  from url [%s]", System.currentTimeMillis(), dataUrl));
 		List<BayouWXArticleDynamic> wxArticleDynamics = JSON.parseArray(JsonPath.parse(pageSource).read("$.clicks").toString(), BayouWXArticleDynamic.class);
-		wxArticleDynamics.stream().map(ConvertUtils::convertWXArticleDynamic).filter(wxArticle -> {
-			String wxArticleUrl = wxArticle.getUrl();
-			Matcher matcher = pattern.matcher(wxArticleUrl);
-			if (matcher.find()){
-				String biz = matcher.group(1);
-				boolean isExist = JedisUtil.instance.exists(biz);
-				//白名单中存在，保留媒体发文
-				return isExist;
-			}
-			return false;
-		}).forEach(sender::sendArticleDynamic);
+		wxArticleDynamics.stream().filter(wxArticle -> isExists(wxArticle.getUrl(), bizRegex, 1)).map(ConvertUtils::convertWXArticleDynamic).forEach(sender::sendArticleDynamic);
 	}
 
 	@Override

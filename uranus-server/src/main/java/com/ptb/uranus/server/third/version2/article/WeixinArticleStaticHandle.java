@@ -8,7 +8,6 @@ import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.third.entity.IdRecord;
 import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
-import com.ptb.uranus.server.third.util.JedisUtil;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -32,7 +30,7 @@ import java.util.stream.Collectors;
  */
 public class WeixinArticleStaticHandle implements DataHandle {
 	static Logger logger = LoggerFactory.getLogger(WeiboArticleDynamicHandle.class);
-	Pattern bizRegex = Pattern.compile(".*_biz=([^&]*).*");
+	static Pattern bizRegex = Pattern.compile(".*_biz=([^&]*).*");
 
 	private Sender sender;
 
@@ -45,17 +43,7 @@ public class WeixinArticleStaticHandle implements DataHandle {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
 		logger.info(String.format("[%d] [wx:static] pull from url [%s]", System.currentTimeMillis(), dataUrl));
 		List<Map<String, String>> wxStaticAtricles = JsonPath.parse(pageSource).read("$.pages", List.class);
-		wxStaticAtricles.stream().filter(map -> {
-			String url = map.get("url");
-			String biz = "";
-			Matcher matcher = bizRegex.matcher(url);
-			if (matcher.find() && matcher.groupCount() > 0) {
-				biz = matcher.group(1);
-			}
-			//白名单中存在，保留媒体发文
-			boolean isExist = JedisUtil.instance.exists(biz);
-			return isExist;
-		}).map(ConvertUtils::convertWXArticleStatic).forEach(sender::sendArticleStatic);
+		wxStaticAtricles.stream().filter(map -> isExists(map.get("url"), bizRegex, 1)).map(ConvertUtils::convertWXArticleStatic).forEach(sender::sendArticleStatic);
 	}
 
 	@Override
