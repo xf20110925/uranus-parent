@@ -136,25 +136,12 @@ public class WeixinSpider {
 	 */
 	public Optional<ReadLikeNum> getArticleReadLikeNumByUrl(String articleUrl, int timeout) {
 		try {
-			if (articleUrl.contains("signature=")) {
-				return Optional.of(getSogouWxReadLikeNum(articleUrl));
-			} else {
-				//首先通过八友微信接口获取数据
-				Optional<ReadLikeNum> bayouWxReadLike = bayouWeixinParser.getReadLikeByAssitant(articleUrl);
-				if (bayouWxReadLike.isPresent()) {
-					return bayouWxReadLike;
-				}
-				LogUtils.logInfo("uranus-spider", "get-weixin-readlike-by-url", LogUtils.ActionResult.success, "");
-				//通过微信到搜狗微信链接的转化获取数据
-				try {
-					String sogouUrl = WeixinUtil.instance().queryMapLink(WeixinUtil.instance().getUrlMapKey(articleUrl));
-					if (StringUtils.isNotBlank(sogouUrl)) {
-						return Optional.of(getSogouWxReadLikeNum(sogouUrl));
-					}
-				} catch (Exception e) {
-
-				}
+			//首先通过八友微信接口获取数据
+			Optional<ReadLikeNum> bayouWxReadLike = bayouWeixinParser.getReadLikeByAssitant(articleUrl);
+			if (bayouWxReadLike.isPresent()) {
+				return bayouWxReadLike;
 			}
+			LogUtils.logInfo("uranus-spider", "get-weixin-readlike-by-url", LogUtils.ActionResult.success, "");
 		} catch (Exception e) {
 			logger.warn(e.getLocalizedMessage());
 		}
