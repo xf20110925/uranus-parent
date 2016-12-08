@@ -189,8 +189,8 @@ public class WeixinSpider {
 			String uin = RegexUtils.sub(".*uin=([^#&]*).*", keyUrl, 0);
 
 			BasicCookieStore basicCookieStore = new BasicCookieStore();
-			url = HttpUtil.updateArgument(url, "uin", uin);
-			url = HttpUtil.updateArgument(url, "key", key);
+//			url = HttpUtil.updateArgument(url, "uin", uin);
+//			url = HttpUtil.updateArgument(url, "key", key);
 			//首先访问页面获取到cookie，用于post请求时候提交
 			HttpUtil.getPageSourceByClient(keyUrl, HttpUtil.UA_PC_WINDOW, basicCookieStore, "utf-8", "");
 
