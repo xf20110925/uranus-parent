@@ -156,22 +156,24 @@ public class WxService {
 	static Logger requestLogger = Logger.getLogger("bayou.request");
 
 	public String getReadLikeByBaYou(String url) {
-		Integer first = queue.poll();
-		try {
-			if (first == null) return "";
-			Thread.sleep(1000);
-			Optional<com.ptb.uranus.spider.weixin.bean.ReadLikeNum> readLikeOpt = parser.getReadLikeNumByArticleUrl(url);
-			if (readLikeOpt.isPresent()) {
-				requestLogger.error(String.format("request success url-> %s, time->%s", url, System.currentTimeMillis() / 1000));
-				return readLikeOpt.get().toString();
+		if (queue.isEmpty()) return "";
+		synchronized (queue) {
+			Integer first = queue.poll();
+			try {
+				Thread.sleep(500);
+				Optional<com.ptb.uranus.spider.weixin.bean.ReadLikeNum> readLikeOpt = parser.getReadLikeNumByArticleUrl(url);
+				if (readLikeOpt.isPresent()) {
+					requestLogger.error(String.format("request success url-> %s, time->%s", url, System.currentTimeMillis() / 1000));
+					return readLikeOpt.get().toString();
+				}
+				requestLogger.error(String.format("request failed url->%s, time->%s", url, System.currentTimeMillis() / 1000));
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (first != null)
+					queue.add(first);
 			}
-			requestLogger.error(String.format("request failed url->%s, time->%s", url, System.currentTimeMillis() / 1000));
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (first != null)
-				queue.add(first);
+			return "";
 		}
-		return "";
 	}
 }
