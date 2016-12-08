@@ -55,6 +55,8 @@ public class HttpUtil {
 	 */
 	public final static String UA_PC_CHROME = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) AppleWebKit/536.36 (KHTML, like Gecko) Chrome/45.0.2452.101 Safari/536.36";
 
+	public static final String UA_PC_WINDOW = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat";
+
 	/**
 	 * Gets proxy <br> 从爬虫服务器获取一个代理地址,
 	 *
