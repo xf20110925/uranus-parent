@@ -188,14 +188,12 @@ public class WeixinSpider {
 			String key = RegexUtils.sub(".*key=([^#&]*).*", keyUrl, 0);
 			String uin = RegexUtils.sub(".*uin=([^#&]*).*", keyUrl, 0);
 
-			BasicCookieStore basicCookieStore = new BasicCookieStore();
-//			url = HttpUtil.updateArgument(url, "uin", uin);
-//			url = HttpUtil.updateArgument(url, "key", key);
-			//首先访问页面获取到cookie，用于post请求时候提交
-			HttpUtil.getPageSourceByClient(keyUrl, HttpUtil.UA_PC_WINDOW, basicCookieStore, "utf-8", "");
 
 			String articleUrl = HttpUtil.updateArgument(url, "key", key);
 			articleUrl = HttpUtil.updateArgument(articleUrl, "uin", uin);
+			BasicCookieStore basicCookieStore = new BasicCookieStore();
+			//首先访问页面获取到cookie，用于post请求时候提交
+			HttpUtil.getPageSourceByClient(articleUrl, HttpUtil.UA_PC_WINDOW, basicCookieStore, "utf-8", "");
 			articleUrl = articleUrl.replace("/s", "/mp/getappmsgext");
 			articleUrl = HttpUtil.updateArgument(articleUrl, "f", "json");
 			articleUrl = HttpUtil.updateArgument(articleUrl, "is_need_ad", "0");
