@@ -160,7 +160,7 @@ public class WxService {
 		synchronized (queue) {
 			Integer first = queue.poll();
 			try {
-				Thread.sleep(500);
+				Thread.sleep(1000);
 				Optional<com.ptb.uranus.spider.weixin.bean.ReadLikeNum> readLikeOpt = parser.getReadLikeNumByArticleUrl(url);
 				if (readLikeOpt.isPresent()) {
 					requestLogger.error(String.format("request success url-> %s, time->%s", url, System.currentTimeMillis() / 1000));
