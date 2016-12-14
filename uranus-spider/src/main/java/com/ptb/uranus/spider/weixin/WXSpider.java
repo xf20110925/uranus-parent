@@ -115,7 +115,7 @@ public class WXSpider {
 	 * @throws IOException
 	 */
 	public static ReadLikeNum getReadLikeNum(String url) throws IOException {
-		url.replace("f=json&","");
+		url=url.replace("f=json&","").replace("mp/getappmsgext","s");
 		String params = "is_only_read=1&req_id=0811jgVb3OaNm2IlY35Ti9G5&is_temp_url=0";
 		Param param = new Param(url);
 		System.out.println(JSON.toJSONString(param));
