@@ -168,7 +168,7 @@ public class WeixinSpider {
 	/**
 	 * get article read like number by weixin key
 	 */
-	private Optional<ReadLikeNum> getArticleReadLikeNumByWXkey(String url) {
+	public Optional<ReadLikeNum> getArticleReadLikeNumByWXkey(String url) {
 
 		try {
 			//首先查询文章的readLikeNum是否存在
