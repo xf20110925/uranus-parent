@@ -1,8 +1,8 @@
 (function () {
     var url = location.href;
     var data = {url: url};
-    var phoneSchdularUrl = "http://101.200.213.147/wx/mobile/getNewUrl";
-
+    var phoneSchdularUrl = "http://192.168.21.103:8080/wx/mobile/getNewUrl";
+    var getkeyurl = "http://192.168.21.103:8080/wx/readUrl";
     function requestUrl() {
         try {
             window._WXJS.ajax({
@@ -36,28 +36,27 @@
 
     try {
         if (url.indexOf("mp.weixin.qq.com/s") >= 0 && url.indexOf("f=json") >= 0 && JSON.parse(document.getElementsByTagName('body')[0].innerText).base_resp.ret == 0) {
-            var readUrl = url.replace("/mp/getmasssendmsg?", "/mp/getmasssendmsg?f=json&").replace("/s?", "/mp/getappmsgext?is_need_ad=0&is_need_reward=0&both_ad=1&reward_uin_count=0&").replace("http://", "https://");
             window._WXJS.ajax({
-                url: readUrl,
-                type: 'POST',
-                dataType: 'json',
-                data: {},
+                url: getkeyurl,
+                type: 'get',
+                dataType: 'jsonp',
+                data: {"url": url},
                 success: function (result) {
+                    alert(JSON.stringify(result));
                     try {
                         data.type = "rlnum";
-                        data.readNum = result.appmsgstat.read_num;
-                        if (result.appmsgstat.real_read_num > 0) {
-                            data.readNum = result.appmsgstat.real_read_num;
-                        }
-                        data.likeNum = result.appmsgstat.like_num;
+                        data.readNum = result.readNum;
+                        data.likeNum = result.likeNum;
                         setTimeout(function () {
                             requestUrl()
                         }, 500)
                     } catch (err) {
+                        alert("cache");
                         location.href = "http://m.sogou.com/js/common/zepto_modules/fx.min.js";
                     }
                 },
                 error: function (result) {
+                    alert("error");
                     location.href = "http://m.sogou.com/js/common/zepto_modules/fx.min.js";
                 }
             });
