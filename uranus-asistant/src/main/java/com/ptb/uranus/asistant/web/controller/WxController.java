@@ -5,6 +5,8 @@ import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.asistant.core.entity.JSONResult;
 import com.ptb.uranus.asistant.web.model.rep.RequestUrlResponse;
 import com.ptb.uranus.asistant.web.service.WxService;
+import com.ptb.uranus.spider.weixin.WXSpider;
+import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.io.IOException;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -40,8 +44,7 @@ public class WxController {
 
 	@RequestMapping(value = "wx/mobile/getNewUrl")
 	@ResponseBody
-	public String getNewUrl(HttpServletRequest request, @RequestParam("callback") String callback,
-	                        @RequestParam("data") String data) {
+	public String getNewUrl(HttpServletRequest request, @RequestParam("callback") String callback, @RequestParam("data") String data) {
 		try {
 			JSONResult jsonResult = new JSONResult();
 
@@ -199,4 +202,13 @@ public class WxController {
 			this.url = url;
 		}
 	}
+
+	@RequestMapping(value = "wx/readUrl")
+	@ResponseBody
+	public String getReadUrl(HttpServletRequest request, @RequestParam("callback") String callback, @RequestParam("url") String url) throws IOException {
+		ReadLikeNum readLikeNum = WXSpider.getReadLikeNum(url);
+		System.out.println(JSON.toJSONString(readLikeNum));
+		return String.format("%s(%s)", callback, readLikeNum);
+	}
+
 }
