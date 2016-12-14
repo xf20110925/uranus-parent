@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 /**
  * Created by eric on 15/11/11. <br>
@@ -240,11 +241,51 @@ public class WeixinUtil {
      * @return the boolean
      */
     public boolean isCorrectBiz(String biz) {
+
+
+
+
+
+
+
         try {
             long l = Long.parseLong(new String(Base64.decodeFast(biz)));
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static void main(String[] args) {
+        String urls = "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753008&idx=1&sn=4ffe7ed5e8f524a31e57f60ccff79ca5#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753294&idx=1&sn=3f28e5aae831d28c37be396f7f896a1c#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753310&idx=1&sn=b800c8484e73217230359e7e7556855a#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753366&idx=1&sn=e853f9ba17f0600c6c7dd0c030f91b7c#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753371&idx=1&sn=693c1bdcbff50aa6663b19e708651012#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753376&idx=1&sn=3d72c67cd33ee94a77720d2e0c8c15d6#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753376&idx=2&sn=00c8db0893e90a347aa2cbb1b4f1d442#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753454&idx=1&sn=f6d91cc49e5485a74788fa53b8bbf9ab#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753516&idx=1&sn=93ab671c852ade0cbef24b5db7f1d4db#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753533&idx=2&sn=9a76675c91135db99ba4f01772ed7a9d#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753561&idx=1&sn=3a61f14b443b99363d6f300a9e344903#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753574&idx=1&sn=d38f3c4ef5f0e039d0764656dac02120#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjE2MDI0OTk2MQ==&mid=2650844812&idx=1&sn=9aaec9ed6f6fb0f3ac563da9a7d11e9b#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjM1ODIzNTU2MQ==&mid=2659247958&idx=4&sn=f5eca866331b4a4833cc11b08303d029#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjM1ODIzNTU2MQ==&mid=2659247965&idx=3&sn=c7dbe98f0587793c811cd30f81b9f356#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjM1ODIzNTU2MQ==&mid=2659248190&idx=2&sn=786f2aad33935744fbc7a0a4cd207e0a#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjM5MDAwMzUyMA==&mid=2650088578&idx=1&sn=6c86853080a37eb905e104d45cfc87d8#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjM5MDAxNzA2NA==&mid=2654860774&idx=1&sn=51a7cb65298b7c80af82628da4535864#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjM5MDAyMTA2MA==&mid=2650429602&idx=3&sn=508090245ccbca6a8e7b345661a787ff#rd\n" +
+                "http://mp.weixin.qq.com/s?__biz=MjM5MDAyNzQ0MA==&mid=2651038147&idx=1&sn=8402a9a8a778c8d7ac1eebd0212cd276#rd";
+        WeixinUtil weixinUtil = new WeixinUtil();
+        Arrays.stream(urls.split("\n")).forEach(u ->{
+            try {
+                weixinUtil.addPhoneTask(u);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+
     }
 }

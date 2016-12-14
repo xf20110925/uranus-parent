@@ -115,14 +115,13 @@ public class WXSpider {
 	 * @throws IOException
 	 */
 	public static ReadLikeNum getReadLikeNum(String url) throws IOException {
+		url.replace("f=json&","");
 		String params = "is_only_read=1&req_id=0811jgVb3OaNm2IlY35Ti9G5&is_temp_url=0";
 		Param param = new Param(url);
 		System.out.println(JSON.toJSONString(param));
 		String requestUrl = "https://mp.weixin.qq.com/mp/getappmsgext?__biz=%s&mid=%s&idx=%s&sn=%s&is_need_ad=0&f=json&uin=%s&key=%s";
 		requestUrl = String.format(requestUrl, param.getBiz(), param.getMid(), param.getIdx(), param.getSn(), param.getUin(), param.getKey());
 		System.out.println(requestUrl);
-		url = HttpUtil.updateArgument(url, "uin", param.getUin());
-		url = HttpUtil.updateArgument(url, "key", param.getKey());
 		CookieStore cookieStore = httpGet(url);
 		String ret = HttpUtil.postByPageClient(requestUrl, params, ContentType.APPLICATION_FORM_URLENCODED, UA, cookieStore);
 		ReadLikeNum readLikeNum = wxArticleParser.parseReadLikeNumByJson(ret);
@@ -130,7 +129,7 @@ public class WXSpider {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String url = "http://mp.weixin.qq.com/s?__biz=MzA5MTc0NTMwNQ==&mid=2650714035&idx=1&sn=0ffaa9d915f898780686fd104dab18d5&chksm=887db2c5bf0a3bd3c8dbe08193d778a4272d885ffcdcb2e8f45679bd4ebb069884d2446e7655&scene=37&key=dbf846bda2a738098da6054f99f1048654a42f52a7fbfefac17408cc1d7687c24e24de860edb4f1db03d22a9663cf7babea1ff69e977e1fa793a336d91d5d128df31253820ba522f1cf8c4e126410d76&ascene=3&uin=MjQzNzIwMzI0MQ%3D%3D&devicetype=android-19&version=26010041&nettype=WIFI&abtest_cookie=AQABAAgAAQALhh4AAAA%3D&pass_ticket=x6SfHADzMrnAmr3cXmC822mF505PLSLTsQexjqKZYM9m%2BLmIXocqSDVODVTTdA2u";
+			String url = "https://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753561&idx=1&sn=3a61f14b443b99363d6f300a9e344903&key=d3feb59da89e7994d69c25bffa477eca89e78e026dfd467f0a1ef609b2e7d9187add1bb0c526ca8ac6a61f7d81b5ff0739a10f9c8349878ac19f2ea8b90aa197a00f4b22dd138c9764d52d1d4ce6ea74&ascene=3&uin=NDk2MjU3ODEy&devicetype=android-18&version=26010041&nettype=WIFI&pass_ticket=lSvhCjd65NjP6VHzz0WJpDwNQ35PCmENjxpmullNsXtIPDja6qqkAOzjEFLq8jXs#rd" ;
 		ReadLikeNum s = getReadLikeNum(url);
 		System.out.println(s);
 	}
