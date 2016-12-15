@@ -9,6 +9,8 @@ import com.ptb.utils.string.RegexUtils;
 import org.apache.http.client.CookieStore;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -21,6 +23,7 @@ import java.io.IOException;
  * @Time: 15:03
  */
 public class WXSpider {
+	static Logger logger = LoggerFactory.getLogger(WXSpider.class);
 	public static final String UA = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat";
 	static WxArticleParser wxArticleParser = new WxArticleParser();
 	static class Param {
@@ -118,11 +121,10 @@ public class WXSpider {
 		url=url.replace("f=json&","").replace("mp/getappmsgext","s");
 		String params = "is_only_read=1&req_id=0811jgVb3OaNm2IlY35Ti9G5&is_temp_url=0";
 		Param param = new Param(url);
-		System.out.println(JSON.toJSONString(param));
 		String requestUrl = "https://mp.weixin.qq.com/mp/getappmsgext?__biz=%s&mid=%s&idx=%s&sn=%s&is_need_ad=0&f=json&uin=%s&key=%s";
 		requestUrl = String.format(requestUrl, param.getBiz(), param.getMid(), param.getIdx(), param.getSn(), param.getUin(), param.getKey());
-		System.out.println(requestUrl);
 		CookieStore cookieStore = httpGet(url);
+		logger.info("grab dynamic data cookid"+JSON.toJSONString(cookieStore));
 		String ret = HttpUtil.postByPageClient(requestUrl, params, ContentType.APPLICATION_FORM_URLENCODED, UA, cookieStore);
 		ReadLikeNum readLikeNum = wxArticleParser.parseReadLikeNumByJson(ret);
 		return readLikeNum;
