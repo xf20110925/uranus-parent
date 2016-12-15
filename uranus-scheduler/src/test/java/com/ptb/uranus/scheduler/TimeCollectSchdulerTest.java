@@ -7,13 +7,13 @@ import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.model.SchedulableCollectCondition;
 import com.ptb.uranus.schedule.model.ScheduleObject;
 import com.ptb.uranus.schedule.trigger.PeriodicTrigger;
+
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import sun.misc.Signal;
 
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,16 +37,8 @@ public class TimeCollectSchdulerTest {
     public void testSendCommand() throws Exception {
 
         TimeCollectSchduler timeCollectSchduler = new TimeCollectSchduler();
-        timeCollectSchduler.start(false);
+        timeCollectSchduler.start();
         Thread.sleep(4000);
         Signal.raise(new Signal("INT"));
     }
-
-
-
-    @After
-    public void after() {
-        schedulerDao.delCollScheduler(ddddd.getId());
-    }
-
 }

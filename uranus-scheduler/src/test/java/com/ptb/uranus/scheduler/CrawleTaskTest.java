@@ -1,8 +1,8 @@
 package com.ptb.uranus.scheduler;
 
 import com.ptb.uranus.common.entity.CollectType;
+
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,11 +33,6 @@ public class CrawleTaskTest {
         }
 
 
-    }
-
-    @After
-    public void after() {
-        crawleTask.cancel();
     }
 
 }
