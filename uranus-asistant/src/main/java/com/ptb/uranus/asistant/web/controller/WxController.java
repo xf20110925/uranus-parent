@@ -8,6 +8,9 @@ import com.ptb.uranus.asistant.web.service.WxService;
 import com.ptb.uranus.spider.weixin.WXSpider;
 import com.ptb.uranus.spider.weixin.bean.ReadLikeNum;
 
+import kafka.utils.Json;
+import org.apache.commons.collections.comparators.FixedOrderComparator;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +52,6 @@ public class WxController {
 	public String getNewUrl(HttpServletRequest request, @RequestParam("callback") String callback, @RequestParam("data") String data) {
 		try {
 			JSONResult jsonResult = new JSONResult();
-
 			if (data != null) {
 				String url = JsonPath.parse(data).read("$.url");
 				if (url.contains("key=") && url.contains("qq")) {
@@ -58,7 +62,6 @@ public class WxController {
 					}
 				}
 			}
-
 			String url = wxService.getNextRedirectUrl();
 			String result;
 
@@ -202,12 +205,22 @@ public class WxController {
 			this.url = url;
 		}
 	}
-
+	AtomicLong counter = new AtomicLong();
 	@RequestMapping(value = "wx/readUrl")
 	@ResponseBody
 	public String getReadUrl(HttpServletRequest request, @RequestParam("callback") String callback, @RequestParam("url") String url) throws IOException {
 		ReadLikeNum readLikeNum = WXSpider.getReadLikeNum(url);
-		System.out.println(JSON.toJSONString(readLikeNum));
+		Map<String,Object> map = new HashedMap();
+		long countNum = 0 ;
+		if (readLikeNum.getLikeNum() > 0 && readLikeNum.getReadNum()>0){
+			countNum = counter.addAndGet(1);
+			map.put("redaNum",readLikeNum.getLikeNum());
+			map.put("likeNum",readLikeNum.getLikeNum());
+			map.put("CountNum",countNum);
+		}
+		map.put("keyUrl",url);
+		String format = String.format("%s(%s)(%s)", readLikeNum, countNum, url);
+		logger.info("grab dynamic data:"+JSON.toJSONString(map));
 		return String.format("%s(%s)", callback, readLikeNum);
 	}
 

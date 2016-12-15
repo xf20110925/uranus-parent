@@ -1,8 +1,8 @@
 (function () {
     var url = location.href;
     var data = {url: url};
-    var phoneSchdularUrl = "http://192.168.21.103:8080/wx/mobile/getNewUrl";
-    var getkeyurl = "http://192.168.21.103:8080/wx/readUrl";
+    var phoneSchdularUrl = "http://114.113.237.137/wx/mobile/getNewUrl";
+    var getkeyurl = "http://172.16.0.217/wx/readUrl";
     function requestUrl() {
         try {
             window._WXJS.ajax({
@@ -42,7 +42,6 @@
                 dataType: 'jsonp',
                 data: {"url": url},
                 success: function (result) {
-                    alert(JSON.stringify(result));
                     try {
                         data.type = "rlnum";
                         data.readNum = result.readNum;
@@ -51,12 +50,10 @@
                             requestUrl()
                         }, 500)
                     } catch (err) {
-                        alert("cache");
                         location.href = "http://m.sogou.com/js/common/zepto_modules/fx.min.js";
                     }
                 },
                 error: function (result) {
-                    alert("error");
                     location.href = "http://m.sogou.com/js/common/zepto_modules/fx.min.js";
                 }
             });
@@ -64,7 +61,6 @@
             setTimeout(function () {
                 requestUrl()
             }, 500)
-
         }
     } catch (err) {
         setTimeout(function () {
