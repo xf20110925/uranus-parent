@@ -205,22 +205,19 @@ public class WxController {
 			this.url = url;
 		}
 	}
+
 	AtomicLong counter = new AtomicLong();
+
 	@RequestMapping(value = "wx/readUrl")
 	@ResponseBody
 	public String getReadUrl(HttpServletRequest request, @RequestParam("callback") String callback, @RequestParam("url") String url) throws IOException {
 		ReadLikeNum readLikeNum = WXSpider.getReadLikeNum(url);
-		Map<String,Object> map = new HashedMap();
-		long countNum = 0 ;
-		if (readLikeNum.getLikeNum() > 0 && readLikeNum.getReadNum()>0){
-			countNum = counter.addAndGet(1);
-			map.put("redaNum",readLikeNum.getLikeNum());
-			map.put("likeNum",readLikeNum.getLikeNum());
-			map.put("CountNum",countNum);
+		if (readLikeNum.getLikeNum() >= 0 && readLikeNum.getReadNum()>=0){
+			String format = String.format("%sCountNum:%skeyUrl:%s", readLikeNum, counter.addAndGet(1), url);
+			logger.info("success grab dynamic data:"+format);
+		}else{
+			logger.info("error grab dynamic data:"+url);
 		}
-		map.put("keyUrl",url);
-		String format = String.format("%s(%s)(%s)", readLikeNum, countNum, url);
-		logger.info("grab dynamic data:"+JSON.toJSONString(map));
 		return String.format("%s(%s)", callback, readLikeNum);
 	}
 
