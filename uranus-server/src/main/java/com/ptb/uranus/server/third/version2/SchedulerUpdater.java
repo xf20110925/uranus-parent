@@ -1,5 +1,6 @@
 package com.ptb.uranus.server.third.version2;
 
+import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.schedule.service.WeixinScheduleService;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -80,7 +81,10 @@ public class SchedulerUpdater {
   }
 
   public void handle() throws InterruptedException {
-	NewArticleScheduler scheduler = bq.take();
-	wxScheduleService.updateWeixinMediaCondition(scheduler.getPmid(), scheduler.getPostTime());
+    while (true) {
+	  NewArticleScheduler scheduler = bq.take();
+	  wxScheduleService.updateWeixinMediaCondition(scheduler.getPmid(), scheduler.getPostTime());
+	  System.out.println(String.format("更新调度->%s", JSON.toJSONString(scheduler)));
+	}
   }
 }
