@@ -17,6 +17,7 @@ public class ThirdEntryV2 {
 	private Bus bus;
 	private Sender sender;
 	private ExecutorService executor;
+  	private SchedulerUpdater schedulerUpdater;
 
 
 	public ThirdEntryV2() {
@@ -24,13 +25,14 @@ public class ThirdEntryV2 {
 		sender = new BusSender(this.bus);
 		bus.start(false, 5);
 		executor = Executors.newFixedThreadPool(10);
+	  	schedulerUpdater = new SchedulerUpdater();
 	}
 
 	public void schedule() {
 		WeiboMediaHandle weiboMediaHandle = new WeiboMediaHandle(sender);
-		WeiboArticleHandle weiboArticleHandle = new WeiboArticleHandle(sender);
+		WeiboArticleHandle weiboArticleHandle = new WeiboArticleHandle(sender, schedulerUpdater);
 		WeixinMediaHandle weixinMediaHandle = new WeixinMediaHandle(sender);
-		WeixinArticleStaticHandle weixinArticleStaticHandle = new WeixinArticleStaticHandle(sender);
+		WeixinArticleStaticHandle weixinArticleStaticHandle = new WeixinArticleStaticHandle(sender, schedulerUpdater);
 		WeixinArticleDynamicHandle weixinArticleDynamicHandle = new WeixinArticleDynamicHandle(sender);
 
 		executor.execute(adapter(weiboMediaHandle));
@@ -38,6 +40,13 @@ public class ThirdEntryV2 {
 		executor.execute(adapter(weixinMediaHandle));
 		executor.execute(adapter(weixinArticleStaticHandle));
 		executor.execute(adapter(weixinArticleDynamicHandle));
+	  	executor.execute(() -> {
+		  try {
+			schedulerUpdater.handle();
+		  } catch (InterruptedException e) {
+			e.printStackTrace();
+		  }
+		});
 	}
 
 

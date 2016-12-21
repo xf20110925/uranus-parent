@@ -44,27 +44,21 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
 
             String id = conditon[0];
             long lastTime = Long.parseLong(conditon[1]);
-            String containerID;
+            String containerID = "";
             String weiboID = null;
 
             if (id.length() <= 10) {
-                containerID = wbScheduleService.getContainerIDByWeiboID(id);
                 weiboID = id;
             } else {
                 containerID = id;
             }
 
-            if (StringUtils.isBlank(containerID) || containerID.length() <= 10) {
-                Optional<WeiboAccount> account = weiboSpider.getWeiboAccountByWeiboID(id);
-                if (account.isPresent() && account.get().getContainerID() != null) {
-                    wbScheduleService.setContainerIDByWeiboID(account.get().getWeiboID(), account.get().getContainerID());
-                    containerID = account.get().getContainerID();
-                }
-            } else if(StringUtils.isBlank(weiboID)){
-
+            Optional<WeiboAccount> account = weiboSpider.getWeiboAccountByWeiboID(id);
+            if (account.isPresent() && account.get().getContainerID() != null) {
+              containerID = account.get().getContainerID();
             }
-
             recentArticlesPair = weiboSpider.getRecentArticlesByContainerID(weiboID, containerID, lastTime);
+
             LogUtils.logInfo("uranus-server", "C_WB_A_N get", LogUtils.ActionResult.success, "");
 
             if (recentArticlesPair.isPresent()) {
@@ -89,12 +83,11 @@ public class WeiboNewArticlesHandle implements com.ptb.uranus.server.handle.Coll
                     LogUtils.logInfo("uranus-server", "C_WB_A_N send", LogUtils.ActionResult.success, "");
                 }
             } else {
-                ParseErroeLogger.error(new String(message.getRaw()));
+                ParseErroeLogger.error(String.valueOf(message.getRaw()));
                 LogUtils.log("uranus-server", "C_WB_A_N error", LogUtils.ActionResult.failed, new String(message.getRaw()));
-
             }
         } catch (Exception e) {
-            ParseErroeLogger.error(new String(message.getRaw()), e);
+            ParseErroeLogger.error(String.valueOf(message.getRaw()), e);
             LogUtils.log("uranus-server", "C_WB_A_N exception", LogUtils.ActionResult.failed, new String(message.getRaw()+e.getLocalizedMessage()));
         }
     }

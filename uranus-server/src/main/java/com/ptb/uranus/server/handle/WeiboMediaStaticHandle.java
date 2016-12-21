@@ -46,7 +46,6 @@ public class WeiboMediaStaticHandle implements CollectHandler {
                 sender.sendMediaStatic(weiboMediaStatic);
                 BasicMediaDynamic weiboMediaDynamic = SendObjectConvertUtil.weiboMediaDynamicConvert(wbAccount.get());
                 sender.sendMediaDynamic(weiboMediaDynamic);
-                weiboScheduleService.setContainerIDByWeiboID(wbAccount.get().getWeiboID(),wbAccount.get().getContainerID());
                 weiboScheduleService.addDetectNewArticlesSchedule(wbAccount.get().getWeiboID());
                 LogUtils.logInfo("uranus-server", "C_WB_M_S send", LogUtils.ActionResult.success, "");
             } else {

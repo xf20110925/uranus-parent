@@ -10,6 +10,7 @@ import com.ptb.uranus.server.third.util.IdRecordUtil;
 import com.ptb.uranus.server.third.util.JedisUtil;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
+import com.ptb.uranus.server.third.version2.SchedulerUpdater;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 
 import java.util.List;
@@ -25,9 +26,11 @@ import java.util.stream.Collectors;
  */
 public class WeiboArticleHandle implements DataHandle{
 	private Sender sender;
+    private SchedulerUpdater scheduleUpdater;
 
-	public WeiboArticleHandle(Sender sender) {
+	public WeiboArticleHandle(Sender sender,  SchedulerUpdater scheduleUpdater) {
 		this.sender = sender;
+	  	this.scheduleUpdater = scheduleUpdater;
 	}
 
 	@Override
@@ -39,6 +42,7 @@ public class WeiboArticleHandle implements DataHandle{
 			if (!JedisUtil.instance.exists(article.getR_user_id())) return;
 			sender.sendArticleStatic(ConvertUtils.weiboArticleStaticConvert(article));
 			sender.sendArticleDynamic(ConvertUtils.weiboArticleDynamicConvert(article));
+		  	scheduleUpdater.add(new SchedulerUpdater.NewArticleScheduler(article.getUser_id(), Long.parseLong(article.getTime_stamp())));
 		});
 	}
 
@@ -58,10 +62,4 @@ public class WeiboArticleHandle implements DataHandle{
 		List<Long> ids = getIds(ReqUrlEnum.WB_ARTICLE_RANGE_URL.getValue(), 1000);
 		return ids.stream().map(id -> String.format(ReqUrlEnum.WB_ARTICLE_DATA_URL.getValue(), id)).collect(Collectors.toList());
 	}
-
-	public static void main(String[] args) {
-		WeiboArticleHandle weiboArticleHandle = new WeiboArticleHandle(null);
-		weiboArticleHandle.handle();
-	}
-
 }

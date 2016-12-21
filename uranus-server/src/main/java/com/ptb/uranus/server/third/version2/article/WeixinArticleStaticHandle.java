@@ -9,6 +9,7 @@ import com.ptb.uranus.server.third.util.ConvertUtils;
 import com.ptb.uranus.server.third.util.IdRecordUtil;
 import com.ptb.uranus.server.third.version2.DataHandle;
 import com.ptb.uranus.server.third.version2.ReqUrlEnum;
+import com.ptb.uranus.server.third.version2.SchedulerUpdater;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 
 import java.util.List;
@@ -29,16 +30,22 @@ public class WeixinArticleStaticHandle implements DataHandle {
 
 	private Sender sender;
 
-	public WeixinArticleStaticHandle(Sender sender) {
-		this.sender = sender;
-	}
+    private SchedulerUpdater scheduleUpdater;
 
-	@Override
+  	public WeixinArticleStaticHandle(Sender sender, SchedulerUpdater scheduleUpdater) {
+		this.sender = sender;
+		this.scheduleUpdater = scheduleUpdater;
+ 	}
+
+  @Override
 	public void handleBusEntities(String dataUrl) {
 		String pageSource = HttpUtil.getPageSourceByClient(dataUrl);
 		logger.info(String.format("[%d] [wx:static] pull from url [%s]", System.currentTimeMillis(), dataUrl));
 		List<Map<String, String>> wxStaticAtricles = JsonPath.parse(pageSource).read("$.pages", List.class);
-		wxStaticAtricles.stream().filter(map -> isExists(map.get("url"), bizRegex, 1)).map(ConvertUtils::convertWXArticleStatic).forEach(sender::sendArticleStatic);
+		wxStaticAtricles.stream().filter(map -> isExists(map.get("url"), bizRegex, 1)).map(ConvertUtils::convertWXArticleStatic).forEach(wxAS -> {
+		  sender.sendArticleStatic(wxAS);
+		  scheduleUpdater.add(new SchedulerUpdater.NewArticleScheduler(wxAS.getBiz(), wxAS.getPostTime()));
+		});
 	}
 
 	@Override
@@ -62,6 +69,6 @@ public class WeixinArticleStaticHandle implements DataHandle {
 		KafkaBus bus = new KafkaBus();
 		Sender sender = new BusSender(bus);
 		bus.start(false, 5);
-		new WeixinArticleStaticHandle(sender).handle();
+		new WeixinArticleStaticHandle(sender, null).handle();
 	}
 }
