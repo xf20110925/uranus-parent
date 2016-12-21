@@ -117,7 +117,7 @@ public class WeiboSpider {
 	 */
 	public Optional<WeiboAccount> getWeiboAccountByWeiboID(String weiboID) {
 		try {
-			String weiboHomeUrl = String.format("http://m.weibo.cn/u/%s/", weiboID);
+			String weiboHomeUrl = String.format("http://m.weibo.cn/container/getIndex?type=uid&value=%s",weiboID);
 			return Optional.of(weiboAccountParser.getWeiboAccount(weiboHomeUrl));
 		} catch (Exception e) {
 			logger.warn(String.format("get weibo account by weibo id [%s]", weiboID), e);
@@ -135,7 +135,9 @@ public class WeiboSpider {
 		try {
 			if (homeUrl.contains("weibo")) {
 				if (homeUrl.contains("weibo.cn/u/")) {
-					return Optional.of(weiboAccountParser.getWeiboAccount(homeUrl));
+					String weiboid = homeUrl.replace("http://m.weibo.cn/u/", "");
+					String url = String.format("http://m.weibo.cn/container/getIndex?type=uid&value=%s",weiboid);
+					return Optional.of(weiboAccountParser.getWeiboAccount(url));
 				} else {
 					String weiboID = weiboAccountParser.getWeiboIDFromUserHomePage(homeUrl);
 					return getWeiboAccountByWeiboID(weiboID);
@@ -157,7 +159,7 @@ public class WeiboSpider {
 	public Optional<ImmutablePair<Long, List<WeiboArticle>>> getRecentArticlesByWeiboID(
 			String mediaID, Long lastestTime) {
 		try {
-			WeiboAccount weiboAccount = weiboAccountParser.getWeiboAccount(String.format(String.format("http://m.weibo.cn/u/%s", mediaID)));
+			WeiboAccount weiboAccount = weiboAccountParser.getWeiboAccount(String.format(String.format("http://m.weibo.cn/container/getIndex?type=uid&value=%s", mediaID)));
 			return this.getRecentArticlesByContainerID(weiboAccount.getContainerID(), lastestTime);
 		} catch (Exception e) {
 			logger.warn(String.format("get weibo recent article by mediaid [%s]", mediaID), e);
@@ -333,6 +335,9 @@ public class WeiboSpider {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}*/
+
+	WeiboSpider weiboSpider = new WeiboSpider();
+		weiboSpider.getWeiboAccountByWeiboID("3974469906");
 	}
 
 	public void close() {
