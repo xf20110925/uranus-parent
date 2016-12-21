@@ -28,7 +28,6 @@ public class WeixinScheduleServiceTest {
 
         //添加文章测试
         weixinScheduleService.addWeixinDetectNewArticlesSchedule(biz);
-        assertTrue(weixinScheduleService.cacheDao.hasKey(weixinScheduleService.getCacheBizKeyByTemplate(biz)));
         assertTrue(weixinScheduleService.schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s.*", biz))).isPresent());
 
 
@@ -52,7 +51,6 @@ public class WeixinScheduleServiceTest {
 
     @After
     public void after() {
-        weixinScheduleService.cacheDao.delAllValue(String.format("*%s*", biz));
         weixinScheduleService.schedulerDao.delAllScheduler();
     }
 }

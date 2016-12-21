@@ -17,7 +17,7 @@ public class WeiboMediaStaticHandleTest {
     @Test
     public void testHandle() throws InterruptedException, ConfigurationException {
         CollectCondition collectCondition = new CollectCondition();
-        collectCondition.setConditon("http://m.weibo.cn/u/5659237191");
+        collectCondition.setConditon("5659237191");
         Message<CollectCondition> message = new Message<CollectCondition>("uranus-server", "weixin_media_static", 2, "1.0.0", collectCondition);
         Bus bus = new KafkaBus();
         Sender sender = new BusSender(bus);

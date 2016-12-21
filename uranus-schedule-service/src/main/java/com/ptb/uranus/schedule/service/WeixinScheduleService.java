@@ -3,17 +3,15 @@ package com.ptb.uranus.schedule.service;
 import com.alibaba.fastjson.JSON;
 import com.ptb.uranus.common.entity.CollectCondition;
 import com.ptb.uranus.common.entity.CollectType;
-import com.ptb.uranus.schedule.dao.CacheDao;
 import com.ptb.uranus.schedule.dao.MongoSchedulerDao;
-import com.ptb.uranus.schedule.dao.RedisCacheDao;
 import com.ptb.uranus.schedule.dao.SchedulerDao;
 import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.model.SchedulableCollectCondition;
 import com.ptb.uranus.schedule.model.ScheduleObject;
 import com.ptb.uranus.schedule.trigger.JustOneTrigger;
 import com.ptb.uranus.schedule.trigger.PeriodicTrigger;
-import com.ptb.utils.string.RegexUtils;
 import com.ptb.utils.web.UrlFormatUtil;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
@@ -31,16 +29,10 @@ public class WeixinScheduleService {
     private final long dynamicDelayMill;
     private final long detectArticleDelayMin;
     public SchedulerDao schedulerDao;
-    public CacheDao cacheDao;
     public final static String ConditonField = "obj.conditon";
     public final static String ConditonTemplate = "%s:::%d";
     private long dynamicFetchInterval;
     private int dynamicFetchCount;
-
-
-    public String getCacheBizKeyByTemplate(String biz) {
-        return String.format("s::wx::biz::%s", biz);
-    }
 
     public String getConditionByTemplate(String biz, long times) {
         return String.format(ConditonTemplate, biz, times);
@@ -48,26 +40,12 @@ public class WeixinScheduleService {
 
     public WeixinScheduleService() throws ConfigurationException {
         schedulerDao = new MongoSchedulerDao();
-        cacheDao = new RedisCacheDao();
         PropertiesConfiguration conf = new PropertiesConfiguration("ptb.properties");
         dynamicDelayMill = TimeUnit.MINUTES.toMillis(conf.getInt("uranus.scheduler.weixin.article.dynamic.delay.minute", 60 * 24));
         detectArticleDelayMin = conf.getLong("uranus.scheduler.weixin.article.detect.delay.minute", 60 * 24);
         dynamicFetchCount = conf.getInt("uranus.scheduler.weixin.article.dynamic.fetch.num", 7);
         dynamicFetchInterval = conf.getInt("uranus.scheduler.weixin.article.dynamic.interval.minute", 60*24);
     }
-
-
-    public boolean isScheduleMedia(String articleUrl) {
-        String biz = RegexUtils.sub(".*__biz=([^#&]*).*", articleUrl, 0);
-        return cacheDao.hasKey(getCacheBizKeyByTemplate(biz));
-    }
-
-    public void checkAndAddToMediaStaticSchedule(String articleUrl) {
-        if (!isScheduleMedia(articleUrl)) {
-            addMediaStaticSchedule(articleUrl);
-        }
-    }
-
 
     public boolean addMediaStaticSchedule(String articleUrl) {
         return schedulerDao.addCollScheduler(
@@ -84,8 +62,7 @@ public class WeixinScheduleService {
 
     public void addWeixinDetectNewArticlesSchedule(String biz) {
 
-        if (!cacheDao.hasKey(getCacheBizKeyByTemplate(biz)) &&
-                !(schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s:::.*", biz))).isPresent())) {
+        if (!(schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s:::.*", biz))).isPresent())) {
             schedulerDao.addCollScheduler(
                     new ScheduleObject<>(
                             new PeriodicTrigger(detectArticleDelayMin,
@@ -102,11 +79,7 @@ public class WeixinScheduleService {
             );
 
         }
-        if(!cacheDao.hasKey(getCacheBizKeyByTemplate(biz))) {
-            cacheDao.setValue(getCacheBizKeyByTemplate(biz), "1", Math.toIntExact(TimeUnit.DAYS.toSeconds(1)));
-        }
     }
-
 
     public void updateWeixinMediaCondition(CollectCondition LastCondition, String biz, Long lastPushMessagePostTime) {
         Optional<ScheduleObject> schedulerByField = schedulerDao.getSchedulerByField(ConditonField, LastCondition.getConditon());
@@ -131,16 +104,10 @@ public class WeixinScheduleService {
         if(!schedulerByField.isPresent()) {
         schedulerDao.addCollScheduler(new ScheduleObject<>(new PeriodicTrigger(dynamicFetchInterval, TimeUnit.MINUTES, new Date(), dynamicFetchCount),
                 Priority.L2, new SchedulableCollectCondition(CollectType.C_WX_A_D, url)));
-        };
-    }
-
-    public void addWeixinDetectNewArticlesScheduleByArticleUrl(String url) {
-        String biz = RegexUtils.sub(".*__biz=([^#&]*).*", url, 0);
-        addWeixinDetectNewArticlesSchedule(url);
+        }
     }
 
     public void updateWeixinMediaCondition(String biz, Long lastPushMessagePostTime) {
-//        schedulerDao.getSchedulerByField("obj.conditon", Pattern.compile(String.format("^%s.*", biz))).
         Optional<ScheduleObject> schedulerByField = schedulerDao.getSchedulerByField(ConditonField, Pattern.compile(String.format("^%s.*", biz)));
         schedulerByField.ifPresent(scheduleObject -> {
             CollectCondition collCondition = (CollectCondition) scheduleObject.getObj();
