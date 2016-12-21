@@ -215,10 +215,11 @@ public class WxController {
 		if (readLikeNum.getLikeNum() >= 0 && readLikeNum.getReadNum()>=0){
 			String format = String.format("%sCountNum:%skeyUrl:%s", readLikeNum, counter.addAndGet(1), url);
 			logger.info("success grab dynamic data:"+format);
+			return String.format("%s(%s)", callback, readLikeNum);
 		}else{
-			logger.info("error grab dynamic data:"+url);
+			logger.error("error grab dynamic data:"+url);
 		}
-		return String.format("%s(%s)", callback, readLikeNum);
+		return  null;
 	}
 
 }
