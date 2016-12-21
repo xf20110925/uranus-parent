@@ -2,6 +2,8 @@ package com.ptb.uranus.server.third.version2.media;
 
 import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.JsonPath;
+import com.ptb.gaia.bus.kafka.KafkaBus;
+import com.ptb.uranus.server.send.BusSender;
 import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.third.entity.BayouWXMedia;
 import com.ptb.uranus.server.third.entity.IdRecord;
@@ -56,6 +58,9 @@ public class WeixinMediaHandle implements DataHandle {
 	}
 
 	public static void main(String[] args) {
-		new WeixinMediaHandle(null).handle();
+	  	KafkaBus bus = new KafkaBus();
+		Sender sender = new BusSender(bus);
+		bus.start(false, 5);
+		new WeixinMediaHandle(sender).handle();
 	}
 }
