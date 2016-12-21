@@ -131,7 +131,7 @@ public class WXSpider {
 	}
 
 	public static void main(String[] args) throws IOException {
-			String url = "https://mp.weixin.qq.com/s?__biz=MjAzNzMzNTkyMQ==&mid=2653753561&idx=1&sn=3a61f14b443b99363d6f300a9e344903&key=d3feb59da89e7994d69c25bffa477eca89e78e026dfd467f0a1ef609b2e7d9187add1bb0c526ca8ac6a61f7d81b5ff0739a10f9c8349878ac19f2ea8b90aa197a00f4b22dd138c9764d52d1d4ce6ea74&ascene=3&uin=NDk2MjU3ODEy&devicetype=android-18&version=26010041&nettype=WIFI&pass_ticket=lSvhCjd65NjP6VHzz0WJpDwNQ35PCmENjxpmullNsXtIPDja6qqkAOzjEFLq8jXs#rd" ;
+			String url = "https://mp.weixin.qq.com/s?__biz=MzA5OTA0NDIyMQ==&mid=2653885270&idx=3&sn=3edf308acc0c21fad461b73fb69fd9db&key=564c3e9811aee0ab7e10bfaa5926500f23c684f5d15965b75c172c0ef899b7fff53ade6158750e0548f75fed2125dd5632e068fab313200a514ff9546585bab49ed3c1bfe6b38c7dde2cea13d83728b7&ascene=1&uin=MTM3MDA0NzgxMA%3D%3D&devicetype=Windows+7&version=6203005d&pass_ticket=kesbhIC4%2BAchUFORDL2dJl8z9NA%2FSYiYD9%2FL9jDtE033NsnSzOFJwGM3RFXBwIq2&winzoom=1";
 		ReadLikeNum s = getReadLikeNum(url);
 		System.out.println(s);
 	}

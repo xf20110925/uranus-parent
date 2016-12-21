@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.ptb.uranus.spider.common.utils.DateUtils;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import com.ptb.uranus.spider.common.utils.JsonPathUtil;
 import com.ptb.uranus.spider.common.utils.WeiboUtil;
@@ -15,6 +16,7 @@ import com.ptb.utils.string.RegexUtils;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.DataUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -24,11 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -304,20 +304,19 @@ public class WeiboArticleParser {
      * @return the weibo recent articles by container id
      * @throws IOException the io exception
      */
-    public ImmutablePair<Long, List<WeiboArticle>> getWeiboRecentArticlesByContainerID(String containerID, long startTime) throws IOException {
-        String url = String.format(String.format("http://m.weibo.cn/page/json?containerid=%s_-_WEIBO_SECOND_PROFILE_WEIBO", containerID));
+    public ImmutablePair<Long, List<WeiboArticle>> getWeiboRecentArticlesByContainerID(String containerID, long startTime) throws IOException, ParseException {
+
+        String url = String.format(String.format("http://m.weibo.cn/container/getIndex?containerid=%s", containerID));
         String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_IPHONE6_SAFARI, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "mblog",true);
         DocumentContext parse = JsonPath.parse(pageSource);
         List<WeiboArticle> weiboArticles = new ArrayList<>();
-
-        List<String> list = parse.read(String.format("$..card_group[?(@.mblog.created_timestamp > %d)].mblog.mid", startTime));
-        List<Integer> read = parse.read("$..mblog.created_timestamp");
         List<LinkedHashMap> scope = parse.read("$..mblog");
         Iterator<LinkedHashMap> iter = scope.iterator();
         long lastTime = startTime;
         while (iter.hasNext()) {
             LinkedHashMap hashMap = iter.next();
-            long createTime = Long.parseLong(hashMap.get("created_timestamp").toString());
+            String created_at = hashMap.get("created_at").toString();
+            long createTime = DateUtils.getTime(created_at);
             if (createTime < startTime) {
                 continue;
             }
@@ -373,6 +372,9 @@ public class WeiboArticleParser {
 
         return ImmutablePair.of(lastTime, weiboArticles);
     }
+
+
+
 
     public ImmutablePair<Long, List<WeiboArticle>> getWeiboRecentArticlesThroughPc(String weiboID, long startTime) {
         try {
@@ -467,12 +469,12 @@ public class WeiboArticleParser {
         return null;
     }
 
-    public static void main(String[] args) throws Exception {
-        WeiboArticleParser weiboArticleParser = new WeiboArticleParser();
-        WeiboArticle weiboArticle = weiboArticleParser.parseFromPcPageByWebDriver("http://weibo.com/2165313080/Dov3pEU2d");
-        System.out.println(JSON.toJSONString(weiboArticle));
-
-    }
+//    public static void main(String[] args) throws Exception {
+//        WeiboArticleParser weiboArticleParser = new WeiboArticleParser();
+//        WeiboArticle weiboArticle = weiboArticleParser.parseFromPcPageByWebDriver("http://weibo.com/2165313080/Dov3pEU2d");
+//        System.out.println(JSON.toJSONString(weiboArticle));
+//
+//    }
 }
 
 
