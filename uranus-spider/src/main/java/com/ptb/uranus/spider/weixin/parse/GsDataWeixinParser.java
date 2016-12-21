@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,34 +33,18 @@ public class GsDataWeixinParser {
 	 */
 	public static Optional<List<GsData>> getWeixinAccountByIdOrName(String wxId,int maxPage){
 		try {
-			if(wxId.equals("")){
-				return Optional.empty();
-			}
-			//结果
+			if (StringUtils.isBlank(wxId))return Optional.empty();
 			List<GsData> result = new ArrayList<GsData>();
-			int  pageNum = maxPage;
-			if(maxPage<1){
-				pageNum=1;
-			}
-			for(int i=1;i<=pageNum;i++){
-				String htmlPage = HttpUtil.getPageSourceByClient("http://www.gsdata.cn/query/wx?q="+wxId+"&page="+i+"",HttpUtil.UA_PC_CHROME, null, "utf-8", "清",false);
-				pageNum = getPage(htmlPage);
+				String htmlPage = HttpUtil.getPageSourceByClient("http://www.gsdata.cn/query/wx?q="+wxId+"",HttpUtil.UA_PC_CHROME, null, "utf-8", "清",false);
 				Document documentHtml = Jsoup.parse(htmlPage);
 				Elements eles = documentHtml.select(".article-ul li");
 				List<GsData> list = eles.stream().map(ele->{
 					GsData qb = new GsData();
 					String wechatname = ele.select(".number-title a").text();
-					String weixinId = ele.select(".wx-sp span.gray").text();//微信号
-					String functionintroduce = "";
-					String authenticationInfo = "";
-					try {
-						functionintroduce = ele.select(".wx-sp span.sp-txt").get(0).text();//功能介绍
-						authenticationInfo = ele.select(".wx-sp span.sp-txt").get(1).text();
-					}catch (Exception e) {
-
-					}
-//					String included=ele.select(".wx-sp span.sp-txt a").text();//最近收录
-					String included=ele.select(".wx-sp span.sp-txt a").attr("href");//文章链接
+					String weixinId = ele.select(".wx-tt span.wx-width span").text();//微信号
+					String functionintroduce = ele.select(".wx-sp span.sp-description").text();//功能介绍
+					String authenticationInfo = ele.select(".wx-sp span.article-content-colo").text();
+					String included=ele.select(".wx-sp span.wx-description a").attr("href");//文章链接
 					String qrcodeurl=ele.select(".number-codes img").attr("src");//二维码
 					String headportrurl = ele.select(".number-img a").attr("href");
 					qb.setWechatname(wechatname);
@@ -73,9 +58,7 @@ public class GsDataWeixinParser {
 					return qb;
 					
 				}).collect(Collectors.toList());
-			}
 			return Optional.of(result);
-
 		} catch (Exception e) {
 			logger.warn("error is wxid="+wxId+" maxPage="+maxPage+" ",e);
 		}

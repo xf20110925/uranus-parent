@@ -18,7 +18,7 @@ public class WeiboNewArticlesHandleTest {
     @Test
     public void testHandle() throws InterruptedException, ConfigurationException {
         CollectCondition collectCondition = new CollectCondition();
-        collectCondition.setConditon("3974469906:::" + (System.currentTimeMillis() - 5*60*60*1000));
+        collectCondition.setConditon("5667272865:::" + (System.currentTimeMillis() - 5*60*60*1000));
         Message<CollectCondition> message = new Message<CollectCondition>();
         message.setBody(collectCondition);
         Bus bus = new KafkaBus();

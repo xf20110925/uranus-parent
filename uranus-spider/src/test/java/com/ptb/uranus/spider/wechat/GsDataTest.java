@@ -45,10 +45,9 @@ public class GsDataTest {
 	 @Test
 	 public void getWinxinMatchingByName(){
 		 Long stattime=System.currentTimeMillis();
-		 Optional<List<GsData>> list = weixinSpider.getWeixinAccountByIdOrName("liujishou2013", 3);
+		 Optional<List<GsData>> list = weixinSpider.getWinxinMatchingByName("RETE", 0);
 		 System.out.println("共耗时："+(System.currentTimeMillis()-stattime));
-		 
-		 List<GsData> qbW =list.get(); 
+		 List<GsData> qbW =list.get();
 //		 System.out.println(qbW.size());
 //		 System.out.println(qbW.get(0).getIncluded());
 //		 System.out.println(qbW.get(0).getWechatid());
