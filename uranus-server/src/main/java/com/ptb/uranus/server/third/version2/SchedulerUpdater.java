@@ -16,8 +16,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @Time: 18:07
  */
 public class SchedulerUpdater {
-  public static class NewArticleScheduler{
-    private String pmid;
+  public static class NewArticleScheduler {
+	private String pmid;
 	private long postTime;
 
 	public NewArticleScheduler(String pmid, long postTime) {
@@ -60,15 +60,15 @@ public class SchedulerUpdater {
   private static BlockingQueue<NewArticleScheduler> bq = new LinkedBlockingQueue<NewArticleScheduler>() {
 	@Override
 	public boolean offer(NewArticleScheduler scheduler) {
-	  if (contains(scheduler)){
-	    remove(scheduler);
+	  if (contains(scheduler)) {
+		remove(scheduler);
 	  }
 	  return super.offer(scheduler);
 	}
   };
   private WeixinScheduleService wxScheduleService;
 
-  public SchedulerUpdater(){
+  public SchedulerUpdater() {
 	try {
 	  wxScheduleService = new WeixinScheduleService();
 	} catch (ConfigurationException e) {
@@ -76,15 +76,19 @@ public class SchedulerUpdater {
 	}
   }
 
-  public void add(NewArticleScheduler scheduler){
-    bq.offer(scheduler);
+  public void add(NewArticleScheduler scheduler) {
+	bq.offer(scheduler);
   }
 
   public void handle() throws InterruptedException {
-    while (true) {
-	  NewArticleScheduler scheduler = bq.take();
-	  wxScheduleService.updateWeixinMediaCondition(scheduler.getPmid(), scheduler.getPostTime());
-	  System.out.println(String.format("更新调度->%s", JSON.toJSONString(scheduler)));
+	while (true) {
+	  try {
+		NewArticleScheduler scheduler = bq.take();
+		wxScheduleService.updateWeixinMediaCondition(scheduler.getPmid(), scheduler.getPostTime());
+		System.out.println(String.format("更新调度->%s", JSON.toJSONString(scheduler)));
+	  } catch (Exception e) {
+		e.printStackTrace();
+	  }
 	}
   }
 }
