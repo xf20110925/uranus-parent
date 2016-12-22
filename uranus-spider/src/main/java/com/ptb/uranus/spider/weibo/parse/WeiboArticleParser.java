@@ -307,7 +307,7 @@ public class WeiboArticleParser {
     public ImmutablePair<Long, List<WeiboArticle>> getWeiboRecentArticlesByContainerID(String containerID, long startTime) throws IOException, ParseException {
 
         String url = String.format(String.format("http://m.weibo.cn/container/getIndex?containerid=%s", containerID));
-        String pageSource = HttpUtil.getPageSourceByClient(url, HttpUtil.UA_IPHONE6_SAFARI, WeiboUtil.getVaildWeiboCookieStore(), "utf-8", "mblog",true);
+        String pageSource = HttpUtil.getPageSourceByClient(url, null, null, "utf-8", "mblog",true);
         DocumentContext parse = JsonPath.parse(pageSource);
         List<WeiboArticle> weiboArticles = new ArrayList<>();
         List<LinkedHashMap> scope = parse.read("$..mblog");
