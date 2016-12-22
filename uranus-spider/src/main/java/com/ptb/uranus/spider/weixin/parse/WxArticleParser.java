@@ -143,6 +143,7 @@ public class WxArticleParser {
      */
     public WxArticle getArticleNoRdNumByArticleUrl(String articleUrl) throws IOException {
         String pageSource = HttpUtil.getPageSourceByClient(articleUrl, null, null, "utf-8", "", true).toString();
+	  	log.info("通过代理爬取微信文章静态数据");
         WxArticle wxArticle = parseArticlByPageSource(pageSource);
         wxArticle.setArticleUrl(articleUrl);
         return wxArticle;
