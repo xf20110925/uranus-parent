@@ -115,10 +115,10 @@ public class WxService {
 	}
 
 	public void updateRealUrlAndReadNum(String data) {
-		Jedis jedis = RedisUtil.getJedis();
 		if (!data.contains("readNum")){
 			return;
 		}
+		Jedis jedis = RedisUtil.getJedis();
 		try {
 			DocumentContext parse = JsonPath.parse(data);
 			String url = parse.read("$.url").toString();
