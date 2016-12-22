@@ -8,6 +8,7 @@ publishTime=`date "+%Y%m%d%H%M%S"`
 JARNAME=`ls ${HOME}/target|grep -v 'sources\..*ar'|grep '.*\..*ar$'`
 echo "输出包为"$JARNAME
 PNAME=${JARNAME%.*}-${publishTime}
+PNAME="uranus-asistant"
 echo "发布包名为：${PNAME}"
 DistDir=$HOME/target/dist/${PNAME}
 mkdir -p $DistDir
