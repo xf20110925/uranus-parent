@@ -14,7 +14,7 @@ mkdir -p $DistDir
 
 cp target/${JARNAME} ${DistDir}/uranus-scheduler.jar
 cp -rf ${HOME}/${JARNAME} ${DistDir}/uranus-scheduler.jar
-cp -rf ${HOME}/script/Dockerfile ${DistDir}/Dockerfile
+cp -rf ${HOME}/script/Dockerfile.txt ${DistDir}/Dockerfile
 cp -rf ${HOME}/bin ${DistDir}
 cp -rf ${HOME}/config ${DistDir}
 cp -rf ${HOME}/README.md ${DistDir}
