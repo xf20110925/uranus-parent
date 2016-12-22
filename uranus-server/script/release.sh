@@ -11,6 +11,8 @@ PNAME="uranus-server"
 echo "发布包名为：${PNAME}"
 DistDir=$HOME/target/dist/${PNAME}
 mkdir -p $DistDir
+
+cp target/${JARNAME}.original ${DistDir}/uranus-server.jar
 cp -rf ${HOME}/${JARNAME} ${DistDir}/uranus-server.jar
 cp -rf ${HOME}/script/Dockerfile ${DistDir}/Dockerfile
 cp -rf ${HOME}/bin ${DistDir}
