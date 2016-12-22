@@ -7,7 +7,6 @@ import com.ptb.uranus.server.send.Sender;
 import com.ptb.uranus.server.send.entity.media.WeixinMediaStatic;
 import com.ptb.uranus.server.third.entity.BayouWXMedia;
 import com.ptb.uranus.server.third.util.ConvertUtils;
-import com.ptb.uranus.server.third.util.WeixinMediaUtils;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.GsData;
 import com.ptb.uranus.spider.weixin.bean.WxAccount;
@@ -99,7 +98,6 @@ public class WxMediaImport {
         Optional<BayouWXMedia> mediaOpt = getMediaByWXId(wxId);
         mediaOpt.ifPresent(bayouWXMedia -> {
             System.out.println(" 媒体信息-->" + bayouWXMedia);
-            WeixinMediaUtils.updateWeixinMedia(bayouWXMedia.getBid(), bayouWXMedia);
             WeixinMediaStatic weixinMediaStatic = ConvertUtils.convertWXMedia(bayouWXMedia);
             //发送到kafka
             sender.sendMediaStatic(weixinMediaStatic);

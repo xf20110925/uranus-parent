@@ -142,7 +142,7 @@ public class WxArticleParser {
      * @throws IOException the io exception
      */
     public WxArticle getArticleNoRdNumByArticleUrl(String articleUrl) throws IOException {
-        String pageSource = HttpUtil.getPageByPcClient(articleUrl).toString();
+        String pageSource = HttpUtil.getPageSourceByClient(articleUrl, null, null, "utf-8", "", true).toString();
         WxArticle wxArticle = parseArticlByPageSource(pageSource);
         wxArticle.setArticleUrl(articleUrl);
         return wxArticle;

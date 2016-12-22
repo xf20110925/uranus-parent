@@ -2,9 +2,7 @@ package com.ptb.uranus.sdk;
 
 import com.ptb.uranus.common.entity.CollectType;
 import com.ptb.uranus.schedule.Collector;
-import com.ptb.uranus.schedule.dao.CacheDao;
 import com.ptb.uranus.schedule.dao.MongoSchedulerDao;
-import com.ptb.uranus.schedule.dao.RedisCacheDao;
 import com.ptb.uranus.schedule.dao.SchedulerDao;
 import com.ptb.uranus.schedule.model.Priority;
 import com.ptb.uranus.schedule.model.SchedulableCollectCondition;
@@ -16,6 +14,7 @@ import com.ptb.uranus.sdk.exception.CollectArgsException;
 import com.ptb.uranus.sdk.exception.ConfigureFileException;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.utils.web.UrlFormatUtil;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 public class UranusSdk implements Collector {
     static Logger logger = LoggerFactory.getLogger(UranusSdk.class);
     static private UranusSdk instance;
-    CacheDao cacheDao;
     WeixinSpider weixinSpider = new WeixinSpider();
 
     static String lock = new String();
@@ -57,7 +55,6 @@ public class UranusSdk implements Collector {
 
     private UranusSdk() throws ConfigurationException {
         schedulerDao = new MongoSchedulerDao();
-        cacheDao = new RedisCacheDao();
     }
 
 
