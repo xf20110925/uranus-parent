@@ -1,8 +1,11 @@
 (function () {
     var url = location.href;
     var data = {url: url};
-    var phoneSchdularUrl = "http://114.113.237.137/wx/mobile/getNewUrl";
-    var getkeyurl = "http://172.16.0.217/wx/readUrl";
+    // var phoneSchdularUrl = "http://114.113.237.137/wx/mobile/getNewUrl";
+    // var getkeyurl = "http://114.113.237.137/wx/readUrl";
+
+    var phoneSchdularUrl = "http://192.168.21.118:8888/wx/mobile/getNewUrl";
+    var getkeyurl = "http://192.168.21.118:8888/wx/readUrl";
     function requestUrl() {
         try {
             window._WXJS.ajax({
@@ -61,6 +64,7 @@
             setTimeout(function () {
                 requestUrl()
             }, 500)
+
         }
     } catch (err) {
         setTimeout(function () {

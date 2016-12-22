@@ -6,10 +6,12 @@ import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.asistant.core.entity.ReadLikeNum;
 import com.ptb.uranus.asistant.core.util.RedisUtil;
 import com.ptb.uranus.asistant.core.util.WxUtils;
+import com.ptb.uranus.asistant.web.controller.WbAccoutController;
 import com.ptb.uranus.spider.weixin.parse.BayouWeixinParser;
 import com.ptb.utils.exception.PTBException;
 
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -23,6 +25,8 @@ import redis.clients.jedis.Jedis;
  */
 @Service
 public class WxService {
+
+	static org.slf4j.Logger logger = LoggerFactory.getLogger(WxService.class);
 
 	String Q_WX_redirect = "Q_WX_redirect";
 
@@ -112,6 +116,9 @@ public class WxService {
 
 	public void updateRealUrlAndReadNum(String data) {
 		Jedis jedis = RedisUtil.getJedis();
+		if (!data.contains("readNum")){
+			return;
+		}
 		try {
 			DocumentContext parse = JsonPath.parse(data);
 			String url = parse.read("$.url").toString();

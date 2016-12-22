@@ -219,7 +219,7 @@ public class WxController {
 		}else{
 			logger.error("error grab dynamic data:"+url);
 		}
-		return  null;
+		return String.format("%s(%s)", callback, null);
 	}
 
 }
