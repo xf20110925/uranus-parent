@@ -42,7 +42,7 @@ public class WeiboArticleHandle implements DataHandle{
 			if (!JedisUtil.instance.exists(article.getR_user_id())) return;
 			sender.sendArticleStatic(ConvertUtils.weiboArticleStaticConvert(article));
 			sender.sendArticleDynamic(ConvertUtils.weiboArticleDynamicConvert(article));
-		  	scheduleUpdater.add(new SchedulerUpdater.NewArticleScheduler(article.getUser_id(), Long.parseLong(article.getTime_stamp())));
+		  	scheduleUpdater.add(new SchedulerUpdater.NewArticleScheduler(article.getUser_id(), Long.parseLong(article.getTime_stamp()) * 1000));
 		});
 	}
 
