@@ -12,7 +12,7 @@ echo "发布包名为：${PNAME}"
 DistDir=$HOME/target/dist/${PNAME}
 mkdir -p $DistDir
 
-cp target/${JARNAME}.original ${DistDir}/uranus-scheduler.jar
+cp target/${JARNAME} ${DistDir}/uranus-scheduler.jar
 cp -rf ${HOME}/${JARNAME} ${DistDir}/uranus-scheduler.jar
 cp -rf ${HOME}/script/Dockerfile ${DistDir}/Dockerfile
 cp -rf ${HOME}/bin ${DistDir}
