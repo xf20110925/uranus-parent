@@ -19,19 +19,19 @@ TOPIC=uranus-server_v2_wx_s
 if [ ! -d logs/${TOPIC} ]; then
     mkdir logs/${TOPIC}
 fi
-java -cp $CONFIG_FILE_HOME:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
+nohup java -cp $CONFIG_FILE_HOME:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
 --listenTopics=${TOPIC} \
 --spider.worker.num=5 \
---kafka.consumer.num=1 >> logs/${TOPIC}/run.log 2>&1
+--kafka.consumer.num=1 >> logs/${TOPIC}/run.log 2>&1 &
 
 TOPIC=uranus-server_v2_wx_d
 if [ ! -d logs/${TOPIC} ]; then
     mkdir logs/${TOPIC}
 fi
-java -cp $CONFIG_FILE_HOME:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
+nohup java -cp $CONFIG_FILE_HOME:$allclasspath$jars -Dtopic=${TOPIC} ${main_class} \
 --listenTopics=${TOPIC} \
 --spider.worker.num=3 \
---kafka.consumer.num=1 >> logs/${TOPIC}/run.log 2>&1
+--kafka.consumer.num=1 >> logs/${TOPIC}/run.log 2>&1 &
 
 TOPIC=uranus-server_v2_wb
 if [ ! -d logs/${TOPIC} ]; then
