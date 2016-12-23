@@ -29,7 +29,7 @@ public class WbRecentArticleTest {
 
     @Test
     public void testGetRecentArticleByContainerID() {
-        Optional<ImmutablePair<Long, List<WeiboArticle>>> articleList = weiboSpider.getRecentArticlesByContainerID("1005053455918702", 0l);
+        Optional<ImmutablePair<Long, List<WeiboArticle>>> articleList = weiboSpider.getRecentArticlesByContainerID("1076035060397568", 0l);
         assertTrue(articleList.get().getRight().size() >= 0);
         assertTrue(articleList.get().getLeft()>0);
     }
