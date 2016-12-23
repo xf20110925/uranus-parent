@@ -112,7 +112,7 @@ public class WeixinScheduleService {
         schedulerByField.ifPresent(scheduleObject -> {
             CollectCondition collCondition = (CollectCondition) scheduleObject.getObj();
             long postTime = Long.parseLong(collCondition.getConditon().split(":::")[1]);
-            if (postTime < lastPushMessagePostTime){
+            if (postTime < lastPushMessagePostTime || String.valueOf(postTime).endsWith("000")){
                 String condition =  getConditionByTemplate(biz, lastPushMessagePostTime);
                 collCondition.setConditon(condition);
                 try {
