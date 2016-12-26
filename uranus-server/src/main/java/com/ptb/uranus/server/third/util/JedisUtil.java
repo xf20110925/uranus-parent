@@ -41,6 +41,7 @@ public enum JedisUtil {
 		Jedis jedis = null;
 		try {
 			jedis = jedisPool.getResource();
+		  	jedis.select(1);
 			value = jedis.get(key);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,6 +59,7 @@ public enum JedisUtil {
 		Jedis jedis = null;
 		try {
 			jedis = jedisPool.getResource();
+		  	jedis.select(1);
 			return jedis.exists(key);
 		} catch (Exception e) {
 			e.printStackTrace();
