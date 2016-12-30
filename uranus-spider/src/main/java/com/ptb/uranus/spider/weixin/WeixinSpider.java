@@ -442,10 +442,23 @@ public class WeixinSpider {
 	}
 
 
+
+	public String getWeixinsougo(String url,String source,String txt){
+		String pageSource = HttpUtil.getPageSourceByClient(url,null,null,"utf-8","msgList ",true);
+		List<String> wxSogo = wxAccountParser.getWxSogo(pageSource);
+		wxAccountParser.getWxContext(wxSogo,source,txt);
+		return null;
+
+	}
+
+
+
+
 	public static void main(String[] args) {
-		String url = "https://mp.weixin.qq.com/s?__biz=MzI1OTAwNDAzNA==&mid=2650794832&idx=1&sn=ef893d29664319f96aac1505202469e4&scene=4";
+		String url = "http://mp.weixin.qq.com/profile?src=3&timestamp=1483082018&ver=1&signature=lb-eCMQse4AOuLrXrj1kc23qTnkyXZfeo1XItolAB74xtet6Fm413tfKi-ynzOh0E09cpebxWw8uhUIIUZHU7Q==";
 		WeixinSpider weixinSpider = new WeixinSpider();
-		Optional<ReadLikeNum> readLikeNumOpt = weixinSpider.getArticleReadLikeNumByWXkey(url);
-		readLikeNumOpt.ifPresent(readLikeNum -> System.out.println(readLikeNum));
+		weixinSpider.getWeixinsougo(url,"2\t","E:\\ 娱乐类.txt");
+//		Optional<ReadLikeNum> readLikeNumOpt = weixinSpider.getArticleReadLikeNumByWXkey(url);
+//		readLikeNumOpt.ifPresent(readLikeNum -> System.out.println(readLikeNum));
 	}
 }

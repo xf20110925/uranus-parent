@@ -93,6 +93,16 @@ public class CrawleTask implements Runnable {
 				logger.warn(String.format("schedule collectType [%s] Error", collectType), e);
 				LogUtils.log("uranus-schedule", "get-schedule-object", LogUtils.ActionResult.failed, e.getMessage());
 			}
+
+
+
+
+
+
+
+
+
+
 		});
 	}
 }

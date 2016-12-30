@@ -1,18 +1,26 @@
 package com.ptb.uranus.spider.weixin.parse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.exception.SpiderException;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
+import com.ptb.uranus.spider.common.utils.JsonPathUtil;
 import com.ptb.uranus.spider.common.webDriver.WebDriverProvider;
+import com.ptb.uranus.spider.smart.utils.StringUtil;
 import com.ptb.uranus.spider.weixin.WeixinSpider;
 import com.ptb.uranus.spider.weixin.bean.WxArticle;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.Architecture;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebElement;
@@ -20,12 +28,12 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -169,16 +177,71 @@ public class WxSogouParser {
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
+/*	public static void main(String[] args) throws IOException {
 		WxSogouParser wxSogouParser = new WxSogouParser();
-		/*while (true) {
+		*//*while (true) {
 			String rmrbwx = wxSogouParser.getLastArticleByWeixinID("rmrbwx");
 			System.out.println(rmrbwx);
-		}*/
+		}*//*
+
 		List<RealTimeArticle> hotArticles = wxSogouParser.getHotArticles("http://weixin.sogou.com/pcindex/pc/pc_4/1.html");
 		System.out.println(hotArticles);
 
 
+	}*/
+
+	/**
+	 * sogou文章列表
+	 * @param pageContext
+	 * @return
+     */
+	public List<String> getWxSogo(String pageContext){
+		String regex2= "msgList = \\{.*\\{.*comm_msg_info.*\\{.*\\}\\}]}";
+		Pattern pattern = Pattern.compile(regex2);
+		Matcher m = pattern.matcher(pageContext);
+		String context = null;
+		while (m.find()){
+			context = m.group(0).replace("msgList =","");
+		}
+		DocumentContext parse = JsonPath.parse(context);
+		List<String> urls = parse.read("$.list[*]..content_url", List.class);
+		List<String> collect = urls.stream().map(StringEscapeUtils::unescapeHtml).collect(Collectors.toList());
+		return collect;
+
+	}
+
+	/**
+	 * 提取正文
+     */
+
+	public  String getWxContext(List<String> list,String source,String txt){
+		list.forEach(li ->{
+			logger.info("The current crawl:"+li);
+			if (li.contains("/s?timestamp=")){
+				String pageSource = HttpUtil.getPageSourceByClient("http://mp.weixin.qq.com"+li,null,null,"utf-8","rich_media_content ",true);
+				String document =source+Jsoup.parseBodyFragment(pageSource).text();
+				new WxSogouParser().method2(txt,document);
+			}
+		});
+		return null;
+	}
+
+
+	public static void method2(String file, String conent) {
+		BufferedWriter out = null;
+		try {
+			out = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(file, true)));
+			out.write(conent+"\r\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
