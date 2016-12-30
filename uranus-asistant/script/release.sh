@@ -12,9 +12,8 @@ PNAME="uranus-asistant"
 echo "发布包名为：${PNAME}"
 DistDir=$HOME/target/dist/${PNAME}
 mkdir -p $DistDir
-cp target/${JARNAME} ${DistDir}/uranus-asistant.jar
+cp target/${JARNAME} ${DistDir}/uranus-asistant.war
 cp -rf ${HOME}/script/Dockerfile ${DistDir}/Dockerfile
-cp target/${JARNAME} ${DistDir}
 cp -rf ${HOME}/bin ${DistDir}
 cp -rf ${HOME}/config ${DistDir}
 cp -rf ${HOME}/README.md ${DistDir}

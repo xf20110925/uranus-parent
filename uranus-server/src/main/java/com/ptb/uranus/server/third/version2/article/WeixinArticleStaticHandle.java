@@ -44,7 +44,7 @@ public class WeixinArticleStaticHandle implements DataHandle {
 		List<Map<String, String>> wxStaticAtricles = JsonPath.parse(pageSource).read("$.pages", List.class);
 		wxStaticAtricles.stream().filter(map -> isExists(map.get("url"), bizRegex, 1)).map(ConvertUtils::convertWXArticleStatic).forEach(wxAS -> {
 		  sender.sendArticleStatic(wxAS);
-		  scheduleUpdater.add(new SchedulerUpdater.NewArticleScheduler(wxAS.getBiz(), wxAS.getPostTime() * 1000));
+		  scheduleUpdater.add(new SchedulerUpdater.NewArticleScheduler(wxAS.getBiz(), wxAS.getPostTime()));
 		});
 	}
 
