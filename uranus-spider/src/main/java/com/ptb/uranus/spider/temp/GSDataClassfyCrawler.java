@@ -1,6 +1,7 @@
 package com.ptb.uranus.spider.temp;
 
-import com.jayway.jsonpath.DocumentContext;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.jayway.jsonpath.JsonPath;
 import com.ptb.uranus.spider.common.utils.HttpUtil;
 import org.apache.http.client.fluent.Executor;
@@ -30,6 +31,60 @@ public class GSDataClassfyCrawler {
     static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36";
     static final String requestWith = "XMLHttpRequest"; //X-Requested-With
     static final String linkTemplate = "http://www.gsdata.cn/newRank/getwxranks?gid=%s&date=%s&page=%d&type=day&cp=all";
+
+    public static class GSWxMedia {
+        private String wx_nickname;
+        private String wx_name;
+        private String readnum_all;
+        private String likenum_all;
+
+        public GSWxMedia() {
+        }
+
+        public GSWxMedia(String wx_nickname, String wx_name, String readnum_all, String likenum_all) {
+            this.wx_nickname = wx_nickname;
+            this.wx_name = wx_name;
+            this.readnum_all = readnum_all;
+            this.likenum_all = likenum_all;
+        }
+
+        public String getWx_nickname() {
+            return wx_nickname;
+        }
+
+        public void setWx_nickname(String wx_nickname) {
+            this.wx_nickname = wx_nickname;
+        }
+
+        public String getWx_name() {
+            return wx_name;
+        }
+
+        public void setWx_name(String wx_name) {
+            this.wx_name = wx_name;
+        }
+
+        public String getReadnum_all() {
+            return readnum_all;
+        }
+
+        public void setReadnum_all(String readnum_all) {
+            this.readnum_all = readnum_all;
+        }
+
+        public String getLikenum_all() {
+            return likenum_all;
+        }
+
+        public void setLikenum_all(String likenum_all) {
+            this.likenum_all = likenum_all;
+        }
+
+        @Override
+        public String toString() {
+            return JSON.toJSONString(this);
+        }
+    }
 
     /**
      * 解析页面不同分类的id用于拼接分类url
@@ -68,7 +123,7 @@ public class GSDataClassfyCrawler {
     public static Map<String, Map<String, String>> getAllinks(String url) throws IOException {
         Map<String, Map<String, String>> classfyIdMap = getClassfyId(url);
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        calendar.add(Calendar.DAY_OF_YEAR, -2);
         String nowDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
         classfyIdMap.entrySet().stream().forEach(entry ->
                 entry.getValue().entrySet().forEach(e -> {
@@ -79,7 +134,7 @@ public class GSDataClassfyCrawler {
         return classfyIdMap;
     }
 
-    public static List<String> getWxIds(String url, int retryNum) {
+    public static List<GSWxMedia> getWxIds(String url, int retryNum) {
         String content = null;
         int i = 0;
         while (content == null && i < retryNum) {
@@ -92,9 +147,9 @@ public class GSDataClassfyCrawler {
             }
         }
         if (content != null && content.contains("\"error\":0")) {
-            DocumentContext context = JsonPath.parse(content);
-            List<String> wxids = context.read("$.data.rows[*].wx_name");
-            return wxids;
+            String s = JsonPath.parse(content).read("$.data.rows").toString();
+            List<GSWxMedia> gsWxMedias = JSONArray.parseArray(s, GSWxMedia.class);
+            return gsWxMedias;
         }
         return Collections.emptyList();
     }
@@ -105,9 +160,9 @@ public class GSDataClassfyCrawler {
 //        for (Map.Entry<String, Map<String, String>> entry : allinks.entrySet()) {
             for (Map.Entry<String, String> e : entry.getValue().entrySet()) {
                 String link = e.getValue();
-                Set<String> wxids = Arrays.asList(1, 2, 3, 4, 5).stream().flatMap(i -> {
+                Set<GSWxMedia> wxids = Arrays.asList(1, 2, 3, 4, 5).stream().flatMap(i -> {
                     String linkPage = link.replace("page=1", String.format("page=%d", i));
-                    List<String> wxIds = getWxIds(linkPage, 3);
+                    List<GSWxMedia> wxIds = getWxIds(linkPage, 3);
                     return wxIds.stream();
                 }).collect(Collectors.toSet());
                 try {
@@ -127,6 +182,6 @@ public class GSDataClassfyCrawler {
     public static void main(String[] args) throws IOException {
 //        Map<String, Map<String, String>> allLinks = getAllinks("http://www.gsdata.cn/rank/detail");
 //        System.out.println(allLinks);
-        writeAllWxIds("http://www.gsdata.cn/rank/detail", "f://gsdata");
+        writeAllWxIds("http://www.gsdata.cn/rank/detail", "g://gsdata");
     }
 }

@@ -18,8 +18,8 @@ import java.util.Map;
 public class GSDataClassfyCrawlerTest {
     @Test
     public void getWxIdsTest() throws IOException {
-        String url = "http://www.gsdata.cn/newRank/getwxranks?gid=45826&date=2017-01-11&page=1&type=day&cp=all";
-        List<String> wxIds = GSDataClassfyCrawler.getWxIds(url, 2);
+        String url = "http://www.gsdata.cn/newRank/getwxranks?gid=62&date=2017-01-15&page=1&type=day&cp=all&t=0.3110131615834564&action=";
+        List<GSDataClassfyCrawler.GSWxMedia> wxIds = GSDataClassfyCrawler.getWxIds(url, 2);
         System.out.println(wxIds);
         Assert.assertTrue(!wxIds.isEmpty());
     }
