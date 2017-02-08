@@ -212,7 +212,7 @@ public class WxController {
 	@ResponseBody
 	public String getReadUrl(HttpServletRequest request, @RequestParam("callback") String callback, @RequestParam("url") String url) throws IOException {
 		ReadLikeNum readLikeNum = WXSpider.getReadLikeNum(url);
-		if (readLikeNum.getLikeNum() >= 0 && readLikeNum.getReadNum()>=0){
+		if (readLikeNum.getLikeNum() >= 0 && readLikeNum.getReadNum() >= 0){
 			String format = String.format("%sCountNum:%skeyUrl:%s", readLikeNum, counter.addAndGet(1), url);
 			logger.info("success grab dynamic data:"+format);
 			return String.format("%s(%s)", callback, readLikeNum);

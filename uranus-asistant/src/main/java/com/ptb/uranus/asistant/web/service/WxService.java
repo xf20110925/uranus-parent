@@ -10,6 +10,8 @@ import com.ptb.uranus.asistant.web.controller.WbAccoutController;
 import com.ptb.uranus.spider.weixin.parse.BayouWeixinParser;
 import com.ptb.utils.exception.PTBException;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import redis.clients.jedis.Jedis;
+import scala.Int;
 
 /**
  * Created by eric on 16/1/6.
@@ -27,6 +30,16 @@ import redis.clients.jedis.Jedis;
 public class WxService {
 
 	static org.slf4j.Logger logger = LoggerFactory.getLogger(WxService.class);
+	private Integer BaYou_Time = null;
+	private void loadConfig() {
+		PropertiesConfiguration conf = new PropertiesConfiguration();
+		try {
+			conf.load("ptb.properties");
+		} catch (ConfigurationException e) {
+		}
+		BaYou_Time = conf.getInt("uranus.spider.wx.bayou.access.time",1000);
+	}
+
 
 	String Q_WX_redirect = "Q_WX_redirect";
 
@@ -167,7 +180,7 @@ public class WxService {
 		synchronized (queue) {
 			Integer first = queue.poll();
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(BaYou_Time);
 				Optional<com.ptb.uranus.spider.weixin.bean.ReadLikeNum> readLikeOpt = parser.getReadLikeNumByArticleUrl(url);
 				if (readLikeOpt.isPresent()) {
 					requestLogger.error(String.format("request success url-> %s, time->%s", url, System.currentTimeMillis() / 1000));
@@ -182,5 +195,10 @@ public class WxService {
 			}
 			return "";
 		}
+	}
+
+	public static void main(String[] args) {
+		WxService wxService = new WxService();
+		wxService.getReadLikeByBaYou(" http://mp.weixin.qq.com/s?__biz=MjM5NzI2NDgyMA==&mid=2653937672&idx=8&sn=16e6f983cca0a3bfe10561ff4e92e22f#rd");
 	}
 }
