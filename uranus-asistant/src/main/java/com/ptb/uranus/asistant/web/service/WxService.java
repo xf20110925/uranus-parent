@@ -31,6 +31,7 @@ public class WxService {
 
 	static org.slf4j.Logger logger = LoggerFactory.getLogger(WxService.class);
 	private Integer BaYou_Time = null;
+
 	private void loadConfig() {
 		PropertiesConfiguration conf = new PropertiesConfiguration();
 		try {
@@ -40,6 +41,9 @@ public class WxService {
 		BaYou_Time = conf.getInt("uranus.spider.wx.bayou.access.time",1000);
 	}
 
+    public WxService() {
+        loadConfig();
+    }
 
 	String Q_WX_redirect = "Q_WX_redirect";
 
